@@ -1,0 +1,119 @@
+<div id="content">
+  <div id="left" class="page">
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <h2>Update your center account</h2>
+
+          <mat-form-field class="full-width-input">
+            <mat-label>Name</mat-label>
+            <input class="form-control" matInput [value]="centeraccount.name" placeholder="Name" formControlName="name">
+            <mat-error>
+              Please provide a valid name
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>Country</mat-label>
+            <input class="form-control" matInput [value]="centeraccount.country" placeholder="Country"
+              formControlName="country">
+            <mat-error>
+              Please provide a valid country
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>City</mat-label>
+            <input class="form-control" matInput [value]="centeraccount.city" placeholder="City"
+              formControlName="city">
+            <mat-error>
+              Please provide a valid city
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>Address</mat-label>
+            <input class="form-control" matInput [value]="centeraccount.address" placeholder="Address"
+              formControlName="address">
+            <mat-error>
+              Please provide a valid address
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>Description</mat-label>
+            <input class="form-control" matInput [value]="centeraccount.description" placeholder="Description"
+              formControlName="description">
+            <mat-error>
+              Description is required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>Average rating</mat-label>
+            <input class="form-control" matInput [value]="centeraccount.averageRating" placeholder="Average rating"
+              disabled>
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>Start time</mat-label>
+            <input type="time" class="form-control " matInput [value]="centeraccount.startTime"
+              formControlName="startTime">
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>End time</mat-label>
+            <input type="time" class="form-control " matInput [value]="centeraccount.endTime" formControlName="endTime">
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>Latitude</mat-label>
+            <input type="text" class="form-control " matInput [value]="centeraccount.latitude" formControlName="latitude">
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <mat-label>Longitude</mat-label>
+            <input type="text" class="form-control " matInput [value]="centeraccount.longitude" formControlName="longitude">
+          </mat-form-field>
+          <agm-map [latitude]="latitude" [longitude]="longitude">
+            <agm-marker [latitude]="latitude" [longitude]="longitude"></agm-marker>
+          </agm-map>
+
+          <br>
+          <br>
+          <button mat-raised-button color="primary">Update</button>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div id="right">
+    <h2>Admins of center:</h2>
+    <mat-table mat-table [dataSource]="adminOfCenters">
+      <ng-container matColumnDef="Name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let adminOfCenter"> {{adminOfCenter.firstName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Surname">
+        <th mat-header-cell *matHeaderCellDef> Surname </th>
+        <td mat-cell *matCellDef="let adminOfCenter">{{adminOfCenter.lastName}}</td>
+      </ng-container>
+      <ng-container matColumnDef="Phone">
+        <th mat-header-cell *matHeaderCellDef> Phone </th>
+        <td mat-cell *matCellDef="let adminOfCenter"> {{adminOfCenter.phone}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsOfAdmins"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsOfAdmins;"></tr>
+    </mat-table>
+    <h2>Free appointments:</h2>
+    <mat-table mat-table [dataSource]="appointments">
+      <ng-container matColumnDef="Date">
+        <th mat-header-cell *matHeaderCellDef> Date </th>
+        <td mat-cell *matCellDef="let appointment"> {{appointment.dateAndTime}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Duration">
+        <th mat-header-cell *matHeaderCellDef> Duration </th>
+        <td mat-cell *matCellDef="let appointment">{{appointment.duration}}</td>
+      </ng-container>
+      <ng-container matColumnDef="AdminOfCenter">
+        <th mat-header-cell *matHeaderCellDef> Admin of center </th>
+        <td mat-cell *matCellDef="let appointment"> {{appointment.admin.firstName}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsOfAppointments"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsOfAppointments;"></tr>
+    </mat-table>
+  </div>
+</div>

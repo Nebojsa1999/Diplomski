@@ -1,0 +1,63 @@
+<div class="page">
+  <mat-card appearance="outlined">
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <h2>Register</h2>
+        <mat-error *ngIf="loginInvalid">
+          The username and password were not recognized
+        </mat-error>
+        <mat-form-field class="full-width-input">
+          <input matInput placeholder="Email" formControlName="email" required>
+          <mat-error>
+            Please provide a valid email address
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <input matInput placeholder="First name" formControlName="firstName" required>
+          <mat-error>
+            First name is required
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <input matInput placeholder="Last name" formControlName="lastName" required>
+          <mat-error>
+            Last name is required
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <input matInput type="password" placeholder="Password" formControlName="password" required>
+          <mat-error>
+            Please provide a valid password
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <input matInput type="text" placeholder="Address" formControlName="address" required>
+          <mat-error>
+            Please provide a valid address
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <input matInput type="text" placeholder="City" formControlName="city" required>
+          <mat-error>
+            Please provide a valid city
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <input matInput type="text" placeholder="Country" formControlName="country" required>
+          <mat-error>
+            Please provide a valid country
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <input matInput type="text" placeholder="Phone" formControlName="phone" required>
+          <mat-error>
+            Please provide a valid country
+          </mat-error>
+        </mat-form-field>
+        <button mat-raised-button color="primary">Register</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+

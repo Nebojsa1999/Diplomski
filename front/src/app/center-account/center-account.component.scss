@@ -1,0 +1,28 @@
+#content {
+  display: flex;
+}
+
+#left,
+#right {
+  flex: 50%;
+}
+
+.page {
+  display: block;
+  align-items: center;
+  justify-content: center;
+}
+
+.mat-mdc-form-field {
+  display: block;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+mat-card {
+  width: 50%;
+  margin: 0 auto;
+}
+
+agm-map {
+  height: 200px;
+}
