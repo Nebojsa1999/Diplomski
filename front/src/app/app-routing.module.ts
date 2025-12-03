@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { inject, NgModule } from '@angular/core';
+import { CanActivateFn, Router, RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from "./login/login.component";
 import { RegisterComponent } from "./register/register.component";
 import { ChangePasswordComponent } from "./change-password/change-password.component";
@@ -15,6 +15,27 @@ import { StartAppointmentComponent } from './start-appointment/start-appointment
 import { AppoinmentReportComponent } from './appoinment-report/appoinment-report.component';
 import { WorkCalendarComponent } from './work-calendar/work-calendar.component';
 import { SingleAppointmentComponent } from './single-appointment/single-appointment.component';
+import { map } from "rxjs/operators";
+import { AuthenticationService } from "./authentication.service";
+
+export const unauthenticatedOnlyGuard: CanActivateFn = (route, state) => {
+    const router = inject(Router);
+    return inject(AuthenticationService).isAuthenticated().pipe(
+        map((authenticated) => {
+            return authenticated ? router.createUrlTree(['']) : false;
+        })
+    )
+};
+
+export const authenticatedOnlyGuard: CanActivateFn = (route, state) => {
+    const router = inject(Router);
+    return inject(AuthenticationService).isAuthenticated().pipe(
+        map((authenticated) => {
+            return authenticated ? true : router.createUrlTree(['sign-in']);
+        })
+    )
+};
+
 
 const routes: Routes = [
   {
