@@ -1,4 +1,63 @@
 /* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@use "tailwindcss";
+@use 'app/common/scss/theme';
+@use 'app/common/scss/overrides';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px rgb(56.75, 56.75, 56.75) inset !important;
+  -webkit-text-fill-color: white;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--mat-sys-primary);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--mat-sys-tertiary);
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.absolute {
+  position: absolute !important;
+}
+
+.snackbar-info {
+  --mat-snack-bar-supporting-text-color: var(--mat-sys-on-tertiary) !important;
+  --mat-snack-bar-container-color: var(--mat-sys-tertiary) !important;
+}
+
+.snackbar-success {
+  --mat-snack-bar-container-color: var(--success-color-50) !important;
+}
+
+.snackbar-warning {
+  --mat-snack-bar-container-color: var(--warning-color-50) !important;
+}
+
+.snackbar-error {
+  --mat-snack-bar-container-color: var(--error-color-50) !important;
+}

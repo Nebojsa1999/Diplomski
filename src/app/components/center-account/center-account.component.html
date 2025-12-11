@@ -1,0 +1,134 @@
+<div class="flex flex-col justify-center h-full bg-no-repeat bg-cover bg-center">
+    <div class="w-full flex items-center justify-center flex-grow gap-x-12">
+        @if (centerAccount(); as centerAccount) {
+            <mat-card class="w-137">
+                <mat-card-content>
+                    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col space-y-4">
+                        <h2>Update your center account</h2>
+                        <mat-form-field>
+                            <mat-label>Name</mat-label>
+                            <input matInput formControlName="name">
+                            @if (this.form.get('name')?.hasError('required')) {
+                                <mat-error>
+                                   Hospital name is required
+                                </mat-error>
+                            }
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Country</mat-label>
+                            <input matInput formControlName="country">
+                            @if (this.form.get('country')?.hasError('required')) {
+                                <mat-error>
+                                    Country is required
+                                </mat-error>
+                            }
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>City</mat-label>
+                            <input matInput formControlName="city">
+                            @if (this.form.get('city')?.hasError('required')) {
+                                <mat-error>
+                                    City is required
+                                </mat-error>
+                            }
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Address</mat-label>
+                            <input matInput formControlName="address">
+                            @if (this.form.get('address')?.hasError('required')) {
+                                <mat-error>
+                                    Address is required
+                                </mat-error>
+                            }
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Description</mat-label>
+                            <input matInput formControlName="description">
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Average rating</mat-label>
+                            <input matInput [value]="centerAccount.averageRating" disabled>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Start time</mat-label>
+                            <input type="time" matInput formControlName="startTime" [ngxMatTimepicker]="pickerA" [format]="24">
+                            <mat-icon matSuffix (click)="pickerA.open()"> watch_later</mat-icon>
+                            <ngx-mat-timepicker #pickerA></ngx-mat-timepicker>
+                            @if (this.form.get('startTime')?.hasError('required')) {
+                                <mat-error>
+                                    Start time is required
+                                </mat-error>
+                            }
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>End time</mat-label>
+                            <input type="time" matInput formControlName="endTime" [ngxMatTimepicker]="pickerB" [format]="24">
+                            <mat-icon matSuffix (click)="pickerB.open()"> watch_later</mat-icon>
+                            <ngx-mat-timepicker #pickerB></ngx-mat-timepicker>
+                            @if (this.form.get('endTime')?.hasError('required')) {
+                                <mat-error>
+                                    End time is required
+                                </mat-error>
+                            }
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Latitude</mat-label>
+                            <input type="text" matInput formControlName="latitude">
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Longitude</mat-label>
+                            <input type="text" matInput formControlName="longitude">
+                        </mat-form-field>
+                        <button [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">Update</button>
+                    </form>
+                </mat-card-content>
+            </mat-card>
+
+        }
+        <div class="flex flex-col gap-y-8 w-137">
+            @if (admins(); as admins) {
+                <mat-card>
+                    <mat-table mat-table [dataSource]="admins">
+                        <ng-container matColumnDef="Name">
+                            <th mat-header-cell *matHeaderCellDef> Name</th>
+                            <td mat-cell *matCellDef="let adminOfCenter"> {{ adminOfCenter.firstName }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="Surname">
+                            <th mat-header-cell *matHeaderCellDef> Surname</th>
+                            <td mat-cell *matCellDef="let adminOfCenter">{{ adminOfCenter.lastName }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="Phone">
+                            <th mat-header-cell *matHeaderCellDef> Phone</th>
+                            <td mat-cell *matCellDef="let adminOfCenter"> {{ adminOfCenter.phone }}</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsOfAdmins"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsOfAdmins;"></tr>
+                    </mat-table>
+                </mat-card>
+            }
+            @if (appointments(); as appointments) {
+                <mat-card>
+                    <h2>Free appointments:</h2>
+                    <mat-table mat-table [dataSource]="appointments">
+                        <ng-container matColumnDef="Date">
+                            <th mat-header-cell *matHeaderCellDef> Date</th>
+                            <td mat-cell *matCellDef="let appointment"> {{ appointment.dateAndTime }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="Duration">
+                            <th mat-header-cell *matHeaderCellDef> Duration</th>
+                            <td mat-cell *matCellDef="let appointment">{{ appointment.duration }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="AdminOfCenter">
+                            <th mat-header-cell *matHeaderCellDef> Admin of center</th>
+                            <td mat-cell *matCellDef="let appointment"> {{ appointment.admin.firstName }}</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsOfAppointments"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsOfAppointments;"></tr>
+                    </mat-table>
+                </mat-card>
+            }
+        </div>
+    </div>
+</div>

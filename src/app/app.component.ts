@@ -1,35 +1,16 @@
-import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
+import { Component } from '@angular/core';
+import { RouterOutlet } from "@angular/router";
+import { ThemeService } from "./common/service/theme.service";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    imports: [RouterOutlet],
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
-    user: any
+export class AppComponent {
 
-
-  constructor(private router: Router) {
-
-    router.events.subscribe((val) => {
-      const userJSON = localStorage.getItem('user')
-
-      if(userJSON) {
-        this.user = JSON.parse(userJSON == null ? "" : userJSON);
-      }
-    });
-  }
-
-
-  ngOnInit(): void {
-
-  }
-
-  logout() {
-    this.user = null;
-    localStorage.clear();
-
-    this.router.navigate(['/login']);
-  }
+    constructor(private themeService: ThemeService) {
+        this.themeService.setThemeColors(this.themeService.defaultColors.primary)
+    }
 }

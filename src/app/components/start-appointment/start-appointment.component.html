@@ -1,0 +1,65 @@
+@if (appointment(); as appointment) {
+    <div class="flex flex-col justify-center h-full bg-no-repeat bg-cover bg-center">
+        <div class="w-full flex items-center justify-center flex-grow">
+            <div class="flex flex-col space-y-4">
+                <h2>Patient: {{ appointment.patient.firstName }} {{ appointment.patient.lastName }}</h2>
+                <mat-card class="w-137">
+                    <mat-card-subtitle>Weight</mat-card-subtitle>
+                    <mat-card-actions>
+                        <button mat-button>{{ appointment?.poll?.weight }}</button>
+                    </mat-card-actions>
+                </mat-card>
+                <mat-card>
+                    <mat-card-subtitle>Sickness</mat-card-subtitle>
+                    <mat-card-actions>
+                        <button mat-button>{{ appointment?.poll?.sickness }}</button>
+                    </mat-card-actions>
+                </mat-card>
+                <mat-card>
+                    <mat-card-subtitle>Infection</mat-card-subtitle>
+                    <mat-card-actions>
+                        <button mat-button>{{ appointment?.poll?.infection }}</button>
+                    </mat-card-actions>
+                </mat-card>
+                <mat-card>
+                    <mat-card-subtitle>Pressure</mat-card-subtitle>
+                    <mat-card-actions>
+                        <button mat-button>{{ appointment?.poll?.pressure }}</button>
+                    </mat-card-actions>
+                </mat-card>
+                <mat-card>
+                    <mat-card-subtitle>Therapy</mat-card-subtitle>
+                    <mat-card-actions>
+                        <button mat-button>{{ appointment?.poll?.therapy }}</button>
+                    </mat-card-actions>
+                </mat-card>
+                <mat-card>
+                    <mat-card-subtitle>Cycle</mat-card-subtitle>
+                    <mat-card-actions>
+                        <button mat-button>{{ appointment?.poll?.cycle }}</button>
+                    </mat-card-actions>
+                </mat-card>
+                <mat-card>
+                    <mat-card-subtitle>Dental intervention</mat-card-subtitle>
+                    <mat-card-actions>
+                        <button mat-button>{{ appointment?.poll?.dentalIntervention }}</button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+            <br>
+            <div class="row">
+                <button [routerLink]="['/appointment-report']"
+                        [disabled]="!appointment?.poll?.dentalIntervention || !appointment?.poll?.cycle || !appointment?.poll?.therapy || !appointment?.poll?.pressure || !appointment?.poll?.infection || !appointment?.poll?.sickness || !appointment?.poll?.weight">
+                    Approve
+                </button>
+                <br>
+                <span class="strong"
+                      *ngIf="!appointment?.poll?.dentalIntervention || !appointment?.poll?.cycle || !appointment?.poll?.therapy || !appointment?.poll?.pressure || !appointment?.poll?.infection || !appointment?.poll?.sickness || !appointment?.poll?.weight">This user is not eligable for blood transfer!</span>
+                <br>
+                <button [routerLink]="['/appointments']">Go back</button>
+            </div>
+        </div>
+    </div>
+}
+  
+  

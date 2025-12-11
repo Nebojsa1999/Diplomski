@@ -1,0 +1,47 @@
+<mat-toolbar>
+    <div class="flex flex-row gap-x-32">
+        <button mat-button [matMenuTriggerFor]="registrationMenu">
+            Profile
+        </button>
+        <button mat-button [matMenuTriggerFor]="centerMenu">
+            Hospital
+        </button>
+        <button mat-button [matMenuTriggerFor]="appointmentsMenu">
+            Appointments
+        </button>
+        <button mat-button [matMenuTriggerFor]="profileMenu">
+            Profile
+        </button>
+    </div>
+    <mat-menu #registrationMenu="matMenu" xPosition="before">
+        <ng-template matMenuContent>
+            <a mat-menu-item [routerLink]="['/register']">Register</a>
+            <a mat-menu-item [routerLink]="['/search']">Search</a>
+        </ng-template>
+    </mat-menu>
+
+    <mat-menu #centerMenu="matMenu" xPosition="before">
+        <ng-template matMenuContent>
+            <a mat-menu-item [routerLink]="['/hospital']">Update center</a>
+            <a mat-menu-item [routerLink]="['/blood-samples']">Blood types</a>
+            <a mat-menu-item [routerLink]="['/users']">Users that donated</a>
+        </ng-template>
+    </mat-menu>
+
+    <mat-menu #appointmentsMenu="matMenu" xPosition="before">
+        <ng-template matMenuContent>
+            <a mat-menu-item [routerLink]="['/create-appointment']">Create appointment</a>
+            <a mat-menu-item [routerLink]="['/appointments']">Appointments</a>
+            <a mat-menu-item [routerLink]="['calendar']">Calendar</a>
+        </ng-template>
+    </mat-menu>
+
+    <mat-menu #profileMenu="matMenu" xPosition="before">
+        <ng-template matMenuContent>
+            <a mat-menu-item [routerLink]="['/edit-profile']">Edit profile</a>
+            <a mat-menu-item [routerLink]="['/change-password']">Changed password</a>
+            <a mat-menu-item (click)="logout()">Logout</a>
+        </ng-template>
+    </mat-menu>
+</mat-toolbar>
+<router-outlet/>

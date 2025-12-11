@@ -1,0 +1,9 @@
+@if (appointments(); as appointments) {
+    <div class="flex flex-col justify-center h-full bg-no-repeat bg-cover bg-center">
+        <div class="w-full flex items-center justify-center flex-grow">
+            <mat-calendar class="mycalendar"
+                          [dateClass]="getDateClass"
+                          [(selected)]="selected" (selectedChange)="onDateSelection($event, appointments)"></mat-calendar>
+        </div>
+    </div>
+}
