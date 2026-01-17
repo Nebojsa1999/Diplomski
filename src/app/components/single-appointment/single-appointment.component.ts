@@ -1,10 +1,10 @@
 import { Component, effect, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../common/service/api.service';
 import { shared } from "../../app.config";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { AuthenticationService } from "../../common/service/authentication.service";
-import { Appointment } from "../../rest/center-account/center.account.model";
+import { Appointment } from "../../rest/hospital/hospital.model";
 import { map } from "rxjs/operators";
 import { NotificationService } from "../../common/service/notification.service";
 import { catchError } from "rxjs";
@@ -23,11 +23,11 @@ export class SingleAppointmentComponent {
     fixedMonth: any;
     year: any;
     stringDate: any;
-    displayedColumns: string[] = ['date', 'duration', 'adminCenter', 'patient', 'approve', 'deny'];
+    displayedColumns: string[] = ['date', 'duration', 'doctor', 'patient', 'approve', 'deny'];
     currentUser = toSignal(this.authService.activeUser);
     appointments = signal<Appointment[] | null>(null);
 
-    constructor(private route: ActivatedRoute, private authService: AuthenticationService, private api: ApiService, private notificationService: NotificationService, private router: Router) {
+    constructor(private route: ActivatedRoute, private authService: AuthenticationService, private api: ApiService, private notificationService: NotificationService) {
         effect(() => {
             const currentUser = this.currentUser();
             if (currentUser) {
@@ -36,10 +36,10 @@ export class SingleAppointmentComponent {
                 this.year = this.route.snapshot.paramMap.get("year");
                 this.fixedMonth = parseInt(this.month);
                 this.stringDate = this.year + "-" + this.fixedMonth + "-" + this.date;
-                this.api.centerAccountApi.getAppointmentsDate({
+                this.api.appointmentApi.getAppointmentsDate({
                     dateAndTime: this.stringDate,
                     duration: 0,
-                    adminOfCenterId: currentUser.centerAccount.id
+                    doctorId: currentUser.hospital.id
                 }).pipe(
                     map(response => response.data),
                     catchError(error => this.notificationService.showError(error.message))

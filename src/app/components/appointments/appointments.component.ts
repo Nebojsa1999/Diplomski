@@ -3,7 +3,7 @@ import { ApiService } from "../../common/service/api.service";
 import { shared } from "../../app.config";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { AuthenticationService } from "../../common/service/authentication.service";
-import { Appointment } from "../../rest/center-account/center.account.model";
+import { Appointment, AppointmentStaus } from "../../rest/hospital/hospital.model";
 import { map } from "rxjs/operators";
 import { NotificationService } from "../../common/service/notification.service";
 import { catchError } from "rxjs";
@@ -17,7 +17,7 @@ export const ROUTE_APPOINTMENTS = 'appointments';
     styleUrls: ['./appointments.component.scss']
 })
 export class AppointmentsComponent {
-    displayedColumns: string[] = ['date', 'duration', 'adminCenter', 'patient', 'approve', 'deny'];
+    displayedColumns: string[] = ['date', 'duration', 'doctor', 'patient', 'approve', 'deny'];
     currentUser = toSignal(this.authService.activeUser);
     appointments = signal<Appointment[] | null>(null);
 
@@ -25,7 +25,7 @@ export class AppointmentsComponent {
         effect(() => {
             const currentUser = this.currentUser();
             if (currentUser) {
-                this.api.centerAccountApi.getScheduledAppointmentsThatAreNotFinished(currentUser.centerAccount.id).pipe(
+                this.api.appointmentApi.getScheduledAppointmentsThatAreNotFinished(currentUser.hospital.id, AppointmentStaus.SCHEDULED).pipe(
                     map(response => response.data),
                     catchError(error => this.notificationService.showError(error.message))
                 ).subscribe((response) => {

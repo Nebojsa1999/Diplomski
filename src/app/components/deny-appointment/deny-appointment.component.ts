@@ -7,7 +7,7 @@ import { AuthenticationService } from "../../common/service/authentication.servi
 import { catchError } from "rxjs";
 import { map } from "rxjs/operators";
 import { NotificationService } from "../../common/service/notification.service";
-import { Appointment } from "../../rest/center-account/center.account.model";
+import { Appointment } from "../../rest/hospital/hospital.model";
 
 export const ROUTE_DENY_APPOINTMENT = 'deny-appointment';
 
@@ -35,7 +35,7 @@ export class DenyAppointmentComponent {
             if (currentUser) {
                 this.appointmentIdString = this.route.snapshot.queryParamMap.get('id');
                 this.appointmentId = parseInt(this.appointmentIdString);
-                this.api.centerAccountApi.getAppointment(this.appointmentId).pipe(
+                this.api.appointmentApi.getAppointment(this.appointmentId).pipe(
                     map(response => response.data),
                     catchError(error => this.notificationService.showError(error))
                 ).subscribe((response => {
@@ -47,7 +47,7 @@ export class DenyAppointmentComponent {
     }
 
     deny() {
-        this.api.centerAccountApi.deny({
+        this.api.appointmentApi.deny({
             id: this.appointmentId
         }).pipe(
             map(response => response.data),

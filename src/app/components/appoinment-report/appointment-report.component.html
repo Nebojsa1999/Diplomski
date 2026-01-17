@@ -87,13 +87,14 @@
                         @if (equipment(); as equipments) {
                         <mat-form-field>
                             <mat-label>Опрема:</mat-label>
-                            <mat-select formControlName="equipment">
-                                @for (equipment of equipments; track equipment) {
-                                    <mat-option [value]="equipment.id">
-                                        {{ equipment.equipmentType }}
-                                    </mat-option>
-                                }
-                            </mat-select>
+<!--                            TODO fix-->
+<!--                            <mat-select formControlName="equipment">-->
+<!--                                @for (equipment of equipments; track equipment) {-->
+<!--                                    <mat-option [value]="equipment.id">-->
+<!--                                        {{ equipment.name }}-->
+<!--                                    </mat-option>-->
+<!--                                }-->
+<!--                            </mat-select>-->
                         </mat-form-field>
                         }
                         <mat-form-field>
@@ -113,7 +114,7 @@
                         <mat-label>Разлог одбијања:</mat-label>
                         <input matInput type="text" formControlName="reasonForDenying">
                     </mat-form-field>
-                    <button [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">Submit</button>
+                    <button [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.SUBMIT' | translate }}</button>
                 </form>
             </mat-card-content>
         </mat-card>

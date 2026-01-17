@@ -1,15 +1,13 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, Routes } from '@angular/router';
 import { LoginComponent, ROUTE_SIGN_IN } from "./components/login/login.component";
-import { RegisterComponent, ROUTE_REGISTER } from "./components/register/register.component";
+import { RegisterComponent, ROUTE_REGISTER } from "./components/hospital-feature/users/register/register.component";
 import { ChangePasswordComponent, ROUTE_CHANGE_PASSWORD } from "./components/change-password/change-password.component";
-import { EditProfileComponent, ROUTE_EDIT_PROFILE } from "./components/edit-profile/edit-profile.component";
+import { EditUserProfileComponent, ROUTE_EDIT_PROFILE } from "./components/hospital-feature/users/edit-user-profile/edit-user-profile.component";
 import { AppointmentsComponent, ROUTE_APPOINTMENTS } from "./components/appointments/appointments.component";
-import { CenterAccountComponent, ROUTE_HOSPITAL } from './components/center-account/center-account.component';
-import { ROUTE_SEARCH, SearchComponent } from './components/search/search.component';
+import { HospitalComponent, ROUTE_HOSPITAL } from './components/hospital-feature/hospitals/upsert-hospital/hospital.component';
 import { CreateAppointmentComponent, ROUTE_CREATE_APPOINTMENT } from './components/create-appointment/create-appointment.component';
-import { BloodTypesComponent, ROUTE_BLOOD_SAMPLES } from './components/blood-types/blood-types.component';
-import { ListUsersComponent, ROUTE_USERS } from './components/list-users/list-users.component';
+import { ListUsersComponent, ROUTE_USERS } from './components/hospital-feature/users/list-users/list-users.component';
 import { DenyAppointmentComponent, ROUTE_DENY_APPOINTMENT } from './components/deny-appointment/deny-appointment.component';
 import { ROUTE_START_APPOINTMENT, StartAppointmentComponent } from './components/start-appointment/start-appointment.component';
 import { AppointmentReportComponent, ROUTE_APPOINTMENT_REPORT } from './components/appoinment-report/appointment-report.component';
@@ -18,6 +16,15 @@ import { ROUTE_SINGLE_APPOINTMENT, SingleAppointmentComponent } from './componen
 import { map } from "rxjs/operators";
 import { AuthenticationService } from "./common/service/authentication.service";
 import { MainComponentComponent } from "./components/main-component.component";
+import { CreateRoomComponent, ROUTE_CREATE_ROOM } from "./components/hospital-feature/rooms/create-room/create-room.component";
+import { CreateMedicationComponent, ROUTE_CREATE_MEDICATION } from "./components/create-medication/create-medication.component";
+import { ListHospitalsComponent, ROUTE_HOSPITALS } from "./components/hospital-feature/hospitals/list-hospitals/list-hospitals.component";
+import { ListRoomsComponent, ROUTE_ROOMS } from "./components/hospital-feature/rooms/list-rooms/list-rooms.component";
+import { ListEquipmentsComponent, ROUTE_EQUIPMENTS } from "./components/hospital-feature/equipments/list-equipments/list-equipments.component";
+import { CreateEquipmentComponent, ROUTE_CREATE_EQUIPMENT } from "./components/hospital-feature/equipments/create-equipment/create-equipment.component";
+import { EditEquipmentComponent, ROUTE_EDIT_EQUIPMENT } from "./components/hospital-feature/equipments/edit-equipment/edit-equipment.component";
+import { EditRoomComponent, ROUTE_EDIT_ROOM } from "./components/hospital-feature/rooms/edit-room/edit-room.component";
+import { CreateHospitalComponent, ROUTE_CREATE_HOSPITAL } from "./components/hospital-feature/hospitals/create-hospital/create-hospital.component";
 
 export const unauthenticatedOnlyGuard: CanActivateFn = (route, state) => {
     const router = inject(Router);
@@ -37,7 +44,6 @@ export const authenticatedOnlyGuard: CanActivateFn = (route, state) => {
     )
 };
 
-
 export const routes: Routes = [
     {
         path: ROUTE_SIGN_IN,
@@ -49,40 +55,64 @@ export const routes: Routes = [
         component: MainComponentComponent,
         children: [
             {
-                path: ROUTE_HOSPITAL,
-                component: CenterAccountComponent,
+                path: `${ROUTE_HOSPITAL}/:id`,
+                component: HospitalComponent,
+            },
+            {
+                path: ROUTE_HOSPITALS,
+                component: ListHospitalsComponent
+            },
+            {
+                path: ROUTE_CREATE_HOSPITAL,
+                component: CreateHospitalComponent
             },
             {
                 path: ROUTE_REGISTER,
                 component: RegisterComponent
             },
             {
-                path: ROUTE_CHANGE_PASSWORD,
-                component: ChangePasswordComponent
+                path: `${ROUTE_EDIT_PROFILE}/:id`,
+                component: EditUserProfileComponent,
             },
             {
-                path: ROUTE_EDIT_PROFILE,
-                component: EditProfileComponent,
+                path: ROUTE_USERS,
+                component: ListUsersComponent,
+            },
+            {
+                path: ROUTE_CREATE_ROOM,
+                component: CreateRoomComponent,
+            },
+            {
+                path: `${ROUTE_EDIT_ROOM}/:id`,
+                component: EditRoomComponent
+            },
+            {
+                path: ROUTE_ROOMS,
+                component: ListRoomsComponent
+            },
+            {
+                path: ROUTE_EQUIPMENTS,
+                component: ListEquipmentsComponent
+            },
+            {
+              path: ROUTE_CREATE_EQUIPMENT,
+              component: CreateEquipmentComponent
+            },
+            {
+              path: `${ROUTE_EDIT_EQUIPMENT}/:id`,
+              component: EditEquipmentComponent
+            },
+            {
+                path: ROUTE_CHANGE_PASSWORD,
+                component: ChangePasswordComponent
             },
             {
                 path: ROUTE_APPOINTMENTS,
                 component: AppointmentsComponent,
             },
             {
-                path: ROUTE_SEARCH,
-                component: SearchComponent
-            },
-            {
                 path: ROUTE_CREATE_APPOINTMENT,
                 component: CreateAppointmentComponent,
-            },
-            {
-                path: ROUTE_BLOOD_SAMPLES,
-                component: BloodTypesComponent,
-            },
-            {
-                path: ROUTE_USERS,
-                component: ListUsersComponent,
             },
             {
                 path: ROUTE_DENY_APPOINTMENT,
@@ -99,15 +129,19 @@ export const routes: Routes = [
             {
                 path: ROUTE_WORK_CALENDAR,
                 component: WorkCalendarComponent,
-
             },
             {
                 path: `${ROUTE_SINGLE_APPOINTMENT}/:date/:month/:year`,
                 component: SingleAppointmentComponent
             },
+
+            {
+                path: ROUTE_CREATE_MEDICATION,
+                component: CreateMedicationComponent
+            },
             {
                 path: '**',
-                redirectTo: ROUTE_HOSPITAL
+                redirectTo: ROUTE_HOSPITALS
             }
         ],
         canActivate: [authenticatedOnlyGuard],

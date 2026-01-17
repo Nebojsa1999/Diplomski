@@ -25,6 +25,7 @@
     "@larscom/ngx-translate-module-loader": "4.0.0",
     "@material/material-color-utilities": "^0.3.0",
     "@ngx-translate/core": "17.0.0",
+    "@ngx-translate/http-loader": "^17.0.0",
     "@tailwindcss/postcss": "^4.1.17",
     "@tailwindcss/vite": "^4.1.17",
     "angular-auth-oidc-client": "^20.0.3",

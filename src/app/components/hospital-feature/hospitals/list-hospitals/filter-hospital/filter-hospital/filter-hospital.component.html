@@ -1,0 +1,17 @@
+<form (ngSubmit)="applyFilter()" [formGroup]="form" class="flex flex-row gap-x-4">
+    <div class="flex flex-row">
+        <mat-form-field appearance="outline">
+            <mat-label>{{ 'COMMON.SEARCH_BY_NAME' | translate }}</mat-label>
+            <input formControlName="name" matInput/>
+        </mat-form-field>
+    </div>
+    <div class="flex flex-row mt-2 gap-x-2">
+        <button [disabled]="form.invalid || form.pristine"
+                color="primary" mat-flat-button
+                type="submit"> {{ 'COMMON.BTN_APPLY' | translate }}
+        </button>
+        <button (click)="resetFilter()" [disabled]="form.invalid || form.pristine"
+                color="primary" mat-flat-button> {{ 'COMMON.BTN_CLEAR' | translate }}
+        </button>
+    </div>
+</form>

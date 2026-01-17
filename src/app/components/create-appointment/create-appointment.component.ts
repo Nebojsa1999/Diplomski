@@ -6,7 +6,7 @@ import { shared } from "../../app.config";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { AuthenticationService } from "../../common/service/authentication.service";
 import { map } from "rxjs/operators";
-import { User } from "../../rest/user/user.model";
+import { Role, User } from "../../rest/user/user.model";
 import { NotificationService } from "../../common/service/notification.service";
 import { catchError } from "rxjs";
 
@@ -22,20 +22,20 @@ export class CreateAppointmentComponent {
     form = new FormGroup({
         date: new FormControl<Date>(new Date(), [Validators.required]),
         duration: new FormControl<number | null>(null, [Validators.required, Validators.min(1), Validators.max(120)]),
-        adminsOfCenter: new FormControl<User | null>(null, [Validators.required])
+        doctor: new FormControl<User | null>(null, [Validators.required])
     });
     currentUser = toSignal(this.authService.activeUser);
-    admins = signal<User[] | null>(null);
+    doctors = signal<User[] | null>(null);
 
     constructor(private router: Router, private api: ApiService, private authService: AuthenticationService, private notificationService: NotificationService) {
         effect(() => {
             const currentUser = this.currentUser();
             if (currentUser) {
-                this.api.centerAccountApi.getAdminsOfCenter(currentUser.centerAccount.id).pipe(
+                this.api.hospitalApi.getUsersFromHospital(currentUser.hospital.id, Role.DOCTOR).pipe(
                     map(response => response.data),
                     catchError(error => this.notificationService.showError(error.message))
                 ).subscribe((response) => {
-                    this.admins.set(response);
+                    this.doctors.set(response);
                 });
             }
         });
@@ -44,12 +44,12 @@ export class CreateAppointmentComponent {
     onSubmit() {
         const date = this.form.get('date')?.value;
         const duration = this.form.get('duration')?.value;
-        const adminOfCenterId = this.form.get('adminsOfCenter')?.value;
+        const doctorId = this.form.get('doctor')?.value;
 
-        this.api.centerAccountApi.createAppointment({
+        this.api.appointmentApi.createAppointment({
             dateAndTime: date as Date,
             duration: duration as number,
-            adminOfCenterId: adminOfCenterId?.id as number
+            doctorId: doctorId?.id as number
         }).pipe(
             map(response => response.data),
             catchError(error => this.notificationService.showError(error.message))
@@ -57,7 +57,7 @@ export class CreateAppointmentComponent {
             if (response) {
                 this.notificationService.showSuccess("Successfully created free appointment.")
             }
-            this.router.navigate(['/center'])
+            this.router.navigate(['/hospital'])
         });
     }
 }

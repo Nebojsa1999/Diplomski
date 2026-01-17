@@ -1,0 +1,41 @@
+@if (equipments(); as equipments) {
+    <div class="cp-content flex flex-col flex-1 justify-between gap-6 mt-8">
+        <div class="overflow-hidden flex flex-col gap-4 flex-1">
+            <div class="flex flex-row m-2 justify-between items-center">
+                <h2 style="font-weight: bold">{{ 'COMMON.EQUIPMENTS' | translate }}</h2>
+                <button mat-raised-button (click)="addEquipment()">
+                    <mat-icon>add</mat-icon>
+                    {{'COMMON.ADD_EQUIPMENT' | translate}}
+                </button>
+            </div>
+            <mat-card class="flow-row ">
+                <div class="flex-column items-start m-4">
+                    <app-filter-equipments (searchClicked)="searchClicked($event)"></app-filter-equipments>
+                </div>
+            </mat-card>
+            <mat-card>
+                <table mat-table [dataSource]="equipments">
+                    <ng-container matColumnDef="Name">
+                        <th mat-header-cell *matHeaderCellDef> Name</th>
+                        <td mat-cell *matCellDef="let equipment"> {{ equipment.name }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="Amount">
+                        <th mat-header-cell *matHeaderCellDef> Amount</th>
+                        <td mat-cell *matCellDef="let equipment"> {{ equipment.amount }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="Update">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let equipment">
+                            <button [routerLink]="['/edit-equipment/' + equipment.id]" mat-icon-button>
+                                <mat-icon svgIcon="edit">
+                                </mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </mat-card>
+        </div>
+    </div>
+}

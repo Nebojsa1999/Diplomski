@@ -1,6 +1,5 @@
-import { APP_INITIALIZER, ApplicationConfig, inject, provideZonelessChangeDetection } from '@angular/core';
+import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, inject, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, RouterLink, RouterLinkActive, RouterOutlet, withHashLocation } from '@angular/router';
-
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HttpClient, provideHttpClient, withInterceptors } from "@angular/common/http";
 import { MatButtonModule } from "@angular/material/button";
@@ -42,6 +41,23 @@ import { ApiClientService } from "./rest/api-client.service";
 import { routes } from './app-routes';
 import { authenticationInterceptor } from "./rest/authentication.iterceptor";
 import { ThemeService } from "./common/service/theme.service";
+import { IconRegistryService } from "./common/service/icon-registry.service";
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { ModuleTranslateLoader } from "@larscom/ngx-translate-module-loader";
+
+export function httpLoaderFactory(http: HttpClient) {
+    return new ModuleTranslateLoader(http, {
+        modules: [
+            {
+                baseTranslateUrl: './assets/i18n',
+                moduleName: 'common',
+                namespace: 'COMMON',
+                pathTemplate: '{baseTranslateUrl}/{language}/{moduleName}',
+            }
+        ],
+        deepMerge: true,
+    });
+}
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -51,6 +67,15 @@ export const appConfig: ApplicationConfig = {
         provideHttpClient(withInterceptors([authenticationInterceptor])),
         provideLuxonDateAdapter(),
         provideEchartsCore({echarts}),
+        importProvidersFrom(
+            TranslateModule.forRoot({
+                loader: {
+                    provide: TranslateLoader,
+                    useFactory: httpLoaderFactory,
+                    deps: [HttpClient]
+                }
+            })
+        ),
         {
             provide: ApiClient,
             useClass: ApiClientService,
@@ -59,6 +84,7 @@ export const appConfig: ApplicationConfig = {
         {
             provide: APP_INITIALIZER,
             useFactory: () => {
+                inject(IconRegistryService);
                 inject(ThemeService);
             },
         },
@@ -123,6 +149,7 @@ export const angularComponents = [
 
 export const shared = [
     ...angularComponents,
+    TranslateModule,
     ReactiveFormsModule,
     CommonModule,
     RouterLink,

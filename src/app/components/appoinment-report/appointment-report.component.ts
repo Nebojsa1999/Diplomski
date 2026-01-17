@@ -4,10 +4,13 @@ import { ApiService } from '../../common/service/api.service';
 import { shared } from "../../app.config";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { AuthenticationService } from "../../common/service/authentication.service";
-import { Equipment } from "../../rest/center-account/center.account.model";
+import { Equipment } from "../../rest/hospital/hospital.model";
 import { map } from "rxjs/operators";
 import { catchError } from "rxjs";
 import { NotificationService } from "../../common/service/notification.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ROUTE_CREATE_MEDICATION } from "../create-medication/create-medication.component";
+import { TranslateService } from "@ngx-translate/core";
 
 export const ROUTE_APPOINTMENT_REPORT = 'appointment-report';
 
@@ -46,12 +49,15 @@ export class AppointmentReportComponent {
     constructor(
         private authService: AuthenticationService,
         private notificationService: NotificationService,
-        private api: ApiService
+        private api: ApiService,
+        private translateService: TranslateService,
+        private route: ActivatedRoute,
+        private router: Router
     ) {
         effect(() => {
             const currentUser = this.currentUser();
             if (currentUser) {
-                this.api.centerAccountApi.getEquipments().pipe(
+                this.api.hospitalApi.getEquipments().pipe(
                     map(response => response.data),
                     catchError(error => this.notificationService.showError(error.message))
                 ).subscribe((response => {
@@ -82,7 +88,7 @@ export class AppointmentReportComponent {
         const equipmentAmount = this.form.get('equipmentAmount')?.value;
         const denied = this.form.get('denied')?.value;
         const reasonForDenying = this.form.get('reasonForDenying')?.value;
-        this.api.centerAccountApi.createAppointmentReport({
+        this.api.appointmentApi.createAppointmentReport({
             bloodType: bloodType,
             bloodAmount: bloodAmount,
             noteToDoctor: noteToDoctor,
@@ -108,7 +114,8 @@ export class AppointmentReportComponent {
             catchError((error) => this.notificationService.showError(error))
         ).subscribe((response) => {
             if (response) {
-                this.notificationService.showSuccess("Successfully created report.")
+                this.notificationService.showSuccess("Successfully created report.");
+                this.router.navigate([ROUTE_CREATE_MEDICATION])
             }
         });
 

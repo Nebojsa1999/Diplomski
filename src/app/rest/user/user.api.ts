@@ -20,6 +20,17 @@ export class UserApi extends Api {
         return this.apiClient.post("/api/users/register", data, config);
     }
 
+    updateUser(id: number, data: UpdateUserDto): Observable<ApiResponse<User>> {
+        const config: RequestConfig = {
+            headers: {
+                accept: 'application/json',
+                contentType: 'application/json'
+            },
+            authenticated: true
+        };
+        return this.apiClient.put(`/api/users/${id}`, data, config);
+    }
+
     updateProfile(data: UpdateUserDto): Observable<ApiResponse<User>> {
         const config: RequestConfig = {
             headers: {
@@ -42,7 +53,7 @@ export class UserApi extends Api {
         return this.apiClient.put("/api/users/change-password", data, config);
     }
 
-    getUser(id: number) {
+    getUser(id: number): Observable<ApiResponse<User>> {
         const config: RequestConfig = {
             headers: {
                 accept: 'application/json'
@@ -50,5 +61,16 @@ export class UserApi extends Api {
             authenticated: true
         };
         return this.apiClient.get("/api/users/" + id, config);
+    }
+
+    list(name?: string): Observable<ApiResponse<User[]>> {
+        const config: RequestConfig = {
+            headers: {
+                accept: 'application/json'
+            },
+            params: {name: name as string},
+            authenticated: true
+        };
+        return this.apiClient.get("/api/users", config)
     }
 }

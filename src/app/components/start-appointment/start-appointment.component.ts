@@ -5,7 +5,7 @@ import { shared } from "../../app.config";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { AuthenticationService } from "../../common/service/authentication.service";
 import { NotificationService } from "../../common/service/notification.service";
-import { Appointment } from "../../rest/center-account/center.account.model";
+import { Appointment } from "../../rest/hospital/hospital.model";
 import { catchError } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -18,7 +18,6 @@ export const ROUTE_START_APPOINTMENT = 'approve-appointment';
     styleUrls: ['./start-appointment.component.scss']
 })
 export class StartAppointmentComponent {
-    user: any;
     appointmentIdString: any;
     appointmentId: any;
     currentUser = toSignal(this.authService.activeUser);
@@ -29,7 +28,7 @@ export class StartAppointmentComponent {
             const currentUser = this.currentUser();
             this.appointmentIdString = this.route.snapshot.queryParamMap.get('id');
             this.appointmentId = parseInt(this.appointmentIdString);
-            this.api.centerAccountApi.getAppointment(this.appointmentId).pipe(
+            this.api.appointmentApi.getAppointment(this.appointmentId).pipe(
                 map(response => response.data),
                 catchError((error) => this.notificationService.showError(error))
             ).subscribe((response => {

@@ -1,4 +1,4 @@
-import { CenterAccount } from "../center-account/center.account.model";
+import { Hospital } from "../hospital/hospital.model";
 
 export interface User {
     id: number;
@@ -10,10 +10,11 @@ export interface User {
     country: string;
     phone: string;
     gender: Gender;
+    role: Role;
     personalId: string;
     occupation: string;
     occupationInfo: string;
-    centerAccount: CenterAccount;
+    hospital: Hospital;
 }
 
 export interface UserDto {
@@ -25,6 +26,12 @@ export interface UserDto {
     city: string;
     country: string;
     phone: string;
+    gender: Gender;
+    personalId: string;
+    occupation: string;
+    occupationInfo: string;
+    role: Role;
+    hospitalId: number;
 }
 
 export interface UpdateUserDto {
@@ -45,7 +52,7 @@ export enum Gender {
 }
 
 export enum Role {
-    ADMIN_SYSTEM, PATIENT, DOCTOR
+    ADMIN_SYSTEM = 'ADMIN_SYSTEM', PATIENT = 'PATIENT', DOCTOR = 'DOCTOR'
 }
 
 export interface ChangePasswordDto {

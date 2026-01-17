@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, EMPTY, Observable, of, switchMap } from "rxjs";
+import { BehaviorSubject, catchError, EMPTY, Observable, of, switchMap, tap } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { SignInResponse } from "../../rest/authentication/authentication.model";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { AuthenticationClient } from "../../rest/authentication/authentication-client";
 import { User } from "../../rest/user/user.model";
 import { NotificationService } from "./notification.service";
+
+interface JwtWithRoles extends JwtPayload {
+    role?: string;
+}
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +20,7 @@ export class AuthenticationService {
     private refreshToken: string | null = null;
     private activeUser$ = new BehaviorSubject<User | null>(null);
     private accessToken$ = new BehaviorSubject<string | null>(null);
+    private role$ = new BehaviorSubject<string | null>(null);
 
     constructor(private authClient: AuthenticationClient, private notificationService: NotificationService) {
         this.refreshToken = localStorage.getItem(this.TOKEN) ?? null;
@@ -40,12 +45,28 @@ export class AuthenticationService {
         }
     }
 
+    private loadRolesFromToken(token: string | null) {
+        if (!token) {
+            this.role$.next(null);
+            return;
+        }
+
+        try {
+            const decoded = jwtDecode<JwtWithRoles>(token);
+            this.role$.next(decoded.role ?? '');
+        } catch {
+            this.role$.next(null);
+        }
+    }
+
     public setAuthentication(response: SignInResponse) {
         this.refreshToken = response.refreshToken;
         this.accessToken$.next(response.token);
 
         localStorage.setItem(this.TOKEN, this.refreshToken);
         this.activeUser$.next(response.user);
+
+        this.loadRolesFromToken(response.token);
     }
 
     public logout() {
@@ -53,6 +74,7 @@ export class AuthenticationService {
         localStorage.removeItem(this.TOKEN);
         this.activeUser$.next(null)
         this.accessToken$.next(null);
+        this.role$.next(null);
     }
 
     public get activeUser(): Observable<User> {
@@ -92,11 +114,16 @@ export class AuthenticationService {
                         this.logout();
                         return EMPTY;
                     }),
+                    tap((response) => this.loadRolesFromToken(response?.token ?? '')),
                     map(response => response?.token ?? '')
                 );
             }),
             filter(token => !!token)
         );
+    }
+
+    public hasRole(role: string): boolean {
+        return this.role$.value?.includes(role) ?? false;
     }
 
     private isValid(token: string | null | undefined): boolean {

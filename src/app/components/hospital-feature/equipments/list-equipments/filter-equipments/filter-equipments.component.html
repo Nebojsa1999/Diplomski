@@ -1,0 +1,31 @@
+<form (ngSubmit)="applyFilter()" [formGroup]="form" class="flex flex-row gap-x-4">
+    <div class="flex flex-row gap-x-4">
+        <mat-form-field appearance="outline">
+            <mat-label>{{ 'COMMON.SEARCH_BY_HOSPITAL' | translate }}</mat-label>
+            <mat-select (selectionChange)="applyFilter()" [placeholder]="'COMMON.SEARCH_BY_HOSPITAL' | translate"
+                        formControlName="hospital">
+                <mat-option [value]="''">
+                    {{ 'COMMON.SEARCH_ALL' | translate }}
+                </mat-option>
+                @for (hospital of hospitals$ | async; track hospital.id) {
+                    <mat-option [value]="hospital.id"> {{ hospital.name }}
+                    </mat-option>
+                }
+
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>{{ 'COMMON.SEARCH_BY_NAME' | translate }}</mat-label>
+            <input formControlName="name" matInput/>
+        </mat-form-field>
+    </div>
+    <div class="flex flex-row mt-2 gap-x-2">
+        <button [disabled]="form.invalid || form.pristine"
+                color="primary" mat-flat-button
+                type="submit"> {{ 'COMMON.BTN_APPLY' | translate }}
+        </button>
+        <button (click)="resetFilter()" [disabled]="form.invalid || form.pristine"
+                color="primary" mat-flat-button> {{ 'COMMON.BTN_CLEAR' | translate }}
+        </button>
+    </div>
+</form>

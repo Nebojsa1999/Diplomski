@@ -4,37 +4,46 @@
             <div class="w-full flex items-center justify-center flex-grow">
                 <mat-card>
                     <mat-card-content>
-                        <h2>Appointments</h2>
+                        <h2>{{ 'COMMON.APPOINTMENTS' | translate }}</h2>
                         <table mat-table [dataSource]="appointments" class="mat-elevation-z8">
                             <ng-container matColumnDef="date">
-                                <th mat-header-cell *matHeaderCellDef>Date</th>
+                                <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DATE' | translate }}</th>
                                 <td mat-cell *matCellDef="let appointment"> {{ appointment.dateAndTime }}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="duration">
-                                <th mat-header-cell *matHeaderCellDef> Durtion</th>
+                                <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.DURATION' | translate }}</th>
                                 <td mat-cell *matCellDef="let appointment"> {{ appointment.duration }}</td>
                             </ng-container>
 
-                            <ng-container matColumnDef="adminCenter">
-                                <th mat-header-cell *matHeaderCellDef> Admin of center</th>
-                                <td mat-cell *matCellDef="let appointment"> {{ appointment.admin.firstName }}</td>
+                            <ng-container matColumnDef="doctor">
+                                <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.DOCTORS' | translate }}</th>
+                                <td mat-cell *matCellDef="let appointment"> {{ appointment.doctor.firstName }}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="patient">
-                                <th mat-header-cell *matHeaderCellDef> Patient</th>
+                                <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.PATIENT' | translate }}</th>
                                 <td mat-cell *matCellDef="let appointment"> {{ appointment.patient.firstName }}</td>
                             </ng-container>
                             <ng-container matColumnDef="approve">
                                 <th mat-header-cell *matHeaderCellDef></th>
                                 <td mat-cell *matCellDef="let appointment">
-                                    <a [routerLink]="['/approve-appointment']" [queryParams]="{id: appointment.id}">Approve</a>
+                                    <button mat-icon-button>
+                                        <mat-icon svgIcon="check_circle">
+                                            <a [routerLink]="['/approve-appointment']" [queryParams]="{id: appointment.id}"></a>
+                                        </mat-icon>
+                                    </button>
                                 </td>
                             </ng-container>
                             <ng-container matColumnDef="deny">
                                 <th mat-header-cell *matHeaderCellDef></th>
                                 <td mat-cell *matCellDef="let appointment">
-                                    <a [routerLink]="['/deny-appointment']" [queryParams]="{id: appointment.id}">Deny</a>
+                                    <button mat-icon-button>
+                                        <mat-icon svgIcon="cancel">
+                                            <a [routerLink]="['/deny-appointment']" [queryParams]="{id: appointment.id}">
+                                            </a>
+                                        </mat-icon>
+                                    </button>
                                 </td>
                             </ng-container>
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -49,7 +58,7 @@
             <div class="w-full flex items-center justify-center flex-grow">
                 <mat-card class="h-20 w-127 p-2">
                     <div>
-                        No patient has scheduled an appointments.
+                        {{ 'COMMON.APPOINTMENT_NO_SCHEDULED' | translate }}
                     </div>
                 </mat-card>
             </div>

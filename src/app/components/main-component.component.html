@@ -1,11 +1,10 @@
 <mat-toolbar>
     <div class="flex flex-row gap-x-32">
-        <button mat-button [matMenuTriggerFor]="registrationMenu">
-            Profile
-        </button>
-        <button mat-button [matMenuTriggerFor]="centerMenu">
+        @if (!authService.hasRole(Role.PATIENT)) {
+            <button mat-button [matMenuTriggerFor]="centerMenu">
             Hospital
         </button>
+        }
         <button mat-button [matMenuTriggerFor]="appointmentsMenu">
             Appointments
         </button>
@@ -13,19 +12,13 @@
             Profile
         </button>
     </div>
-    <mat-menu #registrationMenu="matMenu" xPosition="before">
-        <ng-template matMenuContent>
-            <a mat-menu-item [routerLink]="['/register']">Register</a>
-            <a mat-menu-item [routerLink]="['/search']">Search</a>
-        </ng-template>
-    </mat-menu>
-
     <mat-menu #centerMenu="matMenu" xPosition="before">
-        <ng-template matMenuContent>
-            <a mat-menu-item [routerLink]="['/hospital']">Update center</a>
-            <a mat-menu-item [routerLink]="['/blood-samples']">Blood types</a>
-            <a mat-menu-item [routerLink]="['/users']">Users that donated</a>
-        </ng-template>
+            <ng-template matMenuContent>
+                <a mat-menu-item [routerLink]="['/hospitals']">Hospitals</a>
+                <a mat-menu-item [routerLink]="['/users']">Users</a>
+                <a mat-menu-item [routerLink]="['/rooms']">Rooms</a>
+                <a mat-menu-item [routerLink]="['/equipments']">Equipments</a>
+            </ng-template>
     </mat-menu>
 
     <mat-menu #appointmentsMenu="matMenu" xPosition="before">
@@ -38,7 +31,12 @@
 
     <mat-menu #profileMenu="matMenu" xPosition="before">
         <ng-template matMenuContent>
-            <a mat-menu-item [routerLink]="['/edit-profile']">Edit profile</a>
+            @if (authService.hasRole(Role.ADMIN_SYSTEM)) {
+                <a mat-menu-item [routerLink]="['/register']">Register</a>
+            }
+            @if (currentUser(); as currentUser) {
+                <a mat-menu-item [routerLink]="['/edit-profile/' + currentUser.id]">Edit profile</a>
+            }
             <a mat-menu-item [routerLink]="['/change-password']">Changed password</a>
             <a mat-menu-item (click)="logout()">Logout</a>
         </ng-template>
