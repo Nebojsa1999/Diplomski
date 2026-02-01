@@ -1,10 +1,10 @@
 import { Component, effect } from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
-import { ApiService } from "../../common/service/api.service";
-import { shared } from "../../app.config";
+import { ApiService } from "../../../common/service/api.service";
+import { shared } from "../../../app.config";
 import { toSignal } from "@angular/core/rxjs-interop";
-import { AuthenticationService } from "../../common/service/authentication.service";
-import { NotificationService } from "../../common/service/notification.service";
+import { AuthenticationService } from "../../../common/service/authentication.service";
+import { NotificationService } from "../../../common/service/notification.service";
 import { catchError } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -27,9 +27,6 @@ export class ChangePasswordComponent {
         private authService: AuthenticationService,
         private notificationService: NotificationService
     ) {
-        effect(() => {
-            const currentUser = this.currentUser();
-        });
     }
 
     onSubmit() {

@@ -6,12 +6,23 @@
                     <h2>{{ ('COMMON.CREATE_APPOINTMENT' | translate) }}</h2>
                     <mat-form-field>
                         <mat-label>{{'COMMON.DATE' | translate}}</mat-label>
-                        <input matInput [matDatepicker]="picker" formControlName="date">
+                        <input matInput [matDatepicker]="picker" formControlName="date" [min]="minDate">
                         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                         <mat-datepicker #picker startView="year"></mat-datepicker>
                         @if (this.form.get('date')?.hasError('required')) {
                             <mat-error>
                                 Date is required
+                            </mat-error>
+                        }
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>{{'COMMON.TIME' | translate}}</mat-label>
+                        <input matInput formControlName="time" [ngxMatTimepicker]="pickerA" [format]="24" [min]="minTime()">
+                        <mat-icon matSuffix (click)="pickerA.open()"> watch_later</mat-icon>
+                        <ngx-mat-timepicker #pickerA></ngx-mat-timepicker>
+                        @if (this.form.get('time')?.hasError('required')) {
+                            <mat-error>
+                                Time is required
                             </mat-error>
                         }
                     </mat-form-field>

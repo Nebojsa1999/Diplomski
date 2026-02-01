@@ -1,13 +1,13 @@
 import { Component, effect, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService } from '../../common/service/api.service';
-import { shared } from "../../app.config";
+import { ApiService } from '../../../../common/service/api.service';
+import { shared } from "../../../../app.config";
 import { toSignal } from "@angular/core/rxjs-interop";
-import { AuthenticationService } from "../../common/service/authentication.service";
+import { AuthenticationService } from "../../../../common/service/authentication.service";
 import { catchError } from "rxjs";
 import { map } from "rxjs/operators";
-import { NotificationService } from "../../common/service/notification.service";
-import { Appointment } from "../../rest/hospital/hospital.model";
+import { NotificationService } from "../../../../common/service/notification.service";
+import { Appointment } from "../../../../rest/hospital/hospital.model";
 
 export const ROUTE_DENY_APPOINTMENT = 'deny-appointment';
 
@@ -33,7 +33,7 @@ export class DenyAppointmentComponent {
         effect(() => {
             const currentUser = this.currentUser();
             if (currentUser) {
-                this.appointmentIdString = this.route.snapshot.queryParamMap.get('id');
+                this.appointmentIdString = this.route.snapshot.params['id'];
                 this.appointmentId = parseInt(this.appointmentIdString);
                 this.api.appointmentApi.getAppointment(this.appointmentId).pipe(
                     map(response => response.data),

@@ -1,0 +1,45 @@
+<div class="flex flex-col justify-center h-full bg-no-repeat bg-cover bg-center">
+    <div class="w-full flex items-center justify-center flex-grow">
+        <mat-card class="w-137">
+            <mat-card-content>
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col space-y-4">
+                    <h2>{{ 'COMMON.APPOINTMENT_REPORT' | translate }}</h2>
+                    <mat-form-field>
+                        <mat-label>{{ 'COMMON.APPOINTMENT_REPORT_BLOOD_TYPE' | translate }}</mat-label>
+                        <mat-select formControlName="bloodType">
+                            <mat-option value="A">{{ 'COMMON.APPOINTMENT_REPORT_BLOOD_TYPE_A' | translate }}</mat-option>
+                            <mat-option value="B">{{ 'COMMON.APPOINTMENT_REPORT_BLOOD_TYPE_B' | translate }}</mat-option>
+                            <mat-option value="AB">{{ 'COMMON.APPOINTMENT_REPORT_BLOOD_TYPE_AB' | translate }}</mat-option>
+                            <mat-option value="ZERO">{{ 'COMMON.APPOINTMENT_REPORT_BLOOD_TYPE_ZERO' | translate }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>{{ 'COMMON.APPOINTMENT_REPORT_POST_MEDICAL_HISTORY' | translate }}</mat-label>
+                        <textarea formControlName="pastMedicalHistory" matInput></textarea>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>{{ 'COMMON.APPOINTMENT_REPORT_ALLERGIES' | translate }}</mat-label>
+                        <textarea formControlName="allergies" matInput></textarea>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>{{ 'COMMON.APPOINTMENT_REPORT_FAMILY_HISTORY' | translate }}</mat-label>
+                        <textarea formControlName="familyHistory" matInput></textarea>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>{{ 'COMMON.APPOINTMENT_REPORT_BLOOD_PRESSURE' | translate }}</mat-label>
+                        <textarea formControlName="bloodPressure" matInput></textarea>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>{{ 'COMMON.APPOINTMENT_REPORT_HEARTH_RATE' | translate }}</mat-label>
+                        <textarea formControlName="hearthRate" matInput></textarea>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>{{ 'COMMON.APPOINTMENT_REPORT_DIAGNOSIS' | translate }}</mat-label>
+                        <textarea formControlName="diagnosis" matInput></textarea>
+                    </mat-form-field>
+                    <button [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.SUBMIT' | translate }}</button>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

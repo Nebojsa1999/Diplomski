@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ApiService } from "../../common/service/api.service";
-import { shared } from "../../app.config";
+import { ApiService } from "../../../common/service/api.service";
+import { shared } from "../../../app.config";
 import { catchError, of } from "rxjs";
-import { AuthenticationService } from "../../common/service/authentication.service";
-import { SignInResponse } from "../../rest/authentication/authentication.model";
+import { AuthenticationService } from "../../../common/service/authentication.service";
+import { SignInResponse } from "../../../rest/authentication/authentication.model";
 import { map } from "rxjs/operators";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { NotificationService } from "../../common/service/notification.service";
+import { NotificationService } from "../../../common/service/notification.service";
 
 export const ROUTE_SIGN_IN = 'sign-in';
 

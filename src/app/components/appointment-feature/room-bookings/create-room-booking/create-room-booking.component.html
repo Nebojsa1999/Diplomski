@@ -1,0 +1,57 @@
+<div class="flex flex-col justify-center h-full bg-no-repeat bg-cover bg-center">
+    <div class="w-full flex items-center justify-center flex-grow gap-x-12">
+        <mat-card class="w-137">
+            <mat-card-content>
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col space-y-4">
+                    <h2>{{ ('COMMON.CREATE_ROOM_BOOKING' | translate) }}</h2>
+                    <mat-form-field>
+                        <mat-label>{{ 'COMMON.OPERATION_TYPE' | translate }}</mat-label>
+                        <mat-select formControlName="operationType">
+                            @for (operationType of operationType; track operationType) {
+                                <mat-option [value]="operationType">
+                                    {{ 'COMMON.OPERATION_TYPE_' + operationType | translate }}
+                                </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{ 'COMMON.ROOM' | translate }}</mat-label>
+                        <mat-select formControlName="room">
+                            @if (rooms$ | async; as rooms) {
+                                @for (room of rooms; track room) {
+                                    <mat-option [value]="room">
+                                        {{ room.roomNumber }}
+                                    </mat-option>
+                                }
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>{{'COMMON.START_DATE' | translate}}</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="startDate" [min]="minDate">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker startView="year"></mat-datepicker>
+                        @if (this.form.get('startDate')?.hasError('required')) {
+                            <mat-error>
+                                Start date is required
+                            </mat-error>
+                        }
+                    </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>{{'COMMON.END_DATE' | translate}}</mat-label>
+                            <input matInput [matDatepicker]="picker2" formControlName="endDate" [min]="minDate">
+                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker2 startView="year"></mat-datepicker>
+                            @if (this.form.get('endDate')?.hasError('required')) {
+                                <mat-error>
+                                    End date is required
+                                </mat-error>
+                            }
+                        </mat-form-field>
+                    <button [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.SUBMIT' | translate }}</button>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

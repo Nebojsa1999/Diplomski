@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { shared } from "../app.config";
 import { AuthenticationService } from "../common/service/authentication.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ROUTE_SIGN_IN } from "./login/login.component";
+import { ROUTE_SIGN_IN } from "./profile-feature/login/login.component";
 import { Role } from "../rest/user/user.model";
 import { toSignal } from "@angular/core/rxjs-interop";
 

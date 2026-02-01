@@ -5,7 +5,7 @@
             Hospital
         </button>
         }
-        <button mat-button [matMenuTriggerFor]="appointmentsMenu">
+        <button mat-button [routerLink]="['/appointments']">
             Appointments
         </button>
         <button mat-button [matMenuTriggerFor]="profileMenu">
@@ -19,14 +19,6 @@
                 <a mat-menu-item [routerLink]="['/rooms']">Rooms</a>
                 <a mat-menu-item [routerLink]="['/equipments']">Equipments</a>
             </ng-template>
-    </mat-menu>
-
-    <mat-menu #appointmentsMenu="matMenu" xPosition="before">
-        <ng-template matMenuContent>
-            <a mat-menu-item [routerLink]="['/create-appointment']">Create appointment</a>
-            <a mat-menu-item [routerLink]="['/appointments']">Appointments</a>
-            <a mat-menu-item [routerLink]="['calendar']">Calendar</a>
-        </ng-template>
     </mat-menu>
 
     <mat-menu #profileMenu="matMenu" xPosition="before">

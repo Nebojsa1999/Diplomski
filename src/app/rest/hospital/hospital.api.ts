@@ -1,7 +1,7 @@
 import { Api } from "../api";
 import { ApiClient } from "../api-client";
 import { ApiResponse, RequestConfig } from "../rest.model";
-import { Equipment, Hospital, HospitalDto, Room } from "./hospital.model";
+import { Equipment, Hospital, HospitalDto, Room, RoomType } from "./hospital.model";
 import { Observable } from "rxjs";
 import { Role, User } from "../user/user.model";
 
@@ -169,13 +169,13 @@ export class HospitalApi extends Api {
         return this.apiClient.get(`/api/hospitals/rooms`, config);
     }
 
-    availableRooms(id: number, name?: string): Observable<ApiResponse<Room[]>> {
+    availableRooms(id: number, name?: string, roomType?: RoomType): Observable<ApiResponse<Room[]>> {
         const config: RequestConfig = {
             headers: {
                 accept: 'application/json',
                 contentType: 'application/json'
             },
-            params: {name: name as string},
+            params: {name: name as string,roomType: roomType as RoomType},
             authenticated: true,
         };
 

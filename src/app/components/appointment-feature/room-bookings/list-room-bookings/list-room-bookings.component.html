@@ -1,0 +1,53 @@
+@if (bookings(); as bookings) {
+    @if (bookings.length) {
+        <div class="cp-content flex flex-col flex-1 justify-between gap-6 mt-8">
+            <div class="overflow-hidden flex flex-col gap-4 flex-1">
+                <div class="flex flex-row m-2 justify-between items-center">
+                    <h2 style="font-weight: bold">{{ 'COMMON.BOOKINGS' | translate }}</h2>
+                </div>
+                <table mat-table [dataSource]="bookings" class="mat-elevation-z8">
+                    <ng-container matColumnDef="startTime">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.START_DATE' | translate }}</th>
+                        <td mat-cell *matCellDef="let booking"> {{ booking.startTime | date: 'medium' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="endTime">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.END_DATE' | translate }}</th>
+                        <td mat-cell *matCellDef="let booking"> {{ booking.endTime | date: 'medium' }}</td>
+                    </ng-container>
+                    
+                    <ng-container matColumnDef="room">
+                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.ROOM' | translate }}</th>
+                        <td mat-cell *matCellDef="let booking"> {{ booking.room?.roomNumber }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="doctor">
+                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.DOCTOR' | translate }}</th>
+                        <td mat-cell *matCellDef="let booking"> {{ booking.doctor?.firstName }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="patient">
+                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.PATIENT' | translate }}</th>
+                        <td mat-cell *matCellDef="let booking"> {{ booking.patient?.firstName }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="operationType">
+                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.OPERATION_TYPE' | translate }}</th>
+                        <td mat-cell *matCellDef="let booking"> {{ ('COMMON.OPERATION_TYPE_' + booking.operationType | translate) }}</td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+        </div>
+    } @else {
+        <div class="flex flex-col justify-center h-full bg-no-repeat bg-cover bg-center">
+            <div class="w-full flex items-center justify-center flex-grow">
+                <mat-card class="h-20 w-127 p-2">
+                    <div>
+                        {{ 'COMMON.BOOKING_NO_SCHEDULED' | translate }}
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    }
+}

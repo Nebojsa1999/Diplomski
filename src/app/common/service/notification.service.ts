@@ -21,7 +21,7 @@ export class NotificationService {
     }
 
     showError(error?: any, duration = 3000) {
-        const errorDetails = !error ? '' : ': ' + error.message;
+        const errorDetails = !error ? '' : ' ' + error.message;
         this.showNotification('snackbar-error', errorDetails, duration);
         return of(null);
     }

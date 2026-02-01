@@ -27,7 +27,7 @@ export interface HospitalDto {
 }
 
 export enum AppointmentStaus {
-    COMPLETED = 'COMPLETED', SCHEDULED = 'SCHEDULED', DENIED = 'DENIED'
+    OPEN = 'OPEN', SCHEDULED = 'SCHEDULED', CANCELLED = 'CANCELLED', FINISHED = 'FINISHED'
 }
 
 export enum BloodType {
@@ -35,16 +35,16 @@ export enum BloodType {
 }
 
 export interface Appointment {
+    id: number;
     dateAndTime: Date;
     duration: number;
-    doctorId: number;
+    doctor: User;
     patient: User;
-    poll: Poll;
     appointmentStatus: AppointmentStaus;
 }
 
 export interface AppointmentDto {
-    dateAndTime: Date;
+    dateAndTime: string;
     duration: number;
     doctorId: number;
 }
@@ -55,41 +55,18 @@ export interface DenyUserDto {
 
 export interface AppointmentReport {
     bloodType: BloodType;
-    bloodAmount: number;
-    noteToDoctor: string;
-}
-
-export interface AppointmentReportDto {
-
+    pastMedicalHistory: string;
+    allergies: string;
+    familyHistory: string;
+    bloodPressure: string;
+    hearthRate: string;
+    diagnosis: string;
 }
 
 export interface Equipment {
     amount: number;
     name: string;
     hospital: Hospital;
-}
-
-export interface Poll {
-    weight: number;
-    sickness: number;
-    infection: number;
-    pressure: number;
-    therapy: number;
-    cycle: number;
-    dentalIntervention: number;
-}
-
-export interface Prescription {
-    patient: User;
-    doctor: User;
-    notes: string
-}
-
-export interface Medication {
-    name: string;
-    dosage: string;
-    frequency: string;
-    instructions: string;
 }
 
 export enum RoomType {
@@ -105,20 +82,31 @@ export interface Room {
 }
 
 export enum OperationType {
-    SURGERY
+    SURGERY = 'SURGERY',
+    THERAPY = 'THERAPY'
 }
 
 export interface OperationRoomBooking {
     room: Room;
     doctor: User;
     patient: User;
-    starTime: string;
-    endTime: string;
+    startTime: Date;
+    endTime: Date;
     operationType: OperationType;
     notes: string;
 }
 
-export interface PrescriptionDto {
-    medication: Medication;
-    prescription: Prescription;
+export interface CreateOperationRoomBookingDto {
+    room: Room;
+    startTime: Date;
+    endTime: Date;
+    operationType: OperationType;
+}
+
+export interface Medication {
+    name: string;
+    dosage: string;
+    frequency: string;
+    instructions: string;
+    notes: string
 }

@@ -11,6 +11,8 @@ export abstract class ApiClient {
 
     public abstract get<TResponse>(path: string, config?: RequestConfig): Observable<ApiResponse<TResponse>>;
 
+    public abstract getFile(path: string, config?: RequestConfig): Observable<ApiResponse<Blob>>;
+
     public abstract postMultipart<TRequest extends MultiPart[], TResponse>(path: string, body: TRequest, config?: RequestConfig): Observable<ApiResponse<TResponse>>;
 
     public abstract putMultipart<TRequest extends MultiPart[], TResponse>(path: string, body: TRequest, config?: RequestConfig): Observable<ApiResponse<TResponse>>;

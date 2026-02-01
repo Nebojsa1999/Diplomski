@@ -7,9 +7,11 @@ import { NotificationService } from "../../../../common/service/notification.ser
 import { map } from "rxjs/operators";
 import { catchError } from "rxjs";
 import { FilterRoomParam, FilterRoomsComponent } from "./filter-rooms/filter-rooms.component";
-import { Room } from "../../../../rest/hospital/hospital.model";
+import { AppointmentStaus, Room } from "../../../../rest/hospital/hospital.model";
 import { Router } from "@angular/router";
 import { ROUTE_CREATE_ROOM } from "../create-room/create-room.component";
+import { Role } from "../../../../rest/user/user.model";
+import { ROUTE_ROOM_BOOKINGS } from "../../../appointment-feature/room-bookings/list-room-bookings/list-room-bookings.component";
 
 export const ROUTE_ROOMS = 'rooms';
 
@@ -23,10 +25,11 @@ export const ROUTE_ROOMS = 'rooms';
     styleUrl: './list-rooms.component.scss',
 })
 export class ListRoomsComponent {
-    displayedColumns: string[] = ['RoomNumber', 'Type', 'Capacity', 'Update'];
+    displayedColumns: string[] = ['RoomNumber', 'Type', 'Capacity', 'Update', 'Actions'];
     currentUser = toSignal(this.authService.activeUser);
     rooms = signal<Room[] | null>(null);
     searchFilter = signal<FilterRoomParam | null>(null)
+    Role = Role;
 
     constructor(private authService: AuthenticationService,
                 private api: ApiService,
@@ -59,5 +62,10 @@ export class ListRoomsComponent {
 
     addRoom() {
         this.router.navigate([ROUTE_CREATE_ROOM])
+    }
+
+
+    goToRooms(id: number) {
+        this.router.navigate([id, ROUTE_ROOM_BOOKINGS])
     }
 }

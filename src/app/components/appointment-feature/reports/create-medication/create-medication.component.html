@@ -2,26 +2,8 @@
     <div class="w-full flex items-center justify-center flex-grow gap-x-12">
         <mat-card class="w-137">
             <mat-card-content>
-                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col space-y-4">
-                    <h2>Create appointment</h2>
-                    @if (currentUser(); as doctors) {
-                        <mat-form-field>
-                            <mat-label>Doctor</mat-label>
-                            <mat-select formControlName="doctor">
-                                @for (doctor of [doctors]; track doctor.id) {
-                                    <mat-option [value]="doctor">
-                                        {{ doctor.firstName }}
-                                    </mat-option>
-                                }
-                            </mat-select>
-                            @if (this.form.get('doctor')?.hasError('required')) {
-                                <mat-error>
-                                    Doctor is required
-                                </mat-error>
-                            }
-                        </mat-form-field>
-                    }
-
+                <form [formGroup]="form" class="flex flex-col space-y-4">
+                    <h2>Prescription</h2>
                     <mat-form-field>
                         <mat-label>Notes</mat-label>
                         <input matInput type="text" formControlName="notes">
@@ -67,7 +49,8 @@
                             </mat-error>
                         }
                     </mat-form-field>
-                    <button [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.SUBMIT' | translate }}</button>
+                    <button (click)="onSubmit(true)" [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.ROOM_BOOKING' | translate }}</button>
+                    <button (click)="onSubmit(false)" [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.SUBMIT' | translate }}</button>
                 </form>
             </mat-card-content>
         </mat-card>
