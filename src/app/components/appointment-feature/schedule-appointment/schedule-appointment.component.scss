@@ -1,0 +1,23 @@
+.schedule-mat-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  mat-card {
+    cursor: pointer;
+    width: 150px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+  }
+}
+
+.calendar-container {
+  width: 250px;
+  flex: 0 0 300px;
+  transform: scale(0.8);
+}

@@ -1,0 +1,71 @@
+<div class="flex flex-col justify-center h-full bg-no-repeat bg-cover bg-center">
+    <div class="w-full flex items-center justify-center flex-grow gap-x-12">
+        <mat-card class="w-137">
+            <mat-dialog-content>
+                <mat-horizontal-stepper #stepper linear>
+                    <mat-step [stepControl]="doctorForm">
+                        <h1>{{ 'COMMON.SCHEDULE_APPOINTMENT_TITLE' | translate }}</h1>
+                        <h3>{{ 'COMMON.SCHEDULE_APPOINTMENT_CONTENT' | translate }}</h3>
+                        <div class="schedule-mat-cards">
+                            @for (scheduleType of scheduleTypes; track scheduleType) {
+                                <mat-card [style.color]="scheduleType.color.color"
+                                          (click)="selectScheduleType(scheduleType.type, stepper)"
+                                          [class.selected]="doctorForm.value.doctorType === scheduleType"
+                                          class="clickable-card">
+
+                                    <mat-card-content class="flex flex-col items-center py-6">
+                                        <mat-icon class="specialty-icon" [svgIcon]="scheduleType.icon.icon"></mat-icon>
+                                        <span class="mt-3 font-medium">{{ scheduleType.label.label }}</span>
+                                    </mat-card-content>
+
+                                </mat-card>
+                            }
+                        </div>
+                    </mat-step>
+
+                    <mat-step>
+                        <ng-template matStepLabel>Select Date</ng-template>
+                        <h1>{{ 'COMMON.SCHEDULE_APPOINTMENT_2_TITLE' | translate }}</h1>
+                        <h3>{{ 'COMMON.SCHEDULE_APPOINTMENT_2_CONTENT' | translate :{type: 'COMMON.' + doctorForm.get('doctorType')!.value | translate} }}</h3>
+                        <div class="flex gap-6 item-start">
+                            <div class="calendar-container">
+                                <mat-calendar
+                                        [selected]="selectedDate"
+                                        (selectedChange)="selectDate($event)">
+                                </mat-calendar>
+                            </div>
+                            <div class="schedule-mat-cards">
+                                @if (appointments(); as appointments) {
+                                    @for (appointment of appointments; track appointment) {
+                                        <mat-card class="clickable-card" (click)="selectAppointment(appointment, stepper)">
+                                            {{ appointment.dateAndTime | date: 'medium' }}
+                                        </mat-card>
+                                    }
+                                    @if (appointments.length === 0) {
+                                        <div>{{ 'COMMON.APPOINTMENT_EMPTY' | translate }}</div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="stepper-buttons">
+                            <button mat-button matStepperPrevious>Back</button>
+                        </div>
+                    </mat-step>
+
+                    <mat-step>
+                        <ng-template matStepLabel>Confirm</ng-template>
+
+                        <div> {{ 'COMMON.DOCTOR_NAME' | translate }}: {{ selectedAppointment?.doctor?.firstName + ' ' + selectedAppointment?.doctor?.lastName }}</div>
+                        <div>{{ 'COMMON.DOCTOR_SPECIALITY' | translate }}: {{ 'COMMON.' + selectedAppointment?.doctor?.doctorType | translate }}</div>
+                        <div>{{ 'COMMON.DATE' | translate }}: {{ selectedAppointment?.dateAndTime | date: 'medium' }}</div>
+                        <div class="stepper-buttons">
+                            <button mat-button matStepperPrevious>Back</button>
+                            <button mat-button color="primary" (click)="confirm(selectedAppointment)">Confirm</button>
+                        </div>
+                    </mat-step>
+
+                </mat-horizontal-stepper>
+            </mat-dialog-content>
+        </mat-card>
+    </div>
+</div>

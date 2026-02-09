@@ -14,6 +14,8 @@ import { ROUTE_DENY_APPOINTMENT } from "../deny-appointment/deny-appointment.com
 import { ROUTE_APPOINTMENT_REPORT } from "../../reports/appoinment-report/appointment-report.component";
 import { saveAs } from 'file-saver';
 import { FilterAppointmentComponent } from "./filter-appointments/filter-appointment.component";
+import { ROUTE_CREATE_FEEDBACK } from "../../feedbacks/create-feedback/create-feedback.component";
+import { ROUTE_SCHEDULE_APPOINTMENT } from "../../schedule-appointment/schedule-appointment.component";
 
 export const ROUTE_APPOINTMENTS = 'appointments';
 
@@ -107,6 +109,14 @@ export class ListAppointmentsComponent {
 
     approve(appointmentId: number) {
         this.router.navigate([appointmentId, ROUTE_APPOINTMENT_REPORT])
+    }
+
+    comment(appointmentId: number) {
+        this.router.navigate([appointmentId, ROUTE_CREATE_FEEDBACK])
+    }
+
+    patientScheduleAppointment() {
+        this.router.navigate([ROUTE_SCHEDULE_APPOINTMENT])
     }
 
     downloadReport(appointmentId: number) {

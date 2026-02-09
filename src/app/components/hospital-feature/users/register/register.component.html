@@ -117,6 +117,23 @@
                                     </mat-error>
                                 }
                             </mat-form-field>
+                            @if (this.form.get('role')?.value === Role.DOCTOR) {
+                                <mat-form-field>
+                                    <mat-label>Doctor type</mat-label>
+                                    <mat-select formControlName="doctorType" panelClass="specialty-panel" >
+                                        @for (doctorType of doctorTypes; track doctorType) {
+                                            <mat-option [value]="doctorType">
+                                                {{ ('COMMON.' + doctorType) | translate }}
+                                            </mat-option>
+                                        }
+                                    </mat-select>
+                                    @if (this.form.get('doctorType')?.hasError('required')) {
+                                        <mat-error>
+                                            Doctor type is required
+                                        </mat-error>
+                                    }
+                                </mat-form-field>
+                            }
                             <mat-form-field appearance="outline">
                                 <mat-label>Hospital</mat-label>
                                 <mat-select formControlName="hospital">

@@ -20,7 +20,7 @@ export const ROUTE_HOSPITALS = 'hospitals';
     styleUrl: './list-hospitals.component.scss',
 })
 export class ListHospitalsComponent {
-    displayedColumns: string[] = ['Name', 'Address', 'WorkTime', 'Update'];
+    displayedColumns: string[] = ['Name', 'Address', 'WorkTime', 'Rating', 'Update'];
     currentUser = toSignal(this.authService.activeUser);
     hospitals = signal<Hospital[] | null>(null);
     searchParameter = signal<string | null>(null);

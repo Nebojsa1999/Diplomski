@@ -26,6 +26,8 @@ import { CreateHospitalComponent, ROUTE_CREATE_HOSPITAL } from "./components/hos
 import { ListAppointmentsComponent, ROUTE_APPOINTMENTS } from "./components/appointment-feature/appointments/list-appointments/list-appointments.component";
 import { CreateRoomBookingComponent, ROUTE_CREATE_ROOM_BOOKING } from "./components/appointment-feature/room-bookings/create-room-booking/create-room-booking.component";
 import { ListRoomBookingsComponent, ROUTE_ROOM_BOOKINGS } from "./components/appointment-feature/room-bookings/list-room-bookings/list-room-bookings.component";
+import { CreateFeedbackComponent, ROUTE_CREATE_FEEDBACK } from "./components/appointment-feature/feedbacks/create-feedback/create-feedback.component";
+import { ROUTE_SCHEDULE_APPOINTMENT, ScheduleAppointmentComponent } from "./components/appointment-feature/schedule-appointment/schedule-appointment.component";
 
 export const unauthenticatedOnlyGuard: CanActivateFn = (route, state) => {
     const router = inject(Router);
@@ -143,6 +145,14 @@ export const routes: Routes = [
             {
                 path: `:id/${ROUTE_ROOM_BOOKINGS}`,
                 component: ListRoomBookingsComponent
+            },
+            {
+                path: `:id/${ROUTE_CREATE_FEEDBACK}`,
+                component: CreateFeedbackComponent,
+            },
+            {
+                path: `${ROUTE_SCHEDULE_APPOINTMENT}`,
+                component: ScheduleAppointmentComponent,
             },
             {
                 path: '**',

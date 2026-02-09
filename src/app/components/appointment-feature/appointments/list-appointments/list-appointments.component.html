@@ -8,6 +8,11 @@
                         <mat-icon>add</mat-icon>
                         {{ 'COMMON.ADD_APPOINTMENT' | translate }}
                     </button>
+                } @else if (authService.hasRole(Role.PATIENT)) {
+                    <button mat-raised-button (click)="patientScheduleAppointment()">
+                        <mat-icon>add</mat-icon>
+                        {{ 'COMMON.SCHEDULE_APPOINTMENT' | translate }}
+                    </button>
                 }
             </div>
             <mat-card class="flow-row ">
@@ -72,6 +77,12 @@
                                     <mat-icon svgIcon="file_save">
                                     </mat-icon>
                                 </button>
+                                @if (authService.hasRole(Role.PATIENT)) {
+                                    <button mat-icon-button (click)="comment(appointment.id)">
+                                        <mat-icon svgIcon="comment">
+                                        </mat-icon>
+                                    </button>
+                                }
                             }
                         </td>
                     </ng-container>

@@ -2,7 +2,7 @@ import { Api } from "../api";
 import { ApiClient } from "../api-client";
 import { ApiResponse, RequestConfig } from "../rest.model";
 import { Observable } from "rxjs";
-import { Appointment, AppointmentDto, AppointmentReport, AppointmentStaus, CreateOperationRoomBookingDto, DenyUserDto, Medication, OperationRoomBooking } from "./hospital.model";
+import { Appointment, AppointmentDto, AppointmentReport, AppointmentStaus, CreateOperationRoomBookingDto, DenyUserDto, DoctorType, FeedbackDto, Medication, OperationRoomBooking } from "./hospital.model";
 
 export class AppointmentApi extends Api {
     constructor(client: ApiClient) {
@@ -20,12 +20,12 @@ export class AppointmentApi extends Api {
         return this.apiClient.get('/api/hospitals/appointments', config);
     }
 
-    listByHospital(id: number, status: AppointmentStaus, from: number | null, to: number | null): Observable<ApiResponse<Appointment[]>> {
+    listByHospital(id: number, status: AppointmentStaus, from: number | null, to: number | null, doctorType?: DoctorType): Observable<ApiResponse<Appointment[]>> {
         const config: RequestConfig = {
             headers: {
                 accept: 'application/json'
             },
-            params: {appointmentStatus: status, from: from as number, to: to as number},
+            params: {appointmentStatus: status, from: from as number, to: to as number, doctorType: doctorType as DoctorType},
             authenticated: true
         };
         return this.apiClient.get(`/api/hospitals/${id}/appointments`, config);
@@ -162,6 +162,28 @@ export class AppointmentApi extends Api {
             authenticated: true
         };
         return this.apiClient.get(`/api/hospitals/appointments/room/${id}/operation-room-booking`, config);
+    }
+
+    submitFeedback(appointmentId: number, body: FeedbackDto) : Observable<ApiResponse<FeedbackDto>> {
+        const config: RequestConfig = {
+            headers: {
+                accept: 'application/json'
+            },
+            authenticated: true
+        };
+
+        return this.apiClient.post(`/api/hospitals/appointments/${appointmentId}/feedback`,body, config)
+    }
+
+    getFeedback(appointmentId: number) : Observable<ApiResponse<FeedbackDto>> {
+        const config: RequestConfig = {
+            headers: {
+                accept: 'application/json'
+            },
+            authenticated: true
+        };
+
+        return this.apiClient.get(`/api/hospitals/appointments/${appointmentId}/feedback`, config)
     }
 
     downloadReport(id: number): Observable<ApiResponse<Blob>> {

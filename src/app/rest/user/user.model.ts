@@ -1,4 +1,4 @@
-import { Hospital } from "../hospital/hospital.model";
+import { DoctorType, Hospital } from "../hospital/hospital.model";
 
 export interface User {
     id: number;
@@ -15,6 +15,7 @@ export interface User {
     occupation: string;
     occupationInfo: string;
     hospital: Hospital;
+    doctorType: DoctorType;
 }
 
 export interface UserDto {
@@ -32,6 +33,7 @@ export interface UserDto {
     occupationInfo: string;
     role: Role;
     hospitalId: number;
+    doctorType: DoctorType;
 }
 
 export interface UpdateUserDto {

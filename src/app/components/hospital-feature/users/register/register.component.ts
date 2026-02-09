@@ -8,6 +8,7 @@ import { Gender, Role } from "../../../../rest/user/user.model";
 import { map } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { ROUTE_USERS } from "../list-users/list-users.component";
+import { DoctorType } from "../../../../rest/hospital/hospital.model";
 
 export const ROUTE_REGISTER = 'register';
 
@@ -31,11 +32,15 @@ export class RegisterComponent {
         occupation: new FormControl<string>('', [Validators.required]),
         occupationInfo: new FormControl<string>('', [Validators.required]),
         role: new FormControl<Role | null>(null, [Validators.required]),
+        doctorType: new FormControl<DoctorType | null>(null),
         hospital: new FormControl<number | null>(null, [Validators.required])
     });
 
     genders = Object.values(Gender);
     roles = Object.values(Role).filter(role => role != Role.ADMIN_SYSTEM);
+    doctorTypes = Object.values(DoctorType)
+    Role = Role;
+
     hospitals$ = this.api.hospitalApi.list().pipe(
         map(response => response.data),
         catchError(error => of([]))
@@ -63,6 +68,7 @@ export class RegisterComponent {
         const gender = this.form.get('gender')?.value;
         const role = this.form.get('role')?.value;
         const hospitalId = this.form.get('hospital')?.value;
+        const doctorType = this.form.get('doctorType')?.value;
 
         this.api.userApi.register({
             firstName: firstName as string,
@@ -78,7 +84,8 @@ export class RegisterComponent {
             occupationInfo: occupationInfo as string,
             gender: gender as Gender,
             role: role as Role,
-            hospitalId: hospitalId as number
+            hospitalId: hospitalId as number,
+            doctorType: doctorType as DoctorType
         }).pipe(
             catchError(error => this.notificationService.showError(error))
         ).subscribe((user) => {

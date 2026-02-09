@@ -110,3 +110,47 @@ export interface Medication {
     instructions: string;
     notes: string
 }
+
+export interface FeedbackDto {
+    grade: number;
+    comment: string;
+}
+
+export enum DoctorType {
+    GENERAL_PRACTITIONER = 'GENERAL_PRACTITIONER',
+    CARDIOLOGIST= 'CARDIOLOGIST',
+    DERMATOLOGIST = 'DERMATOLOGIST',
+    NEUROLOGIST = 'NEUROLOGIST',
+    ORTHOPEDIC_SURGEON = 'ORTHOPEDIC_SURGEON',
+    GASTROENTEROLOGIST = 'GASTROENTEROLOGIST',
+    ENDOCRINOLOGIST = 'ENDOCRINOLOGIST',
+    PULMONOLOGIST = 'PULMONOLOGIST',
+    GYNECOLOGIST = 'GYNECOLOGIST',
+    UROLOGIST = 'UROLOGIST',
+    OPHTHALMOLOGIST = 'OPHTHALMOLOGIST',
+    OTOLARYNGOLOGIST = 'OTOLARYNGOLOGIST'
+}
+
+export enum PatientScheduleType {
+    GENERAL_MEDICINE = 'GENERAL_MEDICINE',
+    CARDIOLOGY = 'CARDIOLOGY',
+    OPHTHALMOLOGIST = 'OPHTHALMOLOGIST'
+}
+
+export interface PatientScheduleInfo {
+    icon: string;
+    label: string;
+    color: string;
+}
+
+export const PatientScheduleMap: Record<PatientScheduleType, PatientScheduleInfo> = {
+    [PatientScheduleType.GENERAL_MEDICINE]: { icon: 'general_medicine', label: 'Routine checkups and common illnesses', color: 'blue' },
+    [PatientScheduleType.CARDIOLOGY]: { icon: 'cardiology', label: 'Heart and cardiovascular health', color: 'red' },
+    [PatientScheduleType.OPHTHALMOLOGIST]: { icon: 'eye', label: 'Eye exams and vision care', color: 'purple' },
+};
+
+export const DoctorTypeMap: Record<PatientScheduleType, DoctorType> = {
+    [PatientScheduleType.GENERAL_MEDICINE]: DoctorType.GENERAL_PRACTITIONER,
+    [PatientScheduleType.CARDIOLOGY]: DoctorType.CARDIOLOGIST,
+    [PatientScheduleType.OPHTHALMOLOGIST]: DoctorType.OPHTHALMOLOGIST
+};

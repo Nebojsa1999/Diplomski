@@ -4,8 +4,14 @@
 @use 'app/common/scss/theme';
 @use 'app/common/scss/overrides';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
@@ -60,4 +66,9 @@ input[type=number]::-webkit-outer-spin-button {
 
 .snackbar-error {
   --mat-snack-bar-container-color: var(--error-color-50) !important;
+}
+
+.specialty-panel {
+  max-height: 200px !important;
+  overflow-y: auto !important;
 }

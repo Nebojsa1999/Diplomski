@@ -1,0 +1,15 @@
+.star {
+  cursor: pointer;
+  font-size: 30px;
+  color: #ccc;
+  transition: 0.2s;
+}
+
+.star.active {
+  color: gold;
+}
+
+.star.disabled {
+  pointer-events: none;
+  cursor: default;
+}
