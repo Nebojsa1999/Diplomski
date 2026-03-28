@@ -10,7 +10,7 @@ import { User } from "../../../../rest/user/user.model";
 import { FilterUserComponent, FilterUserParam } from "./filter-user/filter-user.component";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { ROUTE_REGISTER } from "../register/register.component";
+import { ROUTE_ADD_USER } from "../register/register.component";
 import { ROUTE_HOSPITALS } from "../../hospitals/list-hospitals/list-hospitals.component";
 
 export const ROUTE_USERS = 'users';
@@ -66,7 +66,7 @@ export class ListUsersComponent {
     goBack() { this.router.navigate([ROUTE_HOSPITALS]); }
 
     addUser() {
-        this.router.navigate([ROUTE_REGISTER])
+        this.router.navigate([ROUTE_ADD_USER])
     }
 
     deleteUser(id: number) {

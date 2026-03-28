@@ -29,7 +29,7 @@
             <a mat-menu-item [routerLink]="['/appointments']">{{ 'COMMON.APPOINTMENTS' | translate }}</a>
             <mat-divider></mat-divider>
             @if (authService.hasRole(Role.ADMIN_SYSTEM)) {
-                <a mat-menu-item [routerLink]="['/register']">{{ 'COMMON.REGISTER' | translate }}</a>
+                <a mat-menu-item [routerLink]="['/' + ROUTE_ADD_USER]">{{ 'COMMON.REGISTER' | translate }}</a>
             }
             @if (currentUser(); as currentUser) {
                 <a mat-menu-item [routerLink]="['/edit-profile/' + currentUser.id]">{{ 'COMMON.EDIT_PROFILE' | translate }}</a>
@@ -42,7 +42,7 @@
     <mat-menu #profileMenu="matMenu" xPosition="before">
         <ng-template matMenuContent>
             @if (authService.hasRole(Role.ADMIN_SYSTEM)) {
-                <a mat-menu-item [routerLink]="['/register']">{{ 'COMMON.REGISTER' | translate }}</a>
+                <a mat-menu-item [routerLink]="['/' + ROUTE_ADD_USER]">{{ 'COMMON.REGISTER' | translate }}</a>
             }
             @if (currentUser(); as currentUser) {
                 <a mat-menu-item [routerLink]="['/edit-profile/' + currentUser.id]">{{ 'COMMON.EDIT_PROFILE' | translate }}</a>

@@ -13,6 +13,7 @@ import { DoctorType } from "../../../../rest/hospital/hospital.model";
 import { ROUTE_SIGN_IN } from "../../../profile-feature/login/login.component";
 
 export const ROUTE_REGISTER = 'register';
+export const ROUTE_ADD_USER = 'add-user';
 
 @Component({
     selector: 'app-register',
