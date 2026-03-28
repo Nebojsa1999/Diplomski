@@ -5,14 +5,16 @@ import { catchError, Observable, OperatorFunction, throwError } from "rxjs";
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { HttpError } from "./https-error";
 import { getHttpErrorType } from "./HTTPErrorsEnum";
+import { ConfigService } from "../common/service/config.service";
 
 export class ApiClientService extends ApiClient {
 
-    private readonly baseUrl;
+    private get baseUrl(): string {
+        return this.configService.apiUrl;
+    }
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private configService: ConfigService) {
         super();
-        this.baseUrl = "http://localhost:8081";
     }
 
     post<TRequest, TResponse>(path: string, body: TRequest, config?: RequestConfig): Observable<ApiResponse<TResponse>> {

@@ -1,4 +1,5 @@
 import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, inject, provideZonelessChangeDetection } from '@angular/core';
+import { ConfigService } from "./common/service/config.service";
 import { provideRouter, RouterLink, RouterLinkActive, RouterOutlet, withHashLocation } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HttpClient, provideHttpClient, withInterceptors } from "@angular/common/http";
@@ -79,7 +80,13 @@ export const appConfig: ApplicationConfig = {
         {
             provide: ApiClient,
             useClass: ApiClientService,
-            deps: [HttpClient],
+            deps: [HttpClient, ConfigService],
+        },
+        {
+            provide: APP_INITIALIZER,
+            useFactory: (configService: ConfigService) => () => configService.load(),
+            deps: [ConfigService],
+            multi: true,
         },
         {
             provide: APP_INITIALIZER,
