@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -8,10 +6,9 @@ import { firstValueFrom } from 'rxjs';
 export class ConfigService {
     private config: { apiUrl: string } = { apiUrl: '' };
 
-    constructor(private http: HttpClient) {}
-
     async load(): Promise<void> {
-        this.config = await firstValueFrom(this.http.get<{ apiUrl: string }>('/config/config.json'));
+        const response = await fetch('/config/config.json');
+        this.config = await response.json();
     }
 
     get apiUrl(): string {
