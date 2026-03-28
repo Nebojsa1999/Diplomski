@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { shared } from "../../../../app.config";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ApiService } from "../../../../common/service/api.service";
@@ -33,8 +34,11 @@ export class CreateMedicationComponent {
                 private authService: AuthenticationService,
                 private route: ActivatedRoute,
                 private router: Router,
-                private notificationService: NotificationService) {
+                private notificationService: NotificationService,
+                private location: Location) {
     }
+
+    goBack() { this.location.back(); }
 
     onSubmit(shouldBookRoom: boolean) {
         const notes = this.form.get('notes')?.value;

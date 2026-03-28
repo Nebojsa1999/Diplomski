@@ -1,5 +1,165 @@
 import { User } from "../user/user.model";
 
+export interface Department {
+    id: number;
+    name: string;
+    description: string;
+    phoneNumber: string;
+    hospital: Hospital;
+}
+
+export interface DepartmentDto {
+    name: string;
+    description: string;
+    phoneNumber: string;
+}
+
+export interface DepartmentProcedure {
+    id: number;
+    name: string;
+    description: string;
+    price: number;
+    department: Department;
+}
+
+export interface DepartmentProcedureDto {
+    name: string;
+    description: string;
+    price: number;
+}
+
+export interface Diagnosis {
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    department: Department;
+}
+
+export interface DiagnosisDto {
+    code: string;
+    name: string;
+    description: string;
+}
+
+export interface Medicament {
+    id: number;
+    name: string;
+    instructions: string;
+    dosage: string;
+    department: Department;
+}
+
+export interface MedicamentDto {
+    name: string;
+    instructions: string;
+    dosage: string;
+}
+
+export enum RhFactor {
+    POSITIVE = 'POSITIVE',
+    NEGATIVE = 'NEGATIVE'
+}
+
+export interface PatientMedicalRecord {
+    id: number;
+    bloodType: BloodType;
+    rhFactor: RhFactor;
+    heightCm: number;
+    weightKg: number;
+    chronicDiseases: string;
+    previousHospitalization: string;
+    previousSurgeries: string;
+    familyHistory: string;
+    allergies: string;
+    longTermTherapy: string;
+    specificContradictions: string;
+    patient: User;
+}
+
+export interface PatientMedicalRecordResponse {
+    id: number;
+    bloodType: BloodType;
+    rhFactor: RhFactor;
+    heightCm: number;
+    weightKg: number;
+    chronicDiseases: string;
+    previousHospitalization: string;
+    previousSurgeries: string;
+    familyHistory: string;
+    allergies: string;
+    longTermTherapy: string;
+    specificContradictions: string;
+    patientId: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    personalId: string;
+}
+
+export interface PatientMedicalRecordDto {
+    bloodType: BloodType;
+    rhFactor: RhFactor;
+    heightCm: number;
+    weightKg: number;
+    chronicDiseases: string;
+    previousHospitalization: string;
+    previousSurgeries: string;
+    familyHistory: string;
+    allergies: string;
+    longTermTherapy: string;
+    specificContradictions: string;
+}
+
+export enum DayOfWeek {
+    MONDAY = 'MONDAY',
+    TUESDAY = 'TUESDAY',
+    WEDNESDAY = 'WEDNESDAY',
+    THURSDAY = 'THURSDAY',
+    FRIDAY = 'FRIDAY',
+    SATURDAY = 'SATURDAY',
+    SUNDAY = 'SUNDAY'
+}
+
+export interface DoctorSchedule {
+    id: number;
+    dayOfWeek: DayOfWeek;
+    startDate: string;
+    endDate: string;
+    startTime: string;
+    endTime: string;
+    durationOfAppointmentMin: number;
+    breakStartTime: string;
+    breakEndTime: string;
+    doctor: User;
+}
+
+export interface DoctorScheduleDayDto {
+    dayOfWeek: DayOfWeek;
+    startTime: string;
+    endTime: string;
+    durationOfAppointmentMin: number;
+    breakStartTime: string;
+    breakEndTime: string;
+}
+
+export interface DoctorScheduleCreateDto {
+    startDate: string;
+    endDate: string;
+    days: DoctorScheduleDayDto[];
+}
+
+export interface DoctorScheduleUpdateDto {
+    dayOfWeek: DayOfWeek;
+    startDate: string;
+    endDate: string;
+    startTime: string;
+    endTime: string;
+    durationOfAppointmentMin: number;
+    breakStartTime: string;
+    breakEndTime: string;
+}
+
 export interface Hospital {
     id: number;
     name: string;
@@ -64,6 +224,7 @@ export interface AppointmentReport {
 }
 
 export interface Equipment {
+    id?: number;
     amount: number;
     name: string;
     hospital: Hospital;
@@ -75,6 +236,7 @@ export enum RoomType {
 }
 
 export interface Room {
+    id?: number;
     roomNumber: string;
     capacity: number;
     hospital: Hospital;

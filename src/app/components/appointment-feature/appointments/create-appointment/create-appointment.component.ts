@@ -1,6 +1,7 @@
 import { Component, effect, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { ApiService } from '../../../../common/service/api.service';
 import { shared } from "../../../../app.config";
 import { toSignal } from "@angular/core/rxjs-interop";
@@ -35,7 +36,7 @@ export class CreateAppointmentComponent {
         catchError(error => error.data)
     )
 
-    constructor(private router: Router, private api: ApiService, private authService: AuthenticationService, private notificationService: NotificationService) {
+    constructor(private router: Router, private api: ApiService, private authService: AuthenticationService, private notificationService: NotificationService, private location: Location) {
         effect(() => {
             const currentUser = this.currentUser();
             if (currentUser) {
@@ -48,6 +49,8 @@ export class CreateAppointmentComponent {
             }
         });
     }
+
+    goBack() { this.location.back(); }
 
     onSubmit() {
         const date = this.form.get('date')?.value;

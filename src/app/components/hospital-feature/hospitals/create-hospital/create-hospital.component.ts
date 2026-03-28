@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { shared } from "../../../../app.config";
 import { ApiService } from "../../../../common/service/api.service";
@@ -40,9 +41,12 @@ export class CreateHospitalComponent {
     constructor(
         private api: ApiService,
         private router: Router,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private location: Location
     ) {
     }
+
+    goBack() { this.location.back(); }
 
     onSubmit() {
         const [h, m] = this.form.get('startTime')?.value.split(":");

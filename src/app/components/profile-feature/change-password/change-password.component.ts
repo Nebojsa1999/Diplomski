@@ -1,4 +1,5 @@
-import { Component, effect } from '@angular/core';
+import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormControl, FormGroup } from "@angular/forms";
 import { ApiService } from "../../../common/service/api.service";
 import { shared } from "../../../app.config";
@@ -25,9 +26,12 @@ export class ChangePasswordComponent {
     constructor(
         private apiService: ApiService,
         private authService: AuthenticationService,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private location: Location
     ) {
     }
+
+    goBack() { this.location.back(); }
 
     onSubmit() {
         if (this.form.valid) {

@@ -1,0 +1,85 @@
+<div class="cp-content flex flex-col flex-1 justify-between gap-6 mt-8">
+    <div class="overflow-hidden flex flex-col gap-4 flex-1">
+        <div class="flex flex-row m-2 justify-between items-center">
+            <h2 style="font-weight: bold">{{ 'COMMON.DOCTOR_SCHEDULES' | translate }}</h2>
+            <div class="flex flex-row gap-x-2">
+            <button mat-stroked-button (click)="goBack()">{{ 'COMMON.BACK' | translate }}</button>
+            <button mat-raised-button (click)="addSchedule()" [disabled]="weekSchedules().length > 0">
+                <mat-icon>add</mat-icon>
+                {{ 'COMMON.ADD_SCHEDULE' | translate }}
+            </button>
+            </div>
+        </div>
+
+
+        <mat-card>
+            <div class="flex flex-row items-center justify-center gap-x-4 py-3">
+                <button mat-icon-button (click)="prevWeek()" [disabled]="isCurrentWeek()">
+                    <mat-icon>chevron_left</mat-icon>
+                </button>
+                <span class="font-semibold text-base">{{ weekLabel() }}</span>
+                <button mat-icon-button (click)="nextWeek()">
+                    <mat-icon>chevron_right</mat-icon>
+                </button>
+            </div>
+        </mat-card>
+
+        @for (day of daysOrder; track day) {
+            @let daySchedules = schedulesForDay(day);
+            @if (daySchedules.length > 0) {
+                <mat-card [class.opacity-40]="isDayInPast(day)">
+                    <div class="px-4 pt-3 pb-1 flex flex-row items-center gap-x-2">
+                        <h3 style="font-weight: bold">{{ day }}</h3>
+                        @if (isDayInPast(day)) {
+                            <span class="text-xs text-gray-400">{{ '(' + ('COMMON.PAST' | translate) + ')' }}</span>
+                        }
+                    </div>
+                    <table mat-table [dataSource]="daySchedules">
+                        <ng-container matColumnDef="Doctor">
+                            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DOCTOR' | translate }}</th>
+                            <td mat-cell *matCellDef="let schedule">{{ schedule.doctor?.firstName }} {{ schedule.doctor?.lastName }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="StartTime">
+                            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.START_TIME' | translate }}</th>
+                            <td mat-cell *matCellDef="let schedule">{{ schedule.startTime }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="EndTime">
+                            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.END_TIME' | translate }}</th>
+                            <td mat-cell *matCellDef="let schedule">{{ schedule.endTime }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="Duration">
+                            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DURATION_MIN' | translate }}</th>
+                            <td mat-cell *matCellDef="let schedule">{{ schedule.durationOfAppointmentMin }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="BreakStart">
+                            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.BREAK_START_TIME' | translate }}</th>
+                            <td mat-cell *matCellDef="let schedule">{{ schedule.breakStartTime }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="BreakEnd">
+                            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.BREAK_END_TIME' | translate }}</th>
+                            <td mat-cell *matCellDef="let schedule">{{ schedule.breakEndTime }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="Update">
+                            <th mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let schedule">
+                                <button [routerLink]="['/edit-doctor-schedule/' + schedule.id]" [queryParams]="{weekStart: weekStart().toISOString()}" mat-icon-button>
+                                    <mat-icon svgIcon="edit"></mat-icon>
+                                </button>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </mat-card>
+            }
+        }
+
+        @if (weekSchedules().length === 0 && schedules() !== null) {
+            <mat-card>
+                <div class="flex items-center justify-center py-8 text-gray-500">
+                    {{ 'COMMON.NO_SCHEDULES_THIS_WEEK' | translate }}
+                </div>
+            </mat-card>
+        }
+    </div>
+</div>

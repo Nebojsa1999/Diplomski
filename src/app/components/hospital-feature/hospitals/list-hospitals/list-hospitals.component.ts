@@ -20,7 +20,7 @@ export const ROUTE_HOSPITALS = 'hospitals';
     styleUrl: './list-hospitals.component.scss',
 })
 export class ListHospitalsComponent {
-    displayedColumns: string[] = ['Name', 'Address', 'WorkTime', 'Rating', 'Update'];
+    displayedColumns: string[] = ['Name', 'Address', 'WorkTime', 'Rating', 'Departments', 'Users', 'Rooms', 'Update', 'Delete'];
     currentUser = toSignal(this.authService.activeUser);
     hospitals = signal<Hospital[] | null>(null);
     searchParameter = signal<string | null>(null);
@@ -46,6 +46,14 @@ export class ListHospitalsComponent {
 
     addHospital() {
         this.router.navigate([ROUTE_CREATE_HOSPITAL]);
+    }
+
+    deleteHospital(id: number) {
+        this.api.hospitalApi.deleteHospital(id).pipe(
+            catchError(error => this.notificationService.showError(error.message))
+        ).subscribe(() => {
+            this.hospitals.update(items => items?.filter(h => h.id !== id) ?? []);
+        });
     }
 
     removeSeconds(time: string) {

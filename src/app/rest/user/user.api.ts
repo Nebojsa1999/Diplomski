@@ -63,6 +63,14 @@ export class UserApi extends Api {
         return this.apiClient.get("/api/users/" + id, config);
     }
 
+    deleteUser(id: number): Observable<ApiResponse<void>> {
+        const config: RequestConfig = {
+            headers: {accept: 'application/json'},
+            authenticated: true
+        };
+        return this.apiClient.delete(`/api/users/${id}`, config);
+    }
+
     list(name?: string): Observable<ApiResponse<User[]>> {
         const config: RequestConfig = {
             headers: {

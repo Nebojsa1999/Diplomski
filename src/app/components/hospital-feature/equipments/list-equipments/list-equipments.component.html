@@ -16,11 +16,11 @@
             <mat-card>
                 <table mat-table [dataSource]="equipments">
                     <ng-container matColumnDef="Name">
-                        <th mat-header-cell *matHeaderCellDef> Name</th>
+                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.NAME' | translate }}</th>
                         <td mat-cell *matCellDef="let equipment"> {{ equipment.name }}</td>
                     </ng-container>
                     <ng-container matColumnDef="Amount">
-                        <th mat-header-cell *matHeaderCellDef> Amount</th>
+                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.AMOUNT' | translate }}</th>
                         <td mat-cell *matCellDef="let equipment"> {{ equipment.amount }}</td>
                     </ng-container>
                     <ng-container matColumnDef="Update">
@@ -29,6 +29,14 @@
                             <button [routerLink]="['/edit-equipment/' + equipment.id]" mat-icon-button>
                                 <mat-icon svgIcon="edit">
                                 </mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="Delete">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let equipment">
+                            <button mat-icon-button class="btn-error" (click)="deleteEquipment(equipment.id)">
+                                <mat-icon>delete</mat-icon>
                             </button>
                         </td>
                     </ng-container>

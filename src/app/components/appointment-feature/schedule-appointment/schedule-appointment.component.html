@@ -24,7 +24,7 @@
                     </mat-step>
 
                     <mat-step>
-                        <ng-template matStepLabel>Select Date</ng-template>
+                        <ng-template matStepLabel>{{ 'COMMON.SELECT_DATE' | translate }}</ng-template>
                         <h1>{{ 'COMMON.SCHEDULE_APPOINTMENT_2_TITLE' | translate }}</h1>
                         <h3>{{ 'COMMON.SCHEDULE_APPOINTMENT_2_CONTENT' | translate :{type: 'COMMON.' + doctorForm.get('doctorType')!.value | translate} }}</h3>
                         <div class="flex gap-6 item-start">
@@ -48,19 +48,19 @@
                             </div>
                         </div>
                         <div class="stepper-buttons">
-                            <button mat-button matStepperPrevious>Back</button>
+                            <button mat-button matStepperPrevious>{{ 'COMMON.BACK' | translate }}</button>
                         </div>
                     </mat-step>
 
                     <mat-step>
-                        <ng-template matStepLabel>Confirm</ng-template>
+                        <ng-template matStepLabel>{{ 'COMMON.CONFIRM' | translate }}</ng-template>
 
                         <div> {{ 'COMMON.DOCTOR_NAME' | translate }}: {{ selectedAppointment?.doctor?.firstName + ' ' + selectedAppointment?.doctor?.lastName }}</div>
                         <div>{{ 'COMMON.DOCTOR_SPECIALITY' | translate }}: {{ 'COMMON.' + selectedAppointment?.doctor?.doctorType | translate }}</div>
                         <div>{{ 'COMMON.DATE' | translate }}: {{ selectedAppointment?.dateAndTime | date: 'medium' }}</div>
                         <div class="stepper-buttons">
-                            <button mat-button matStepperPrevious>Back</button>
-                            <button mat-button color="primary" (click)="confirm(selectedAppointment)">Confirm</button>
+                            <button mat-button matStepperPrevious>{{ 'COMMON.BACK' | translate }}</button>
+                            <button mat-button color="primary" (click)="confirm(selectedAppointment)">{{ 'COMMON.CONFIRM' | translate }}</button>
                         </div>
                     </mat-step>
 

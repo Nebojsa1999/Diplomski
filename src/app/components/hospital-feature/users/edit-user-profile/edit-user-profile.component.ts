@@ -1,4 +1,5 @@
 import { Component, effect, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { ApiService } from "../../../../common/service/api.service";
@@ -48,7 +49,7 @@ export class EditUserProfileComponent {
         return a.id === b.id;
     };
 
-    constructor(private authService: AuthenticationService, private route: ActivatedRoute, private api: ApiService, private notificationService: NotificationService) {
+    constructor(private authService: AuthenticationService, private route: ActivatedRoute, private api: ApiService, private notificationService: NotificationService, private location: Location) {
         const id = this.route.snapshot.params['id']
         this.api.userApi.getUser(id).pipe(map(response => response.data)).subscribe((user) => this.currentUser.set(user))
         this.form.get('role')?.disable()
@@ -74,6 +75,8 @@ export class EditUserProfileComponent {
             }
         });
     }
+
+    goBack() { this.location.back(); }
 
     onSubmit() {
         if (this.form.valid) {

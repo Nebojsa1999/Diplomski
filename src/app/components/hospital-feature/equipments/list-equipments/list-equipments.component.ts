@@ -20,7 +20,7 @@ export const ROUTE_EQUIPMENTS = 'equipments';
     styleUrl: './list-equipments.component.scss',
 })
 export class ListEquipmentsComponent {
-    displayedColumns: string[] = ['Name', 'Amount', 'Update'];
+    displayedColumns: string[] = ['Name', 'Amount', 'Update', 'Delete'];
     currentUser = toSignal(this.authService.activeUser);
     equipments = signal<Equipment[] | null>(null);
     searchFilter = signal<FilterEquipmentParam | null>(null)
@@ -53,5 +53,13 @@ export class ListEquipmentsComponent {
 
     addEquipment() {
         this.router.navigate([ROUTE_CREATE_EQUIPMENT])
+    }
+
+    deleteEquipment(id: number) {
+        this.api.hospitalApi.deleteEquipment(id).pipe(
+            catchError(error => this.notificationService.showError(error.message))
+        ).subscribe(() => {
+            this.equipments.update(items => items?.filter(e => e.id !== id) ?? []);
+        });
     }
 }

@@ -1,8 +1,9 @@
 import { Component, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../../common/service/api.service';
 import { shared } from "../../../../app.config";
-import { Appointment, Hospital } from "../../../../rest/hospital/hospital.model";
+import { Appointment, Department, Hospital } from "../../../../rest/hospital/hospital.model";
 import { map } from "rxjs/operators";
 import { catchError, forkJoin } from "rxjs";
 import { NotificationService } from "../../../../common/service/notification.service";
@@ -34,15 +35,16 @@ export class HospitalComponent {
         country: new FormControl<string | null>(null, [Validators.required]),
         city: new FormControl<string | null>(null, [Validators.required]),
     });
-    displayedColumnsOfAppointments: string[] = ['Date', 'Duration', 'Doctor']
     appointments = signal<Appointment[] | null>(null);
     hospital = signal<Hospital | null>(null);
+    departments = signal<Department[] | null>(null);
 
     constructor(
         private api: ApiService,
         private route: ActivatedRoute,
         private router: Router,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private location: Location
     ) {
         const id = this.route.snapshot.params['id']
 
@@ -54,8 +56,12 @@ export class HospitalComponent {
             appointments: this.api.appointmentApi.getAppointments(id).pipe(
                 map(resp => resp.data),
                 catchError(error => this.notificationService.showError(error.message))
+            ),
+            departments: this.api.hospitalApi.listDepartments('', id).pipe(
+                map(resp => resp.data),
+                catchError(error => this.notificationService.showError(error.message))
             )
-        }).subscribe(({hospital: hospital, appointments}) => {
+        }).subscribe(({ hospital, appointments, departments }) => {
             if (hospital) {
                 this.hospital.set(hospital);
                 const [h, m] = hospital.startTime.split(":");
@@ -74,7 +80,12 @@ export class HospitalComponent {
                 });
             }
             this.appointments.set(appointments);
+            this.departments.set(departments);
         });
+    }
+
+    goBack() {
+        this.location.back();
     }
 
     onSubmit() {

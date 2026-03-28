@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ApiService } from "../../../../common/service/api.service";
 import { shared } from "../../../../app.config";
@@ -49,9 +50,12 @@ export class RegisterComponent {
     constructor(
         private api: ApiService,
         private router: Router,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private location: Location
     ) {
     }
+
+    goBack() { this.location.back(); }
 
     onSubmit() {
         const email = this.form.get('email')?.value;

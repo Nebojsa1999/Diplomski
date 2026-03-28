@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { shared } from "../../../../app.config";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Equipment, Hospital } from "../../../../rest/hospital/hospital.model";
@@ -28,8 +29,10 @@ export class CreateEquipmentComponent {
         catchError(error => of([]))
     )
 
-    constructor(private apiService: ApiService, private notificationService: NotificationService, private router: Router) {
+    constructor(private apiService: ApiService, private notificationService: NotificationService, private router: Router, private location: Location) {
     }
+
+    goBack() { this.location.back(); }
 
     onSubmit() {
         const name = this.form.get('name')?.value;

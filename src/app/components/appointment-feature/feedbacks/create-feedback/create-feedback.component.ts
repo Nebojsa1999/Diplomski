@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { shared } from "../../../../app.config";
 import { ApiService } from "../../../../common/service/api.service";
@@ -30,7 +31,8 @@ export class CreateFeedbackComponent {
     constructor(private apiService: ApiService,
                 private route: ActivatedRoute,
                 private notificationService: NotificationService,
-                private router: Router) {
+                private router: Router,
+                private location: Location) {
 
         this.apiService.appointmentApi.getFeedback(this.route.snapshot.params['id']).pipe(
             map(response => response.data),
@@ -43,6 +45,8 @@ export class CreateFeedbackComponent {
             }
         })
     }
+
+    goBack() { this.location.back(); }
 
     setRating(value: number) {
         this.form.get('grade')?.setValue(value)

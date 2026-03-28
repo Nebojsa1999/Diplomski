@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { shared } from "../../../../app.config";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Hospital, Room, RoomType } from "../../../../rest/hospital/hospital.model";
@@ -32,9 +33,11 @@ export class CreateRoomComponent {
 
     types = Object.values(RoomType)
 
-    constructor(private apiService: ApiService, private notificationService: NotificationService, private router: Router) {
+    constructor(private apiService: ApiService, private notificationService: NotificationService, private router: Router, private location: Location) {
         this.onTypeChange()
     }
+
+    goBack() { this.location.back(); }
 
     onTypeChange() {
         this.form.get('roomType')?.valueChanges.pipe(

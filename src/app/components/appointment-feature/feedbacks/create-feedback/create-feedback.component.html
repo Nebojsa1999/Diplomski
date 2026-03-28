@@ -3,7 +3,10 @@
         <mat-card class="w-137">
             <mat-card-content>
                 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col space-y-4">
-                    <h2>{{ readOnly ? ('COMMON.YOUR_FEEDBACK' | translate) : ('COMMON.CREATE_FEEDBACK' | translate) }}</h2>
+                    <div class="flex flex-row justify-between items-center">
+                        <h2>{{ readOnly ? ('COMMON.YOUR_FEEDBACK' | translate) : ('COMMON.CREATE_FEEDBACK' | translate) }}</h2>
+                        <button mat-icon-button type="button" (click)="goBack()"><mat-icon>arrow_back</mat-icon></button>
+                    </div>
                     <div class="flex-col space-x-1 mb-4">
                         @for (grade of grades; track $index) {
                             <mat-icon

@@ -8,8 +8,10 @@ import { NotificationService } from "../../../../common/service/notification.ser
 import { catchError } from "rxjs";
 import { User } from "../../../../rest/user/user.model";
 import { FilterUserComponent, FilterUserParam } from "./filter-user/filter-user.component";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Location } from "@angular/common";
 import { ROUTE_REGISTER } from "../register/register.component";
+import { ROUTE_HOSPITALS } from "../../hospitals/list-hospitals/list-hospitals.component";
 
 export const ROUTE_USERS = 'users';
 
@@ -20,7 +22,7 @@ export const ROUTE_USERS = 'users';
     styleUrls: ['./list-users.component.scss']
 })
 export class ListUsersComponent {
-    displayedColumns: string[] = ['Name', 'Surname', 'Role', 'Update'];
+    displayedColumns: string[] = ['Name', 'Surname', 'Role', 'MedicalRecord', 'Schedule', 'Update', 'Delete'];
     currentUser = toSignal(this.authService.activeUser);
     users = signal<User[] | null>(null);
     searchFilter = signal<FilterUserParam | null>(null)
@@ -28,7 +30,14 @@ export class ListUsersComponent {
     constructor(private authService: AuthenticationService,
                 private api: ApiService,
                 private router: Router,
-                private notificationService: NotificationService) {
+                private route: ActivatedRoute,
+                private notificationService: NotificationService,
+                private location: Location) {
+        const hospitalId = this.route.snapshot.queryParams['hospitalId'];
+        if (hospitalId) {
+            this.searchFilter.set({ name: '', hospital: +hospitalId });
+        }
+
         effect(() => {
             const search = this.searchFilter();
 
@@ -54,7 +63,17 @@ export class ListUsersComponent {
         this.searchFilter.set(filter);
     }
 
+    goBack() { this.router.navigate([ROUTE_HOSPITALS]); }
+
     addUser() {
         this.router.navigate([ROUTE_REGISTER])
+    }
+
+    deleteUser(id: number) {
+        this.api.userApi.deleteUser(id).pipe(
+            catchError(error => this.notificationService.showError(error.message))
+        ).subscribe(() => {
+            this.users.update(items => items?.filter(u => u.id !== id) ?? []);
+        });
     }
 }

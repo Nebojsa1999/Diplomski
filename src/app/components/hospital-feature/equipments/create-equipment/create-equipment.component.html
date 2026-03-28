@@ -3,28 +3,31 @@
         <mat-card class="w-137">
             <mat-card-content>
                 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col space-y-4">
-                    <h2>Create an equipment</h2>
+                    <div class="flex flex-row justify-between items-center">
+                        <h2>{{ 'COMMON.CREATE_EQUIPMENT' | translate }}</h2>
+                        <button mat-icon-button type="button" (click)="goBack()"><mat-icon>arrow_back</mat-icon></button>
+                    </div>
                     <mat-form-field>
-                        <mat-label>Name</mat-label>
+                        <mat-label>{{ 'COMMON.NAME' | translate }}</mat-label>
                         <input matInput type="text" formControlName="name">
                         @if (this.form.get('name')?.hasError('required')) {
                             <mat-error>
-                                Name is required
+                                {{ 'COMMON.ERROR_NAME_REQUIRED' | translate }}
                             </mat-error>
                         }
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-label>Amount</mat-label>
+                        <mat-label>{{ 'COMMON.AMOUNT' | translate }}</mat-label>
                         <input matInput type="number" formControlName="amount">
                         @if (this.form.get('amount')?.hasError('required')) {
                             <mat-error>
-                                Amount is required
+                                {{ 'COMMON.ERROR_AMOUNT_REQUIRED' | translate }}
                             </mat-error>
                         }
                     </mat-form-field>
                     @if (hospital$ | async; as hospitals) {
                         <mat-form-field>
-                            <mat-label>Hospital</mat-label>
+                            <mat-label>{{ 'COMMON.HOSPITAL' | translate }}</mat-label>
                             <mat-select formControlName="hospital">
                                 @for (hospital of hospitals; track hospital.id) {
                                     <mat-option [value]="hospital">
@@ -34,7 +37,7 @@
                             </mat-select>
                             @if (this.form.get('hospital')?.hasError('required')) {
                                 <mat-error>
-                                    Hospital is required
+                                    {{ 'COMMON.ERROR_HOSPITAL_REQUIRED' | translate }}
                                 </mat-error>
                             }
                         </mat-form-field>

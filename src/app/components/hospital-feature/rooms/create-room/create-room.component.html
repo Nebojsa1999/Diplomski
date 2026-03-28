@@ -3,18 +3,21 @@
         <mat-card class="w-137">
             <mat-card-content>
                 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col space-y-4">
-                    <h2>Create a room</h2>
+                    <div class="flex flex-row justify-between items-center">
+                        <h2>{{ 'COMMON.CREATE_ROOM' | translate }}</h2>
+                        <button mat-icon-button type="button" (click)="goBack()"><mat-icon>arrow_back</mat-icon></button>
+                    </div>
                     <mat-form-field>
-                        <mat-label>Room number</mat-label>
+                        <mat-label>{{ 'COMMON.ROOM_NUMBER' | translate }}</mat-label>
                         <input matInput type="number" formControlName="roomNumber">
                         @if (this.form.get('roomNumber')?.hasError('required')) {
                             <mat-error>
-                                Room number is required
+                                {{ 'COMMON.ERROR_ROOM_NUMBER_REQUIRED' | translate }}
                             </mat-error>
                         }
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-label>Room types</mat-label>
+                        <mat-label>{{ 'COMMON.ROOM_TYPES' | translate }}</mat-label>
                         <mat-select formControlName="roomType">
                             @for (type of types; track type) {
                                 <mat-option [value]="type">
@@ -24,22 +27,22 @@
                         </mat-select>
                         @if (this.form.get('roomType')?.hasError('required')) {
                             <mat-error>
-                                Room type is required
+                                {{ 'COMMON.ERROR_ROOM_TYPE_REQUIRED' | translate }}
                             </mat-error>
                         }
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-label>Capacity</mat-label>
+                        <mat-label>{{ 'COMMON.CAPACITY' | translate }}</mat-label>
                         <input matInput type="number" formControlName="capacity">
                         @if (this.form.get('capacity')?.hasError('required')) {
                             <mat-error>
-                                Capacity is required
+                                {{ 'COMMON.ERROR_CAPACITY_REQUIRED' | translate }}
                             </mat-error>
                         }
                     </mat-form-field>
                     @if (hospital$ | async; as hospitals) {
                         <mat-form-field>
-                            <mat-label>Hospital</mat-label>
+                            <mat-label>{{ 'COMMON.HOSPITAL' | translate }}</mat-label>
                             <mat-select formControlName="hospital">
                                 @for (hospital of hospitals; track hospital.id) {
                                     <mat-option [value]="hospital">
@@ -49,7 +52,7 @@
                             </mat-select>
                             @if (this.form.get('hospital')?.hasError('required')) {
                                 <mat-error>
-                                    Hospital is required
+                                    {{ 'COMMON.ERROR_HOSPITAL_REQUIRED' | translate }}
                                 </mat-error>
                             }
                         </mat-form-field>

@@ -16,20 +16,44 @@
             <mat-card>
                 <table mat-table [dataSource]="hospitals">
                     <ng-container matColumnDef="Name">
-                        <th mat-header-cell *matHeaderCellDef> Name</th>
+                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.NAME' | translate }}</th>
                         <td mat-cell *matCellDef="let hospital"> {{ hospital.name }}</td>
                     </ng-container>
                     <ng-container matColumnDef="Address">
-                        <th mat-header-cell *matHeaderCellDef> Address</th>
+                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.ADDRESS' | translate }}</th>
                         <td mat-cell *matCellDef="let hospital">{{ hospital.address }}</td>
                     </ng-container>
                     <ng-container matColumnDef="WorkTime">
-                        <th mat-header-cell *matHeaderCellDef> Work Time (HH:mm)</th>
+                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.WORK_TIME' | translate }}</th>
                         <td mat-cell *matCellDef="let hospital">{{ removeSeconds(hospital.startTime) + '-' + removeSeconds(hospital.endTime) }}</td>
                     </ng-container>
                     <ng-container matColumnDef="Rating">
-                        <th mat-header-cell *matHeaderCellDef> Rating</th>
+                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.AVERAGE_RATING' | translate }}</th>
                         <td mat-cell *matCellDef="let hospital">{{ hospital.averageRating }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="Departments">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let hospital">
+                            <button [routerLink]="['/hospital/' + hospital.id + '/departments']" mat-icon-button>
+                                <mat-icon>apartment</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="Users">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let hospital">
+                            <button [routerLink]="['/users']" [queryParams]="{hospitalId: hospital.id}" mat-icon-button>
+                                <mat-icon>group</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="Rooms">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let hospital">
+                            <button [routerLink]="['/rooms']" [queryParams]="{hospitalId: hospital.id}" mat-icon-button>
+                                <mat-icon>meeting_room</mat-icon>
+                            </button>
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="Update">
                         <th mat-header-cell *matHeaderCellDef></th>
@@ -37,6 +61,14 @@
                             <button [routerLink]="['/hospital/' + hospital.id]" mat-icon-button>
                                 <mat-icon svgIcon="edit">
                                 </mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="Delete">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let hospital">
+                            <button mat-icon-button class="btn-error" (click)="deleteHospital(hospital.id)">
+                                <mat-icon>delete</mat-icon>
                             </button>
                         </td>
                     </ng-container>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Hospital, Room, RoomType } from "../../../../rest/hospital/hospital.model";
 import { map } from "rxjs/operators";
@@ -39,7 +40,7 @@ export class EditRoomComponent {
 
     types = Object.values(RoomType)
 
-    constructor(private apiService: ApiService, private notificationService: NotificationService, private router: Router, private route: ActivatedRoute) {
+    constructor(private apiService: ApiService, private notificationService: NotificationService, private router: Router, private route: ActivatedRoute, private location: Location) {
         this.form.get('hospital')?.disable()
         const id = this.route.snapshot.params['id']
         this.apiService.hospitalApi.getRoom(id).pipe(
@@ -69,6 +70,8 @@ export class EditRoomComponent {
             }
         })
     }
+
+    goBack() { this.location.back(); }
 
     onSubmit() {
         const roomNumber = this.form.get('roomNumber')?.value;

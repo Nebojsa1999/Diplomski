@@ -28,6 +28,22 @@ import { CreateRoomBookingComponent, ROUTE_CREATE_ROOM_BOOKING } from "./compone
 import { ListRoomBookingsComponent, ROUTE_ROOM_BOOKINGS } from "./components/appointment-feature/room-bookings/list-room-bookings/list-room-bookings.component";
 import { CreateFeedbackComponent, ROUTE_CREATE_FEEDBACK } from "./components/appointment-feature/feedbacks/create-feedback/create-feedback.component";
 import { ROUTE_SCHEDULE_APPOINTMENT, ScheduleAppointmentComponent } from "./components/appointment-feature/schedule-appointment/schedule-appointment.component";
+import { ListDepartmentsComponent, ROUTE_DEPARTMENTS } from "./components/hospital-feature/departments/list-departments/list-departments.component";
+import { CreateDepartmentComponent, ROUTE_CREATE_DEPARTMENT } from "./components/hospital-feature/departments/create-department/create-department.component";
+import { EditDepartmentComponent, ROUTE_EDIT_DEPARTMENT } from "./components/hospital-feature/departments/edit-department/edit-department.component";
+import { ListProceduresComponent, ROUTE_PROCEDURES } from "./components/hospital-feature/department-procedures/list-procedures/list-procedures.component";
+import { CreateProcedureComponent, ROUTE_CREATE_PROCEDURE } from "./components/hospital-feature/department-procedures/create-procedure/create-procedure.component";
+import { EditProcedureComponent, ROUTE_EDIT_PROCEDURE } from "./components/hospital-feature/department-procedures/edit-procedure/edit-procedure.component";
+import { ListDiagnosesComponent, ROUTE_DIAGNOSES } from "./components/hospital-feature/diagnoses/list-diagnoses/list-diagnoses.component";
+import { CreateDiagnosisComponent, ROUTE_CREATE_DIAGNOSIS } from "./components/hospital-feature/diagnoses/create-diagnosis/create-diagnosis.component";
+import { EditDiagnosisComponent, ROUTE_EDIT_DIAGNOSIS } from "./components/hospital-feature/diagnoses/edit-diagnosis/edit-diagnosis.component";
+import { ListMedicamentsComponent, ROUTE_MEDICAMENTS } from "./components/hospital-feature/medicaments/list-medicaments/list-medicaments.component";
+import { CreateMedicamentComponent, ROUTE_CREATE_MEDICAMENT } from "./components/hospital-feature/medicaments/create-medicament/create-medicament.component";
+import { EditMedicamentComponent, ROUTE_EDIT_MEDICAMENT } from "./components/hospital-feature/medicaments/edit-medicament/edit-medicament.component";
+import { UpsertMedicalRecordComponent, ROUTE_UPSERT_MEDICAL_RECORD } from "./components/hospital-feature/patient-medical-records/upsert-medical-record/upsert-medical-record.component";
+import { ListSchedulesComponent, ROUTE_SCHEDULES } from "./components/hospital-feature/doctor-schedules/list-schedules/list-schedules.component";
+import { CreateScheduleComponent, ROUTE_CREATE_SCHEDULE } from "./components/hospital-feature/doctor-schedules/create-schedule/create-schedule.component";
+import { EditScheduleComponent, ROUTE_EDIT_SCHEDULE } from "./components/hospital-feature/doctor-schedules/edit-schedule/edit-schedule.component";
 
 export const unauthenticatedOnlyGuard: CanActivateFn = (route, state) => {
     const router = inject(Router);
@@ -153,6 +169,78 @@ export const routes: Routes = [
             {
                 path: `${ROUTE_SCHEDULE_APPOINTMENT}`,
                 component: ScheduleAppointmentComponent,
+            },
+            {
+                path: `${ROUTE_HOSPITAL}/:id/${ROUTE_DEPARTMENTS}`,
+                component: ListDepartmentsComponent,
+            },
+            {
+                path: ROUTE_CREATE_DEPARTMENT,
+                component: CreateDepartmentComponent,
+            },
+            {
+                path: `${ROUTE_EDIT_DEPARTMENT}/:id`,
+                component: EditDepartmentComponent,
+            },
+            {
+                path: `department/:id/${ROUTE_PROCEDURES}`,
+                component: ListProceduresComponent,
+            },
+            {
+                path: ROUTE_CREATE_PROCEDURE,
+                component: CreateProcedureComponent,
+            },
+            {
+                path: `${ROUTE_EDIT_PROCEDURE}/:id`,
+                component: EditProcedureComponent,
+            },
+            {
+                path: ROUTE_DIAGNOSES,
+                component: ListDiagnosesComponent,
+            },
+            {
+                path: `department/:id/${ROUTE_DIAGNOSES}`,
+                component: ListDiagnosesComponent,
+            },
+            {
+                path: ROUTE_CREATE_DIAGNOSIS,
+                component: CreateDiagnosisComponent,
+            },
+            {
+                path: `${ROUTE_EDIT_DIAGNOSIS}/:id`,
+                component: EditDiagnosisComponent,
+            },
+            {
+                path: `department/:id/${ROUTE_MEDICAMENTS}`,
+                component: ListMedicamentsComponent,
+            },
+            {
+                path: ROUTE_CREATE_MEDICAMENT,
+                component: CreateMedicamentComponent,
+            },
+            {
+                path: `${ROUTE_EDIT_MEDICAMENT}/:id`,
+                component: EditMedicamentComponent,
+            },
+            {
+                path: `user/:id/${ROUTE_UPSERT_MEDICAL_RECORD}`,
+                component: UpsertMedicalRecordComponent,
+            },
+            {
+                path: ROUTE_SCHEDULES,
+                component: ListSchedulesComponent,
+            },
+            {
+                path: `doctor/:id/${ROUTE_SCHEDULES}`,
+                component: ListSchedulesComponent,
+            },
+            {
+                path: ROUTE_CREATE_SCHEDULE,
+                component: CreateScheduleComponent,
+            },
+            {
+                path: `${ROUTE_EDIT_SCHEDULE}/:id`,
+                component: EditScheduleComponent,
             },
             {
                 path: '**',

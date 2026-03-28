@@ -1,0 +1,85 @@
+<div class="flex flex-col justify-center h-full bg-no-repeat bg-cover bg-center">
+    <div class="w-full flex items-center justify-center flex-grow gap-x-12">
+        <mat-card class="w-207">
+            <mat-card-content>
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col space-y-4">
+                    <div class="flex flex-row justify-between items-center">
+                        <h2>Medical Record @if (firstName) { — {{ firstName }} {{ lastName }} }</h2>
+                        <button mat-icon-button type="button" (click)="goBack()"><mat-icon>arrow_back</mat-icon></button>
+                    </div>
+                    <div class="flex flex-row gap-x-8">
+                        <div class="flex flex-col flex-1 space-y-4">
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.BLOOD_TYPE' | translate }}</mat-label>
+                                <mat-select formControlName="bloodType">
+                                    @for (type of bloodTypes; track type) {
+                                        <mat-option [value]="type">{{ type }}</mat-option>
+                                    }
+                                </mat-select>
+                                @if (form.get('bloodType')?.hasError('required')) {
+                                    <mat-error>{{ 'COMMON.ERROR_BLOOD_TYPE_REQUIRED' | translate }}</mat-error>
+                                }
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.RH_FACTOR' | translate }}</mat-label>
+                                <mat-select formControlName="rhFactor">
+                                    @for (rh of rhFactors; track rh) {
+                                        <mat-option [value]="rh">{{ rh }}</mat-option>
+                                    }
+                                </mat-select>
+                                @if (form.get('rhFactor')?.hasError('required')) {
+                                    <mat-error>{{ 'COMMON.ERROR_RH_FACTOR_REQUIRED' | translate }}</mat-error>
+                                }
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.HEIGHT' | translate }}</mat-label>
+                                <input matInput type="number" formControlName="heightCm">
+                                @if (form.get('heightCm')?.hasError('required')) {
+                                    <mat-error>{{ 'COMMON.ERROR_HEIGHT_REQUIRED' | translate }}</mat-error>
+                                }
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.WEIGHT' | translate }}</mat-label>
+                                <input matInput type="number" formControlName="weightKg">
+                                @if (form.get('weightKg')?.hasError('required')) {
+                                    <mat-error>{{ 'COMMON.ERROR_WEIGHT_REQUIRED' | translate }}</mat-error>
+                                }
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.ALLERGIES' | translate }}</mat-label>
+                                <textarea matInput formControlName="allergies" rows="3"></textarea>
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.SPECIFIC_CONTRADICTIONS' | translate }}</mat-label>
+                                <textarea matInput formControlName="specificContradictions" rows="3"></textarea>
+                            </mat-form-field>
+                        </div>
+                        <div class="flex flex-col flex-1 space-y-4">
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.CHRONIC_DISEASES' | translate }}</mat-label>
+                                <textarea matInput formControlName="chronicDiseases" rows="3"></textarea>
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.PREVIOUS_HOSPITALIZATION' | translate }}</mat-label>
+                                <textarea matInput formControlName="previousHospitalization" rows="3"></textarea>
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.PREVIOUS_SURGERIES' | translate }}</mat-label>
+                                <textarea matInput formControlName="previousSurgeries" rows="3"></textarea>
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.FAMILY_HISTORY' | translate }}</mat-label>
+                                <textarea matInput formControlName="familyHistory" rows="3"></textarea>
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.LONG_TERM_THERAPY' | translate }}</mat-label>
+                                <textarea matInput formControlName="longTermTherapy" rows="3"></textarea>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <button [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.SUBMIT' | translate }}</button>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

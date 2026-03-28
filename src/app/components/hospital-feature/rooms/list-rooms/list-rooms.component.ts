@@ -7,9 +7,10 @@ import { NotificationService } from "../../../../common/service/notification.ser
 import { map } from "rxjs/operators";
 import { catchError } from "rxjs";
 import { FilterRoomParam, FilterRoomsComponent } from "./filter-rooms/filter-rooms.component";
-import { AppointmentStaus, Room } from "../../../../rest/hospital/hospital.model";
-import { Router } from "@angular/router";
+import { Room } from "../../../../rest/hospital/hospital.model";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ROUTE_CREATE_ROOM } from "../create-room/create-room.component";
+import { ROUTE_HOSPITALS } from "../../hospitals/list-hospitals/list-hospitals.component";
 import { Role } from "../../../../rest/user/user.model";
 import { ROUTE_ROOM_BOOKINGS } from "../../../appointment-feature/room-bookings/list-room-bookings/list-room-bookings.component";
 
@@ -25,7 +26,7 @@ export const ROUTE_ROOMS = 'rooms';
     styleUrl: './list-rooms.component.scss',
 })
 export class ListRoomsComponent {
-    displayedColumns: string[] = ['RoomNumber', 'Type', 'Capacity', 'Update', 'Actions'];
+    displayedColumns: string[] = ['RoomNumber', 'Type', 'Capacity', 'Update', 'Actions', 'Delete'];
     currentUser = toSignal(this.authService.activeUser);
     rooms = signal<Room[] | null>(null);
     searchFilter = signal<FilterRoomParam | null>(null)
@@ -34,7 +35,13 @@ export class ListRoomsComponent {
     constructor(private authService: AuthenticationService,
                 private api: ApiService,
                 private router: Router,
+                private route: ActivatedRoute,
                 private notificationService: NotificationService) {
+        const hospitalId = this.route.snapshot.queryParams['hospitalId'];
+        if (hospitalId) {
+            this.searchFilter.set({ roomNumber: '', hospital: +hospitalId });
+        }
+
         effect(() => {
             const search = this.searchFilter();
 
@@ -60,6 +67,10 @@ export class ListRoomsComponent {
         this.searchFilter.set(filter);
     }
 
+    goBack() {
+        this.router.navigate([ROUTE_HOSPITALS]);
+    }
+
     addRoom() {
         this.router.navigate([ROUTE_CREATE_ROOM])
     }
@@ -67,5 +78,13 @@ export class ListRoomsComponent {
 
     goToRooms(id: number) {
         this.router.navigate([id, ROUTE_ROOM_BOOKINGS])
+    }
+
+    deleteRoom(id: number) {
+        this.api.hospitalApi.deleteRoom(id).pipe(
+            catchError(error => this.notificationService.showError(error.message))
+        ).subscribe(() => {
+            this.rooms.update(items => items?.filter(r => r.id !== id) ?? []);
+        });
     }
 }

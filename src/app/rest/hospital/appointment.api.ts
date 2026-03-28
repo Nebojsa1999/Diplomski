@@ -186,6 +186,14 @@ export class AppointmentApi extends Api {
         return this.apiClient.get(`/api/hospitals/appointments/${appointmentId}/feedback`, config)
     }
 
+    deleteAppointment(id: number): Observable<ApiResponse<void>> {
+        const config: RequestConfig = {
+            headers: {accept: 'application/json'},
+            authenticated: true
+        };
+        return this.apiClient.delete(`/api/hospitals/appointments/${id}`, config);
+    }
+
     downloadReport(id: number): Observable<ApiResponse<Blob>> {
         const config: RequestConfig = {
             headers: {

@@ -161,7 +161,20 @@ export class ListAppointmentsComponent {
         this.dateRange.set({from: dateRange.from, to: dateRange.to})
     }
 
+    deleteAppointment(id: number) {
+        this.api.appointmentApi.deleteAppointment(id).pipe(
+            catchError(error => this.notificationService.showError(error.message))
+        ).subscribe(() => {
+            this.appointments.update(items => items?.filter(a => a.id !== id) ?? []);
+        });
+    }
+
     private sortAppointments(appointments: Appointment[]): Appointment[] {
-        return appointments?.sort((a, b) => new Date(a.dateAndTime).getTime() - new Date(b.dateAndTime).getTime()) ?? [];
+        return appointments?.sort((a, b) => {
+            const aScheduled = a.appointmentStatus === AppointmentStaus.SCHEDULED ? 0 : 1;
+            const bScheduled = b.appointmentStatus === AppointmentStaus.SCHEDULED ? 0 : 1;
+            if (aScheduled !== bScheduled) return aScheduled - bScheduled;
+            return new Date(a.dateAndTime).getTime() - new Date(b.dateAndTime).getTime();
+        }) ?? [];
     }
 }

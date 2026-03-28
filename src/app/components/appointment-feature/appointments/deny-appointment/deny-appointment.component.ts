@@ -1,5 +1,6 @@
 import { Component, effect, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { ApiService } from '../../../../common/service/api.service';
 import { shared } from "../../../../app.config";
 import { toSignal } from "@angular/core/rxjs-interop";
@@ -28,7 +29,8 @@ export class DenyAppointmentComponent {
                 private api: ApiService,
                 private route: ActivatedRoute,
                 private notificationService: NotificationService,
-                private authService: AuthenticationService
+                private authService: AuthenticationService,
+                private location: Location
     ) {
         effect(() => {
             const currentUser = this.currentUser();
@@ -45,6 +47,8 @@ export class DenyAppointmentComponent {
             }
         });
     }
+
+    goBack() { this.location.back(); }
 
     deny() {
         this.api.appointmentApi.deny({

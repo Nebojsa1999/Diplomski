@@ -72,3 +72,7 @@ input[type=number]::-webkit-outer-spin-button {
   max-height: 200px !important;
   overflow-y: auto !important;
 }
+
+.btn-error {
+  color: var(--mat-sys-error) !important;
+}

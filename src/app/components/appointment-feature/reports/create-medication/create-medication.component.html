@@ -3,49 +3,52 @@
         <mat-card class="w-137">
             <mat-card-content>
                 <form [formGroup]="form" class="flex flex-col space-y-4">
-                    <h2>Prescription</h2>
+                    <div class="flex flex-row justify-between items-center">
+                        <h2>{{ 'COMMON.PRESCRIPTION' | translate }}</h2>
+                        <button mat-icon-button type="button" (click)="goBack()"><mat-icon>arrow_back</mat-icon></button>
+                    </div>
                     <mat-form-field>
-                        <mat-label>Notes</mat-label>
+                        <mat-label>{{ 'COMMON.NOTES' | translate }}</mat-label>
                         <input matInput type="text" formControlName="notes">
                         @if (this.form.get('notes')?.hasError('required')) {
                             <mat-error>
-                                Notes are required
+                                {{ 'COMMON.ERROR_NOTES_REQUIRED' | translate }}
                             </mat-error>
                         }
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-label>Medication name</mat-label>
+                        <mat-label>{{ 'COMMON.MEDICATION_NAME' | translate }}</mat-label>
                         <input matInput type="text" formControlName="name">
                         @if (this.form.get('name')?.hasError('required')) {
                             <mat-error>
-                                Medication name is required
+                                {{ 'COMMON.ERROR_MEDICATION_NAME_REQUIRED' | translate }}
                             </mat-error>
                         }
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-label>Dosage</mat-label>
+                        <mat-label>{{ 'COMMON.DOSAGE' | translate }}</mat-label>
                         <input matInput type="text" formControlName="dosage">
                         @if (this.form.get('dosage')?.hasError('required')) {
                             <mat-error>
-                                Dosage is required
+                                {{ 'COMMON.ERROR_DOSAGE_REQUIRED' | translate }}
                             </mat-error>
                         }
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-label>Frequency</mat-label>
+                        <mat-label>{{ 'COMMON.FREQUENCY' | translate }}</mat-label>
                         <input matInput type="text" formControlName="frequency">
                         @if (this.form.get('frequency')?.hasError('required')) {
                             <mat-error>
-                                Frequency is required
+                                {{ 'COMMON.ERROR_FREQUENCY_REQUIRED' | translate }}
                             </mat-error>
                         }
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-label>Instructions</mat-label>
+                        <mat-label>{{ 'COMMON.INSTRUCTIONS' | translate }}</mat-label>
                         <input matInput type="text" formControlName="instructions">
                         @if (this.form.get('instructions')?.hasError('required')) {
                             <mat-error>
-                                Instructions are required
+                                {{ 'COMMON.ERROR_INSTRUCTIONS_REQUIRED' | translate }}
                             </mat-error>
                         }
                     </mat-form-field>

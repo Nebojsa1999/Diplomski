@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { shared } from "../../../../app.config";
 import { OperationType, Room, RoomType } from "../../../../rest/hospital/hospital.model";
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
@@ -49,8 +50,11 @@ export class CreateRoomBookingComponent {
     constructor(private apiService: ApiService,
                 private notificationService: NotificationService,
                 private router: Router,
-                private route: ActivatedRoute) {
+                private route: ActivatedRoute,
+                private location: Location) {
     }
+
+    goBack() { this.location.back(); }
 
     onSubmit() {
         const operationType = this.form.get('operationType')?.value;

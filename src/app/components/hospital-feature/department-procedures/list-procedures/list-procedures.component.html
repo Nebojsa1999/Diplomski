@@ -1,0 +1,59 @@
+@if (procedures(); as procedures) {
+    <div class="cp-content flex flex-col flex-1 justify-between gap-6 mt-8">
+        <div class="overflow-hidden flex flex-col gap-4 flex-1">
+            <div class="flex flex-row m-2 justify-between items-center">
+                <h2 style="font-weight: bold">{{ 'COMMON.PROCEDURES' | translate }}</h2>
+                <div class="flex flex-row gap-x-2">
+                <button mat-stroked-button (click)="goBack()">{{ 'COMMON.BACK' | translate }}</button>
+                <button mat-raised-button (click)="addProcedure()">
+                    <mat-icon>add</mat-icon>
+                    {{ 'COMMON.ADD_PROCEDURE' | translate }}
+                </button>
+                </div>
+            </div>
+            <mat-card class="flow-row">
+                <div class="flex-column items-start m-4">
+                    <app-filter-procedures (searchClicked)="searchClicked($event)"></app-filter-procedures>
+                </div>
+            </mat-card>
+            <mat-card>
+                <table mat-table [dataSource]="procedures">
+                    <ng-container matColumnDef="Name">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.NAME' | translate }}</th>
+                        <td mat-cell *matCellDef="let procedure">{{ procedure.name }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="Description">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DESCRIPTION' | translate }}</th>
+                        <td mat-cell *matCellDef="let procedure">{{ procedure.description }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="Price">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.PRICE' | translate }}</th>
+                        <td mat-cell *matCellDef="let procedure">{{ procedure.price }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="Department">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DEPARTMENT' | translate }}</th>
+                        <td mat-cell *matCellDef="let procedure">{{ procedure.department?.name }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="Update">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let procedure">
+                            <button [routerLink]="['/edit-procedure/' + procedure.id]" mat-icon-button>
+                                <mat-icon svgIcon="edit"></mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="Delete">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let procedure">
+                            <button mat-icon-button class="btn-error" (click)="deleteProcedure(procedure.id)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </mat-card>
+        </div>
+    </div>
+}

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Equipment, Hospital } from "../../../../rest/hospital/hospital.model";
 import { map } from "rxjs/operators";
@@ -37,7 +38,7 @@ export class EditEquipmentComponent {
         return a.id === b.id;
     };
 
-    constructor(private apiService: ApiService, private route: ActivatedRoute, private notificationService: NotificationService, private router: Router) {
+    constructor(private apiService: ApiService, private route: ActivatedRoute, private notificationService: NotificationService, private router: Router, private location: Location) {
         this.form.get('hospital')?.disable()
         const id = this.route.snapshot.params['id']
         this.apiService.hospitalApi.getEquipment(id).pipe(
@@ -52,6 +53,8 @@ export class EditEquipmentComponent {
             })
         })
     }
+
+    goBack() { this.location.back(); }
 
     onSubmit() {
         const name = this.form.get('name')?.value;
