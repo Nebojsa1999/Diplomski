@@ -11,13 +11,18 @@ export class UserApi extends Api {
 
     register(data: UserDto): Observable<ApiResponse<User>> {
         const config: RequestConfig = {
-            headers: {
-                accept: 'application/json',
-                contentType: 'application/json'
-            },
+            headers: { accept: 'application/json', contentType: 'application/json' },
             authenticated: true
         };
-        return this.apiClient.post("/api/users/register", data, config);
+        return this.apiClient.post("/api/users/add-user", data, config);
+    }
+
+    publicRegister(data: UserDto): Observable<ApiResponse<User>> {
+        const config: RequestConfig = {
+            headers: { accept: 'application/json', contentType: 'application/json' },
+            authenticated: false
+        };
+        return this.apiClient.post("/api/register", data, config);
     }
 
     updateUser(id: number, data: UpdateUserDto): Observable<ApiResponse<User>> {

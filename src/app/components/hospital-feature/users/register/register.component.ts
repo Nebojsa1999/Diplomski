@@ -78,7 +78,7 @@ export class RegisterComponent {
         const hospitalId = this.form.get('hospital')?.value;
         const doctorType = this.form.get('doctorType')?.value;
 
-        this.api.userApi.register({
+        const payload = {
             firstName: firstName as string,
             lastName: lastName as string,
             email: email as string,
@@ -94,7 +94,13 @@ export class RegisterComponent {
             role: role as Role,
             hospitalId: hospitalId as number,
             doctorType: doctorType as DoctorType
-        }).pipe(
+        };
+
+        const request$ = this.patientOnly
+            ? this.api.userApi.publicRegister(payload)
+            : this.api.userApi.register(payload);
+
+        request$.pipe(
             catchError(error => this.notificationService.showError(error))
         ).subscribe((user) => {
             if (user) {
