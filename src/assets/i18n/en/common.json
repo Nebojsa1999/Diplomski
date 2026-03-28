@@ -87,6 +87,7 @@
   "APPOINTMENT_EMPTY": "No appointments for this day",
   "PROFILE": "Profile",
   "REGISTER": "Register",
+  "REGISTER_ACCOUNT": "Register account",
   "EDIT_PROFILE": "Edit profile",
   "LOGOUT": "Logout",
   "NAME": "Name",

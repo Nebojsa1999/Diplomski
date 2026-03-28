@@ -13,7 +13,7 @@
                     <app-filter-diagnoses (searchClicked)="searchClicked($event)"></app-filter-diagnoses>
                 </div>
             </mat-card>
-            <mat-card>
+            <mat-card class="mobile-table-scroll">
                 <table mat-table [dataSource]="diagnoses">
                     <ng-container matColumnDef="Code">
                         <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.CODE' | translate }}</th>

@@ -31,8 +31,9 @@
                             }
                         </mat-form-field>
                         <!-- BUTTONS -->
-                        <div class="flex justify-between">
+                        <div class="flex justify-between items-center">
                             <button mat-flat-button (submit)="submit()" [disabled]="!form.valid">{{ 'COMMON.SUBMIT' | translate }}</button>
+                            <a routerLink="/register">{{ 'COMMON.REGISTER_ACCOUNT' | translate }}</a>
                         </div>
                     </form>
                 </div>

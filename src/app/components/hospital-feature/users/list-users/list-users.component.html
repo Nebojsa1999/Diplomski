@@ -16,7 +16,7 @@
                     <app-filter-user (searchClicked)="searchClicked($event)"></app-filter-user>
                 </div>
             </mat-card>
-            <mat-card>
+            <mat-card class="mobile-table-scroll">
                 <table mat-table [dataSource]="users">
                     <ng-container matColumnDef="Name">
                         <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.NAME' | translate }}</th>

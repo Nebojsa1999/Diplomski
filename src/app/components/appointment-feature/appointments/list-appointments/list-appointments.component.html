@@ -21,6 +21,7 @@
                 </div>
             </mat-card>
             @if (appointments.length) {
+                <div class="mobile-table-scroll">
                 <table mat-table [dataSource]="appointments.length ? appointments : placeHodler" class="mat-elevation-z8">
                     <ng-container matColumnDef="date">
                         <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DATE' | translate }}</th>
@@ -94,6 +95,7 @@
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
+                </div>
             }
         </div>
     </div>

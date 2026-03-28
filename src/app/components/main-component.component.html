@@ -1,9 +1,10 @@
 <mat-toolbar>
-    <div class="flex flex-row gap-x-32">
+    <!-- Desktop nav -->
+    <div class="hidden md:flex flex-row gap-x-8">
         @if (!authService.hasRole(Role.PATIENT)) {
             <button mat-button [routerLink]="['/hospitals']">
-            {{ 'COMMON.HOSPITAL' | translate }}
-        </button>
+                {{ 'COMMON.HOSPITAL' | translate }}
+            </button>
         }
         <button mat-button [routerLink]="['/appointments']">
             {{ 'COMMON.APPOINTMENTS' | translate }}
@@ -13,6 +14,30 @@
         </button>
     </div>
 
+    <!-- Mobile nav -->
+    <div class="flex md:hidden">
+        <button mat-icon-button [matMenuTriggerFor]="mobileMenu">
+            <mat-icon>menu</mat-icon>
+        </button>
+    </div>
+
+    <mat-menu #mobileMenu="matMenu">
+        <ng-template matMenuContent>
+            @if (!authService.hasRole(Role.PATIENT)) {
+                <a mat-menu-item [routerLink]="['/hospitals']">{{ 'COMMON.HOSPITAL' | translate }}</a>
+            }
+            <a mat-menu-item [routerLink]="['/appointments']">{{ 'COMMON.APPOINTMENTS' | translate }}</a>
+            <mat-divider></mat-divider>
+            @if (authService.hasRole(Role.ADMIN_SYSTEM)) {
+                <a mat-menu-item [routerLink]="['/register']">{{ 'COMMON.REGISTER' | translate }}</a>
+            }
+            @if (currentUser(); as currentUser) {
+                <a mat-menu-item [routerLink]="['/edit-profile/' + currentUser.id]">{{ 'COMMON.EDIT_PROFILE' | translate }}</a>
+            }
+            <a mat-menu-item [routerLink]="['/change-password']">{{ 'COMMON.CHANGE_PASSWORD' | translate }}</a>
+            <a mat-menu-item (click)="logout()">{{ 'COMMON.LOGOUT' | translate }}</a>
+        </ng-template>
+    </mat-menu>
 
     <mat-menu #profileMenu="matMenu" xPosition="before">
         <ng-template matMenuContent>

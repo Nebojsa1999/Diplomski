@@ -70,6 +70,12 @@ export const routes: Routes = [
         canActivate: [unauthenticatedOnlyGuard]
     },
     {
+        path: ROUTE_REGISTER,
+        component: RegisterComponent,
+        canActivate: [unauthenticatedOnlyGuard],
+        data: { patientOnly: true }
+    },
+    {
         path: '',
         component: MainComponentComponent,
         children: [
@@ -84,10 +90,6 @@ export const routes: Routes = [
             {
                 path: ROUTE_CREATE_HOSPITAL,
                 component: CreateHospitalComponent
-            },
-            {
-                path: ROUTE_REGISTER,
-                component: RegisterComponent
             },
             {
                 path: `${ROUTE_EDIT_PROFILE}/:id`,

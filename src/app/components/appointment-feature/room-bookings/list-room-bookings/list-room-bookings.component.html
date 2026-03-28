@@ -5,6 +5,7 @@
                 <div class="flex flex-row m-2 justify-between items-center">
                     <h2 style="font-weight: bold">{{ 'COMMON.BOOKINGS' | translate }}</h2>
                 </div>
+                <div class="mobile-table-scroll">
                 <table mat-table [dataSource]="bookings" class="mat-elevation-z8">
                     <ng-container matColumnDef="startTime">
                         <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.START_DATE' | translate }}</th>
@@ -37,6 +38,7 @@
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
+                </div>
             </div>
         </div>
     } @else {

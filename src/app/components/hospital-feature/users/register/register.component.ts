@@ -7,9 +7,10 @@ import { NotificationService } from "../../../../common/service/notification.ser
 import { catchError, of } from "rxjs";
 import { Gender, Role } from "../../../../rest/user/user.model";
 import { map } from "rxjs/operators";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ROUTE_USERS } from "../list-users/list-users.component";
 import { DoctorType } from "../../../../rest/hospital/hospital.model";
+import { ROUTE_SIGN_IN } from "../../../profile-feature/login/login.component";
 
 export const ROUTE_REGISTER = 'register';
 
@@ -20,6 +21,8 @@ export const ROUTE_REGISTER = 'register';
     styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
+    patientOnly = this.route.snapshot.data['patientOnly'] === true;
+
     form = new FormGroup({
         email: new FormControl<string>('', [Validators.email, Validators.required]),
         firstName: new FormControl<string>('', [Validators.required]),
@@ -32,9 +35,9 @@ export class RegisterComponent {
         personalId: new FormControl<string>('', [Validators.required]),
         occupation: new FormControl<string>('', [Validators.required]),
         occupationInfo: new FormControl<string>('', [Validators.required]),
-        role: new FormControl<Role | null>(null, [Validators.required]),
+        role: new FormControl<Role | null>(this.patientOnly ? Role.PATIENT : null, [Validators.required]),
         doctorType: new FormControl<DoctorType | null>(null),
-        hospital: new FormControl<number | null>(null, [Validators.required])
+        hospital: new FormControl<number | null>(null, this.patientOnly ? [] : [Validators.required])
     });
 
     genders = Object.values(Gender);
@@ -50,6 +53,7 @@ export class RegisterComponent {
     constructor(
         private api: ApiService,
         private router: Router,
+        private route: ActivatedRoute,
         private notificationService: NotificationService,
         private location: Location
     ) {
@@ -95,7 +99,11 @@ export class RegisterComponent {
         ).subscribe((user) => {
             if (user) {
                 this.notificationService.showSuccess('Successfully registered user.');
-                this.router.navigate([ROUTE_USERS]);
+                if (this.patientOnly) {
+                    this.router.navigate([ROUTE_SIGN_IN]);
+                } else {
+                    this.router.navigate([ROUTE_USERS]);
+                }
             }
         });
     }

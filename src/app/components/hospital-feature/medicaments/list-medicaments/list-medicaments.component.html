@@ -16,7 +16,7 @@
                     <app-filter-medicaments (searchClicked)="searchClicked($event)"></app-filter-medicaments>
                 </div>
             </mat-card>
-            <mat-card>
+            <mat-card class="mobile-table-scroll">
                 <table mat-table [dataSource]="medicaments">
                     <ng-container matColumnDef="Name">
                         <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.NAME' | translate }}</th>

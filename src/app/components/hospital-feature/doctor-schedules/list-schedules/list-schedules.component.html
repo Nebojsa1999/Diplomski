@@ -12,7 +12,7 @@
         </div>
 
 
-        <mat-card>
+        <mat-card class="mobile-table-scroll">
             <div class="flex flex-row items-center justify-center gap-x-4 py-3">
                 <button mat-icon-button (click)="prevWeek()" [disabled]="isCurrentWeek()">
                     <mat-icon>chevron_left</mat-icon>
@@ -75,7 +75,7 @@
         }
 
         @if (weekSchedules().length === 0 && schedules() !== null) {
-            <mat-card>
+            <mat-card class="mobile-table-scroll">
                 <div class="flex items-center justify-center py-8 text-gray-500">
                     {{ 'COMMON.NO_SCHEDULES_THIS_WEEK' | translate }}
                 </div>

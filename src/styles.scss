@@ -8,6 +8,11 @@ html, body {
   height: 100%;
 }
 
+mat-form-field {
+  width: 100%;
+  display: block !important;
+}
+
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -75,4 +80,37 @@ input[type=number]::-webkit-outer-spin-button {
 
 .btn-error {
   color: var(--mat-sys-error) !important;
+}
+
+@media (max-width: 768px) {
+  .w-137, .w-207, .w-127, .w-160 {
+    width: 100% !important;
+  }
+
+  .mobile-stack {
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+
+  .mobile-table-scroll {
+    overflow-x: auto !important;
+  }
+
+  .mobile-wrap {
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+
+  .cp-content {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  mat-card.w-137,
+  mat-card.w-207,
+  mat-card.w-127 {
+    width: 100% !important;
+    margin: 0.5rem !important;
+    box-sizing: border-box !important;
+  }
 }
