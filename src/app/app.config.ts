@@ -94,6 +94,7 @@ export const appConfig: ApplicationConfig = {
             useFactory: () => {
                 inject(IconRegistryService);
                 inject(ThemeService);
+                return () => {};
             },
         },
         {
