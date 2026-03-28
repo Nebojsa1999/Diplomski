@@ -42,4 +42,5 @@ testem.log
 Thumbs.db
 
 package-lock.json
-pnpm-lock.yamlsrc/config/config.json
+pnpm-lock.yaml
+src/config/config.json
