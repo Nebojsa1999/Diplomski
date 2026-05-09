@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, Routes } from '@angular/router';
 import { LoginComponent, ROUTE_SIGN_IN } from "./components/profile-feature/login/login.component";
-import { RegisterComponent, ROUTE_REGISTER } from "./components/hospital-feature/users/register/register.component";
+import { RegisterComponent, ROUTE_REGISTER, ROUTE_ADD_USER } from "./components/hospital-feature/users/register/register.component";
 import { ChangePasswordComponent, ROUTE_CHANGE_PASSWORD } from "./components/profile-feature/change-password/change-password.component";
 import { EditUserProfileComponent, ROUTE_EDIT_PROFILE } from "./components/hospital-feature/users/edit-user-profile/edit-user-profile.component";
 import { HospitalComponent, ROUTE_HOSPITAL } from './components/hospital-feature/hospitals/upsert-hospital/hospital.component';
@@ -90,6 +90,10 @@ export const routes: Routes = [
             {
                 path: ROUTE_CREATE_HOSPITAL,
                 component: CreateHospitalComponent
+            },
+            {
+                path: ROUTE_ADD_USER,
+                component: RegisterComponent,
             },
             {
                 path: `${ROUTE_EDIT_PROFILE}/:id`,
