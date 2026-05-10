@@ -3,10 +3,12 @@
         <div class="overflow-hidden flex flex-col gap-4 flex-1">
             <div class="flex flex-row m-2 justify-between items-center">
                 <h2 style="font-weight: bold">{{ 'COMMON.HOSPITALS' | translate }}</h2>
-                <button mat-raised-button (click)="addHospital()">
-                    <mat-icon>add</mat-icon>
-                    {{'COMMON.ADD_HOSPITAL' | translate}}
-                </button>
+                @if (!authService.hasRole(Role.PATIENT)) {
+                    <button mat-raised-button (click)="addHospital()">
+                        <mat-icon>add</mat-icon>
+                        {{'COMMON.ADD_HOSPITAL' | translate}}
+                    </button>
+                }
             </div>
             <mat-card class="flow-row ">
                 <div class="flex-column items-start m-4">
@@ -42,9 +44,15 @@
                     <ng-container matColumnDef="Users">
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let hospital">
-                            <button [routerLink]="['/users']" [queryParams]="{hospitalId: hospital.id}" mat-icon-button>
-                                <mat-icon>group</mat-icon>
-                            </button>
+                            @if (authService.hasRole(Role.PATIENT)) {
+                                <button [routerLink]="['/doctors']" [queryParams]="{hospitalId: hospital.id}" mat-icon-button [matTooltip]="'COMMON.DOCTORS' | translate">
+                                    <mat-icon>group</mat-icon>
+                                </button>
+                            } @else {
+                                <button [routerLink]="['/users']" [queryParams]="{hospitalId: hospital.id}" mat-icon-button>
+                                    <mat-icon>group</mat-icon>
+                                </button>
+                            }
                         </td>
                     </ng-container>
                     <ng-container matColumnDef="Rooms">

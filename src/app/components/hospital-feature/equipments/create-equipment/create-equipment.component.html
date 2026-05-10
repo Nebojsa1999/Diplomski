@@ -25,19 +25,19 @@
                             </mat-error>
                         }
                     </mat-form-field>
-                    @if (hospital$ | async; as hospitals) {
+                    @if (rooms$ | async; as rooms) {
                         <mat-form-field>
-                            <mat-label>{{ 'COMMON.HOSPITAL' | translate }}</mat-label>
-                            <mat-select formControlName="hospital">
-                                @for (hospital of hospitals; track hospital.id) {
-                                    <mat-option [value]="hospital">
-                                        {{ hospital.name }}
+                            <mat-label>{{ 'COMMON.ROOM' | translate }}</mat-label>
+                            <mat-select formControlName="room">
+                                @for (room of rooms; track room.id) {
+                                    <mat-option [value]="room">
+                                        {{ room.roomNumber }}
                                     </mat-option>
                                 }
                             </mat-select>
-                            @if (this.form.get('hospital')?.hasError('required')) {
+                            @if (this.form.get('room')?.hasError('required')) {
                                 <mat-error>
-                                    {{ 'COMMON.ERROR_HOSPITAL_REQUIRED' | translate }}
+                                    {{ 'COMMON.ERROR_ROOM_REQUIRED' | translate }}
                                 </mat-error>
                             }
                         </mat-form-field>

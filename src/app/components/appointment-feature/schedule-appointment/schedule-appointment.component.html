@@ -1,52 +1,149 @@
 <div class="flex flex-col justify-center h-full bg-no-repeat bg-cover bg-center">
     <div class="w-full flex items-center justify-center flex-grow gap-x-12">
-        <mat-card class="w-137">
-            <mat-dialog-content>
+        <mat-card class="w-237">
+            <mat-card-content>
+                <div class="flex flex-row justify-between items-center mb-2">
+                    <h2 style="font-weight: bold">{{ 'COMMON.SCHEDULE_APPOINTMENT' | translate }}</h2>
+                    <button mat-icon-button type="button" (click)="goBack()">
+                        <mat-icon>arrow_back</mat-icon>
+                    </button>
+                </div>
+
                 <mat-horizontal-stepper #stepper linear>
-                    <mat-step [stepControl]="doctorForm">
-                        <h1>{{ 'COMMON.SCHEDULE_APPOINTMENT_TITLE' | translate }}</h1>
-                        <h3>{{ 'COMMON.SCHEDULE_APPOINTMENT_CONTENT' | translate }}</h3>
-                        <div class="schedule-mat-cards">
-                            @for (scheduleType of scheduleTypes; track scheduleType) {
-                                <mat-card [style.color]="scheduleType.color.color"
-                                          (click)="selectScheduleType(scheduleType.type, stepper)"
-                                          [class.selected]="doctorForm.value.doctorType === scheduleType"
-                                          class="clickable-card">
 
-                                    <mat-card-content class="flex flex-col items-center py-6">
-                                        <mat-icon class="specialty-icon" [svgIcon]="scheduleType.icon.icon"></mat-icon>
-                                        <span class="mt-3 font-medium">{{ scheduleType.label.label }}</span>
-                                    </mat-card-content>
+                    <mat-step>
+                        <ng-template matStepLabel>{{ 'COMMON.HOSPITAL' | translate }}</ng-template>
+                        <h3 class="mt-3">{{ 'COMMON.SELECT_HOSPITAL' | translate }}</h3>
 
-                                </mat-card>
-                            }
+                        @if (isLoadingHospitals()) {
+                            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                        } @else {
+                            <div class="schedule-mat-cards mt-3">
+                                @for (hospital of hospitals(); track hospital.id) {
+                                    <mat-card
+                                            class="clickable-card"
+                                            [class.selected]="selectedHospital()?.id === hospital.id"
+                                            (click)="selectHospital(hospital, stepper)">
+                                        <mat-card-content
+                                                style="display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 8px;">
+                                            <mat-icon>local_hospital</mat-icon>
+                                            <span class="font-medium text-center">{{ hospital.name }}</span>
+                                            <span class="text-xs text-gray-500">{{ hospital.address }}</span>
+                                        </mat-card-content>
+                                    </mat-card>
+                                }
+                            </div>
+                        }
+                    </mat-step>
+
+                    <mat-step>
+                        <ng-template matStepLabel>{{ 'COMMON.DEPARTMENT' | translate }}</ng-template>
+                        <h3 class="mt-3">{{ selectedHospital()?.name }}</h3>
+
+                        @if (isLoadingDepartments()) {
+                            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                        } @else {
+                            <div class="schedule-mat-cards mt-3">
+                                @for (dept of departments(); track dept.id) {
+                                    <mat-card
+                                            class="clickable-card"
+                                            [class.selected]="selectedDepartment()?.id === dept.id"
+                                            (click)="selectDepartment(dept, stepper)">
+                                        <mat-card-content
+                                                style="display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 8px;">
+                                            <mat-icon>category</mat-icon>
+                                            <span class="font-medium text-center">{{ dept.name }}</span>
+                                        </mat-card-content>
+                                    </mat-card>
+                                }
+                            </div>
+                        }
+
+                        <div class="stepper-buttons">
+                            <button mat-button matStepperPrevious>{{ 'COMMON.BACK' | translate }}</button>
+                        </div>
+                    </mat-step>
+
+                    <mat-step>
+                        <ng-template matStepLabel>{{ 'COMMON.PROCEDURES' | translate }}</ng-template>
+                        <h3 class="mt-3">{{ selectedDepartment()?.name }}</h3>
+
+                        @if (isLoadingProcedures()) {
+                            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                        } @else {
+                            <div class="schedule-mat-cards mt-3">
+                                @for (proc of procedures(); track proc.id) {
+                                    <mat-card
+                                            class="clickable-card"
+                                            [class.selected]="selectedProcedure()?.id === proc.id"
+                                            (click)="selectProcedure(proc, stepper)">
+                                        <mat-card-content
+                                                style="display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 8px;">
+                                            <mat-icon>medical_services</mat-icon>
+                                            <span class="font-medium text-center">{{ proc.name }}</span>
+                                            <span class="text-xs text-gray-500">{{ proc.price }} din</span>
+                                        </mat-card-content>
+                                    </mat-card>
+                                }
+                                @if (procedures().length === 0) {
+                                    <p class="text-gray-400">{{ 'COMMON.NO_DOCTORS_FOUND' | translate }}</p>
+                                }
+                            </div>
+                        }
+
+                        <div class="stepper-buttons">
+                            <button mat-button matStepperPrevious>{{ 'COMMON.BACK' | translate }}</button>
                         </div>
                     </mat-step>
 
                     <mat-step>
                         <ng-template matStepLabel>{{ 'COMMON.SELECT_DATE' | translate }}</ng-template>
-                        <h1>{{ 'COMMON.SCHEDULE_APPOINTMENT_2_TITLE' | translate }}</h1>
-                        <h3>{{ 'COMMON.SCHEDULE_APPOINTMENT_2_CONTENT' | translate :{type: 'COMMON.' + doctorForm.get('doctorType')!.value | translate} }}</h3>
-                        <div class="flex gap-6 item-start">
+                        <h3 class="mt-3">{{ selectedProcedure()?.name }}</h3>
+
+                        <div class="flex gap-6 items-start mt-3">
                             <div class="calendar-container">
                                 <mat-calendar
                                         [selected]="selectedDate"
+                                        [minDate]="minDate"
                                         (selectedChange)="selectDate($event)">
                                 </mat-calendar>
                             </div>
-                            <div class="schedule-mat-cards">
-                                @if (appointments(); as appointments) {
-                                    @for (appointment of appointments; track appointment) {
-                                        <mat-card class="clickable-card" (click)="selectAppointment(appointment, stepper)">
-                                            {{ appointment.dateAndTime | date: 'medium' }}
-                                        </mat-card>
-                                    }
-                                    @if (appointments.length === 0) {
-                                        <div>{{ 'COMMON.APPOINTMENT_EMPTY' | translate }}</div>
-                                    }
+                            <div class="flex flex-col gap-2 flex-1">
+                                @if (isLoadingSlots()) {
+                                    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
                                 }
+                                <p class="text-sm font-semibold">{{ 'COMMON.AVAILABLE_SLOTS' | translate }}</p>
+                                <div class="slots-container">
+                                    <div class="schedule-mat-cards">
+                                        @for (slot of slots(); track slot.doctorId + slot.startTime) {
+                                            <mat-card
+                                                    class="clickable-card slot-card"
+                                                    [class.selected]="selectedSlot?.doctorId === slot.doctorId && selectedSlot?.startTime === slot.startTime"
+                                                    (click)="selectSlot(slot, stepper)">
+                                                <mat-card-content style="display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 8px;">
+                                                    <span class="font-semibold">{{ slot.startTime }}
+                                                        – {{ slot.endTime }}</span>
+                                                    <span class="text-xs text-gray-500">{{ slot.doctorName }}</span>
+                                                </mat-card-content>
+                                            </mat-card>
+                                        }
+                                        @if (slots().length === 0 && selectedDate && !isLoadingSlots()) {
+                                            <div class="flex flex-col items-center gap-2 text-gray-400 p-4">
+                                                <mat-icon>event_busy</mat-icon>
+                                                <span>{{ 'COMMON.APPOINTMENT_EMPTY' | translate }}</span>
+                                            </div>
+                                        }
+                                        @if (!selectedDate) {
+                                            <div class="flex items-center gap-2 text-gray-400 p-4">
+                                                <mat-icon>touch_app</mat-icon>
+                                                <span>{{ 'COMMON.SELECT_DATE_TO_SEE_SLOTS' | translate }}</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                         <div class="stepper-buttons">
                             <button mat-button matStepperPrevious>{{ 'COMMON.BACK' | translate }}</button>
                         </div>
@@ -55,17 +152,64 @@
                     <mat-step>
                         <ng-template matStepLabel>{{ 'COMMON.CONFIRM' | translate }}</ng-template>
 
-                        <div> {{ 'COMMON.DOCTOR_NAME' | translate }}: {{ selectedAppointment?.doctor?.firstName + ' ' + selectedAppointment?.doctor?.lastName }}</div>
-                        <div>{{ 'COMMON.DOCTOR_SPECIALITY' | translate }}: {{ 'COMMON.' + selectedAppointment?.doctor?.doctorType | translate }}</div>
-                        <div>{{ 'COMMON.DATE' | translate }}: {{ selectedAppointment?.dateAndTime | date: 'medium' }}</div>
+                        @if (selectedSlot) {
+                            <div class="confirm-card flex flex-col gap-3 p-4 my-4">
+                                <div class="flex items-center gap-2">
+                                    <mat-icon>local_hospital</mat-icon>
+                                    <div>
+                                        <strong>{{ 'COMMON.HOSPITAL' | translate }}</strong>
+                                        <p class="m-0">{{ selectedHospital()?.name }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <mat-icon>category</mat-icon>
+                                    <div>
+                                        <strong>{{ 'COMMON.DEPARTMENT' | translate }}</strong>
+                                        <p class="m-0">{{ selectedDepartment()?.name }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <mat-icon>medical_services</mat-icon>
+                                    <div>
+                                        <strong>{{ 'COMMON.PROCEDURES' | translate }}</strong>
+                                        <p class="m-0">{{ selectedProcedure()?.name }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <mat-icon>person</mat-icon>
+                                    <div>
+                                        <strong>{{ 'COMMON.DOCTOR_NAME' | translate }}</strong>
+                                        <p class="m-0">{{ selectedSlot.doctorName }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <mat-icon>event</mat-icon>
+                                    <div>
+                                        <strong>{{ 'COMMON.DATE' | translate }}</strong>
+                                        <p class="m-0">{{ selectedSlot.date }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <mat-icon>timer</mat-icon>
+                                    <div>
+                                        <strong>{{ 'COMMON.TIME' | translate }}</strong>
+                                        <p class="m-0">{{ selectedSlot.startTime }} – {{ selectedSlot.endTime }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
                         <div class="stepper-buttons">
                             <button mat-button matStepperPrevious>{{ 'COMMON.BACK' | translate }}</button>
-                            <button mat-button color="primary" (click)="confirm(selectedAppointment)">{{ 'COMMON.CONFIRM' | translate }}</button>
+                            <button mat-flat-button color="primary" (click)="confirm()">
+                                <mat-icon>check_circle</mat-icon>
+                                {{ 'COMMON.CONFIRM' | translate }}
+                            </button>
                         </div>
                     </mat-step>
 
                 </mat-horizontal-stepper>
-            </mat-dialog-content>
+            </mat-card-content>
         </mat-card>
     </div>
 </div>

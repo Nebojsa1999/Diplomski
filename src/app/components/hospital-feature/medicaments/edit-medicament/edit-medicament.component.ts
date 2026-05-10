@@ -2,9 +2,8 @@ import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { shared } from "../../../../app.config";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Department } from "../../../../rest/hospital/hospital.model";
 import { ApiService } from "../../../../common/service/api.service";
-import { catchError, of } from "rxjs";
+import { catchError } from "rxjs";
 import { map } from "rxjs/operators";
 import { NotificationService } from "../../../../common/service/notification.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -23,18 +22,9 @@ export class EditMedicamentComponent {
         name: new FormControl<string | null>('', [Validators.required]),
         instructions: new FormControl<string | null>(null, [Validators.required]),
         dosage: new FormControl<string | null>(null, [Validators.required]),
-        department: new FormControl<Department | null>(null, [Validators.required])
+        department: new FormControl<string | null>(null)
     });
-    departments$ = this.apiService.hospitalApi.listDepartments().pipe(
-        map(response => response.data),
-        catchError(() => of([]))
-    );
     private departmentId: number | null = null;
-
-    compareDepartmentById = (a: Department | null, b: Department | null): boolean => {
-        if (!a || !b) return a === b;
-        return a.id === b.id;
-    };
 
     constructor(private apiService: ApiService, private route: ActivatedRoute, private notificationService: NotificationService, private router: Router, private location: Location) {
         this.form.get('department')?.disable();
@@ -43,12 +33,12 @@ export class EditMedicamentComponent {
             map(response => response.data),
             catchError(error => this.notificationService.showError(error))
         ).subscribe((medicament) => {
-            this.departmentId = medicament?.department?.id ?? null;
+            this.departmentId = medicament?.departmentName?.id ?? null;
             this.form.patchValue({
                 name: medicament?.name,
                 instructions: medicament?.instructions,
                 dosage: medicament?.dosage,
-                department: medicament?.department
+                department: medicament?.departmentName?.name ?? null
             });
         });
     }

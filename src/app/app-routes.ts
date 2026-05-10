@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, Routes } from '@angular/router';
 import { LoginComponent, ROUTE_SIGN_IN } from "./components/profile-feature/login/login.component";
-import { RegisterComponent, ROUTE_REGISTER, ROUTE_ADD_USER } from "./components/hospital-feature/users/register/register.component";
+import { RegisterComponent, ROUTE_REGISTER, ROUTE_CREATE_USER } from "./components/hospital-feature/users/register/register.component";
 import { ChangePasswordComponent, ROUTE_CHANGE_PASSWORD } from "./components/profile-feature/change-password/change-password.component";
 import { EditUserProfileComponent, ROUTE_EDIT_PROFILE } from "./components/hospital-feature/users/edit-user-profile/edit-user-profile.component";
 import { HospitalComponent, ROUTE_HOSPITAL } from './components/hospital-feature/hospitals/upsert-hospital/hospital.component';
@@ -40,10 +40,14 @@ import { EditDiagnosisComponent, ROUTE_EDIT_DIAGNOSIS } from "./components/hospi
 import { ListMedicamentsComponent, ROUTE_MEDICAMENTS } from "./components/hospital-feature/medicaments/list-medicaments/list-medicaments.component";
 import { CreateMedicamentComponent, ROUTE_CREATE_MEDICAMENT } from "./components/hospital-feature/medicaments/create-medicament/create-medicament.component";
 import { EditMedicamentComponent, ROUTE_EDIT_MEDICAMENT } from "./components/hospital-feature/medicaments/edit-medicament/edit-medicament.component";
+import { ListDepartmentNamesComponent, ROUTE_DEPARTMENT_NAMES } from "./components/hospital-feature/department-names/list-department-names/list-department-names.component";
 import { UpsertMedicalRecordComponent, ROUTE_UPSERT_MEDICAL_RECORD } from "./components/hospital-feature/patient-medical-records/upsert-medical-record/upsert-medical-record.component";
 import { ListSchedulesComponent, ROUTE_SCHEDULES } from "./components/hospital-feature/doctor-schedules/list-schedules/list-schedules.component";
 import { CreateScheduleComponent, ROUTE_CREATE_SCHEDULE } from "./components/hospital-feature/doctor-schedules/create-schedule/create-schedule.component";
 import { EditScheduleComponent, ROUTE_EDIT_SCHEDULE } from "./components/hospital-feature/doctor-schedules/edit-schedule/edit-schedule.component";
+import { DoctorListComponent, ROUTE_DOCTOR_LIST } from "./components/appointment-feature/doctor-list/doctor-list.component";
+import { DoctorProfileComponent, ROUTE_DOCTOR_PROFILE } from "./components/appointment-feature/doctor-profile/doctor-profile.component";
+import { DoctorDashboardComponent, ROUTE_DOCTOR_DASHBOARD } from "./components/appointment-feature/appointments/doctor-dashboard/doctor-dashboard.component";
 
 export const unauthenticatedOnlyGuard: CanActivateFn = (route, state) => {
     const router = inject(Router);
@@ -90,10 +94,6 @@ export const routes: Routes = [
             {
                 path: ROUTE_CREATE_HOSPITAL,
                 component: CreateHospitalComponent
-            },
-            {
-                path: ROUTE_ADD_USER,
-                component: RegisterComponent,
             },
             {
                 path: `${ROUTE_EDIT_PROFILE}/:id`,
@@ -155,7 +155,6 @@ export const routes: Routes = [
                 path: `${ROUTE_SINGLE_APPOINTMENT}/:date/:month/:year`,
                 component: SingleAppointmentComponent
             },
-
             {
                 path: `:id/${ROUTE_CREATE_MEDICATION}`,
                 component: CreateMedicationComponent
@@ -181,7 +180,7 @@ export const routes: Routes = [
                 component: ListDepartmentsComponent,
             },
             {
-                path: ROUTE_CREATE_DEPARTMENT,
+                path: `:id/${ROUTE_CREATE_DEPARTMENT}`,
                 component: CreateDepartmentComponent,
             },
             {
@@ -201,12 +200,21 @@ export const routes: Routes = [
                 component: EditProcedureComponent,
             },
             {
+                path: ROUTE_DEPARTMENT_NAMES,
+                component: ListDepartmentNamesComponent,
+            },
+            {
                 path: ROUTE_DIAGNOSES,
                 component: ListDiagnosesComponent,
             },
             {
                 path: `department/:id/${ROUTE_DIAGNOSES}`,
                 component: ListDiagnosesComponent,
+            },
+            {
+                path: `department-name/:id/${ROUTE_DIAGNOSES}`,
+                component: ListDiagnosesComponent,
+                data: { byDepartmentName: true }
             },
             {
                 path: ROUTE_CREATE_DIAGNOSIS,
@@ -219,6 +227,11 @@ export const routes: Routes = [
             {
                 path: `department/:id/${ROUTE_MEDICAMENTS}`,
                 component: ListMedicamentsComponent,
+            },
+            {
+                path: `department-name/:id/${ROUTE_MEDICAMENTS}`,
+                component: ListMedicamentsComponent,
+                data: { byDepartmentName: true }
             },
             {
                 path: ROUTE_CREATE_MEDICAMENT,
@@ -249,9 +262,25 @@ export const routes: Routes = [
                 component: EditScheduleComponent,
             },
             {
+                path: ROUTE_CREATE_USER,
+                component: RegisterComponent,
+            },
+            {
+                path: ROUTE_DOCTOR_LIST,
+                component: DoctorListComponent,
+            },
+            {
+                path: `${ROUTE_DOCTOR_PROFILE}/:id`,
+                component: DoctorProfileComponent,
+            },
+            {
+                path: ROUTE_DOCTOR_DASHBOARD,
+                component: DoctorDashboardComponent,
+            },
+            {
                 path: '**',
                 redirectTo: ROUTE_APPOINTMENTS
-            }
+            },
         ],
         canActivate: [authenticatedOnlyGuard],
     },

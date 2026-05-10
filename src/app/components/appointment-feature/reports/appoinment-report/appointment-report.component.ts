@@ -4,13 +4,13 @@ import { ApiService } from '../../../../common/service/api.service';
 import { shared } from "../../../../app.config";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { AuthenticationService } from "../../../../common/service/authentication.service";
-import { BloodType, Equipment } from "../../../../rest/hospital/hospital.model";
+import { BloodType, Diagnosis, RhFactor } from "../../../../rest/hospital/hospital.model";
 import { map } from "rxjs/operators";
-import { catchError } from "rxjs";
+import { catchError, of } from "rxjs";
 import { NotificationService } from "../../../../common/service/notification.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ROUTE_CREATE_MEDICATION } from "../create-medication/create-medication.component";
-import { TranslateService } from "@ngx-translate/core";
+import { ROUTE_APPOINTMENTS } from "../../appointments/list-appointments/list-appointments.component";
 
 export const ROUTE_APPOINTMENT_REPORT = 'appointment-report';
 
@@ -23,51 +23,105 @@ export const ROUTE_APPOINTMENT_REPORT = 'appointment-report';
 export class AppointmentReportComponent {
     form = new FormGroup({
         bloodType: new FormControl<string>('', Validators.required),
-        pastMedicalHistory: new FormControl<string>('', Validators.required),
-        allergies: new FormControl<string>('', Validators.required),
-        familyHistory: new FormControl<string>('', Validators.required),
+        rhFactor: new FormControl<string>(''),
+        heightCm: new FormControl<number | null>(null),
+        weightKg: new FormControl<number | null>(null),
+        chronicDiseases: new FormControl<string>(''),
+        previousHospitalization: new FormControl<string>(''),
+        previousSurgeries: new FormControl<string>(''),
+        allergies: new FormControl<string>(''),
+        familyHistory: new FormControl<string>(''),
+        longThermTherapy: new FormControl<string>(''),
+        specificContradictions: new FormControl<string>(''),
         bloodPressure: new FormControl<string>('', Validators.required),
         hearthRate: new FormControl<string>('', Validators.required),
         diagnosis: new FormControl<string>('', Validators.required),
-    })
+        doctorsComment: new FormControl<string>(''),
+    });
+
     currentUser = toSignal(this.authService.activeUser);
-    equipment = signal<Equipment[] | null>(null);
+    diagnoses = signal<Diagnosis[]>([]);
+    isLoading = signal(false);
+    bloodTypes = Object.values(BloodType);
+    rhFactors = Object.values(RhFactor);
 
     constructor(
         private authService: AuthenticationService,
         private notificationService: NotificationService,
         private api: ApiService,
-        private translateService: TranslateService,
         private route: ActivatedRoute,
         private router: Router
     ) {
+        const appointmentId = this.route.snapshot.params['id'];
+        this.api.appointmentApi.getAppointment(appointmentId).pipe(
+            map(r => r.data),
+            catchError(() => of(null))
+        ).subscribe(appointment => {
+            const departmentName = appointment?.doctor?.department?.name;
+            this.api.hospitalApi.listDiagnoses(undefined, departmentName).pipe(
+                map(r => r.data ?? []),
+                catchError(() => of([]))
+            ).subscribe(d => this.diagnoses.set(d as Diagnosis[]));
+
+            if (!appointment?.patient?.id) return;
+            this.api.hospitalApi.getMedicalRecordByPatient(appointment.patient.id).pipe(
+                map(r => r.data),
+                catchError(() => of(null))
+            ).subscribe(record => {
+                if (!record) return;
+                this.form.patchValue({
+                    bloodType: record.bloodType,
+                    rhFactor: record.rhFactor,
+                    heightCm: record.heightCm,
+                    weightKg: record.weightKg,
+                    chronicDiseases: record.chronicDiseases ?? '',
+                    previousHospitalization: record.previousHospitalization ?? '',
+                    previousSurgeries: record.previousSurgeries ?? '',
+                    allergies: record.allergies ?? '',
+                    familyHistory: record.familyHistory ?? '',
+                    longThermTherapy: record.longTermTherapy ?? '',
+                    specificContradictions: record.specificContradictions ?? '',
+                });
+            });
+        });
     }
 
-    onSubmit() {
-        const bloodType = this.form.get('bloodType')?.value;
-        const pastMedicalHistory = this.form.get('pastMedicalHistory')?.value;
-        const allergies = this.form.get('allergies')?.value;
-        const familyHistory = this.form.get('familyHistory')?.value;
-        const bloodPressure = this.form.get('bloodPressure')?.value;
-        const hearthRate = this.form.get('hearthRate')?.value;
-        const diagnosis = this.form.get('diagnosis')?.value;
+    onSubmit(goToPrescription: boolean) {
+        this.isLoading.set(true);
+        const formValue = this.form.value;
+
         this.api.appointmentApi.createAppointmentReport(this.route.snapshot.params['id'], {
-            bloodType: bloodType as BloodType,
-            pastMedicalHistory: pastMedicalHistory as string,
-            allergies: allergies as string,
-            familyHistory: familyHistory as string,
-            bloodPressure: bloodPressure as string,
-            hearthRate: hearthRate as string,
-            diagnosis: diagnosis as string,
+            bloodType: formValue.bloodType as BloodType,
+            rhFactor: formValue.rhFactor as string,
+            heightCm: formValue.heightCm as number,
+            weightKg: formValue.weightKg as number,
+            chronicDiseases: formValue.chronicDiseases as string,
+            previousHospitalization: formValue.previousHospitalization as string,
+            previousSurgeries: formValue.previousSurgeries as string,
+            allergies: formValue.allergies as string,
+            familyHistory: formValue.familyHistory as string,
+            longThermTherapy: formValue.longThermTherapy as string,
+            specificContradictions: formValue.specificContradictions as string,
+            bloodPressure: formValue.bloodPressure as string,
+            hearthRate: formValue.hearthRate as string,
+            diagnosis: formValue.diagnosis as string,
+            doctorsComment: formValue.doctorsComment as string,
         }).pipe(
             map(response => response.data),
-            catchError((error) => this.notificationService.showError(error))
+            catchError((error) => {
+                this.isLoading.set(false);
+                return this.notificationService.showError(error);
+            })
         ).subscribe((response) => {
+            this.isLoading.set(false);
             if (response) {
                 this.notificationService.showSuccess("Successfully created report.");
-                this.router.navigate([this.route.snapshot.params['id'], ROUTE_CREATE_MEDICATION])
+                if (goToPrescription) {
+                    this.router.navigate([this.route.snapshot.params['id'], ROUTE_CREATE_MEDICATION]);
+                } else {
+                    this.router.navigate([ROUTE_APPOINTMENTS]);
+                }
             }
         });
     }
 }
-

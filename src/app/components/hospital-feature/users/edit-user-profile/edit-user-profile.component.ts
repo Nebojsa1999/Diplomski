@@ -41,11 +41,10 @@ export class EditUserProfileComponent {
         map(response => response.data),
         catchError(error => of([]))
     )
+    Role = Role;
 
-    compareHospitalById = (a: Hospital | null, b: Hospital | null): boolean => {
-        if (!a || !b) {
-            return a === b;
-        }
+    compareById = (a: { id: number } | null, b: { id: number } | null): boolean => {
+        if (!a || !b) return a === b;
         return a.id === b.id;
     };
 
@@ -61,7 +60,7 @@ export class EditUserProfileComponent {
                 this.form.patchValue({
                     firstName: user.firstName,
                     lastName: user.lastName,
-                    address: user.lastName,
+                    address: user.address,
                     city: user.city,
                     country: user.country,
                     phone: user.phone,
@@ -70,8 +69,8 @@ export class EditUserProfileComponent {
                     occupationInfo: user.occupationInfo,
                     gender: user.gender as Gender,
                     role: user.role,
-                    hospital: user.hospital
-                })
+                    hospital: user.hospital,
+                });
             }
         });
     }
@@ -101,7 +100,7 @@ export class EditUserProfileComponent {
                 personalId: personalId as string,
                 occupation: occupation as string,
                 occupationInfo: occupationInfo as string,
-                gender: gender as Gender
+                gender: gender as Gender,
             }).pipe(
                 map(response => response.data),
                 catchError(error => this.notificationService.showError(error.message))

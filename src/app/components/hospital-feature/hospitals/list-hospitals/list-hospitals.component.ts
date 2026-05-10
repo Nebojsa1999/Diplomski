@@ -10,6 +10,7 @@ import { catchError } from "rxjs";
 import { FilterHospitalComponent } from "./filter-hospital/filter-hospital/filter-hospital.component";
 import { Router } from "@angular/router";
 import { ROUTE_CREATE_HOSPITAL } from "../create-hospital/create-hospital.component";
+import { Role } from "../../../../rest/user/user.model";
 
 export const ROUTE_HOSPITALS = 'hospitals';
 
@@ -20,12 +21,19 @@ export const ROUTE_HOSPITALS = 'hospitals';
     styleUrl: './list-hospitals.component.scss',
 })
 export class ListHospitalsComponent {
-    displayedColumns: string[] = ['Name', 'Address', 'WorkTime', 'Rating', 'Departments', 'Users', 'Rooms', 'Update', 'Delete'];
+    Role = Role;
     currentUser = toSignal(this.authService.activeUser);
+
+    get displayedColumns(): string[] {
+        if (this.authService.hasRole(Role.PATIENT)) {
+            return ['Name', 'Address', 'WorkTime', 'Rating', 'Users'];
+        }
+        return ['Name', 'Address', 'WorkTime', 'Rating', 'Departments', 'Users', 'Rooms', 'Update', 'Delete'];
+    }
     hospitals = signal<Hospital[] | null>(null);
     searchParameter = signal<string | null>(null);
 
-    constructor(private authService: AuthenticationService, private api: ApiService, private notificationService: NotificationService, private router: Router) {
+    constructor(public authService: AuthenticationService, private api: ApiService, private notificationService: NotificationService, private router: Router) {
         effect(() => {
             const currentUser = this.currentUser();
             const searchParameter = this.searchParameter()
@@ -52,6 +60,7 @@ export class ListHospitalsComponent {
         this.api.hospitalApi.deleteHospital(id).pipe(
             catchError(error => this.notificationService.showError(error.message))
         ).subscribe(() => {
+            this.notificationService.showSuccess('Hospital deleted successfully.');
             this.hospitals.update(items => items?.filter(h => h.id !== id) ?? []);
         });
     }

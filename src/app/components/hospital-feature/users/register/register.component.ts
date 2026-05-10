@@ -4,16 +4,16 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ApiService } from "../../../../common/service/api.service";
 import { shared } from "../../../../app.config";
 import { NotificationService } from "../../../../common/service/notification.service";
-import { catchError, of } from "rxjs";
+import { catchError, of, startWith, switchMap } from "rxjs";
 import { Gender, Role } from "../../../../rest/user/user.model";
 import { map } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ROUTE_USERS } from "../list-users/list-users.component";
-import { DoctorType } from "../../../../rest/hospital/hospital.model";
 import { ROUTE_SIGN_IN } from "../../../profile-feature/login/login.component";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 export const ROUTE_REGISTER = 'register';
-export const ROUTE_ADD_USER = 'add-user';
+export const ROUTE_CREATE_USER = 'create-user';
 
 @Component({
     selector: 'app-register',
@@ -34,21 +34,32 @@ export class RegisterComponent {
         phone: new FormControl<string>('', [Validators.required]),
         gender: new FormControl<Gender | null>(null, [Validators.required]),
         personalId: new FormControl<string>('', [Validators.required]),
-        occupation: new FormControl<string>('', [Validators.required]),
-        occupationInfo: new FormControl<string>('', [Validators.required]),
-        role: new FormControl<Role | null>(this.patientOnly ? Role.PATIENT : null, [Validators.required]),
-        doctorType: new FormControl<DoctorType | null>(null),
-        hospital: new FormControl<number | null>(null, this.patientOnly ? [] : [Validators.required])
+        role: new FormControl<Role | null>(this.patientOnly ? Role.PATIENT : Role.DOCTOR, [Validators.required]),
+        doctorType: new FormControl<string | null>(null, this.patientOnly ? [] : [Validators.required]),
+        hospital: new FormControl<number | null>(
+            this.route.snapshot.queryParams['hospitalId'] ? +this.route.snapshot.queryParams['hospitalId'] : null,
+            this.patientOnly ? [] : [Validators.required]
+        )
     });
 
     genders = Object.values(Gender);
-    roles = Object.values(Role).filter(role => role != Role.ADMIN_SYSTEM);
-    doctorTypes = Object.values(DoctorType)
+    roles = Object.values(Role).filter(role => role == Role.DOCTOR);
     Role = Role;
 
     hospitals$ = this.api.hospitalApi.list().pipe(
         map(response => response.data),
         catchError(error => of([]))
+    )
+    doctorTypes$ = this.form.get('hospital')!.valueChanges.pipe(
+        startWith(this.form.get('hospital')!.value),
+        takeUntilDestroyed(),
+        switchMap(hospitalId => hospitalId
+            ? this.api.hospitalApi.listDepartments(undefined, hospitalId).pipe(
+                map(response => response.data),
+                catchError(() => of([]))
+              )
+            : of([])
+        )
     )
 
     constructor(
@@ -58,9 +69,28 @@ export class RegisterComponent {
         private notificationService: NotificationService,
         private location: Location
     ) {
+        this.form.get('role')?.valueChanges.pipe(
+            takeUntilDestroyed()
+        ).subscribe((role) => {
+            const hospital = this.form.get('hospital');
+            const doctorType = this.form.get('doctorType');
+
+            if (role === Role.PATIENT) {
+                hospital?.clearValidators();
+                doctorType?.clearValidators();
+            } else if (role === Role.DOCTOR) {
+                hospital?.setValidators([Validators.required]);
+                doctorType?.setValidators([Validators.required]);
+            }
+
+            hospital?.updateValueAndValidity();
+            doctorType?.updateValueAndValidity();
+        });
     }
 
-    goBack() { this.location.back(); }
+    goBack() {
+        this.location.back();
+    }
 
     onSubmit() {
         const email = this.form.get('email')?.value;
@@ -72,14 +102,14 @@ export class RegisterComponent {
         const country = this.form.get('country')?.value;
         const phone = this.form.get('phone')?.value;
         const personalId = this.form.get('personalId')?.value;
-        const occupation = this.form.get('occupation')?.value;
-        const occupationInfo = this.form.get('occupationInfo')?.value;
         const gender = this.form.get('gender')?.value;
         const role = this.form.get('role')?.value;
         const hospitalId = this.form.get('hospital')?.value;
-        const doctorType = this.form.get('doctorType')?.value;
+        const selectedDepartment = this.form.get('doctorType')?.value as any;
+        const departmentId: number | undefined = selectedDepartment?.id ?? undefined;
 
-        const payload = {
+        const registerCall = this.patientOnly ? this.api.userApi.register.bind(this.api.userApi) : this.api.userApi.addUser.bind(this.api.userApi);
+        registerCall({
             firstName: firstName as string,
             lastName: lastName as string,
             email: email as string,
@@ -89,19 +119,11 @@ export class RegisterComponent {
             country: country as string,
             phone: phone as string,
             personalId: personalId as string,
-            occupation: occupation as string,
-            occupationInfo: occupationInfo as string,
             gender: gender as Gender,
             role: role as Role,
             hospitalId: hospitalId as number,
-            doctorType: doctorType as DoctorType
-        };
-
-        const request$ = this.patientOnly
-            ? this.api.userApi.publicRegister(payload)
-            : this.api.userApi.register(payload);
-
-        request$.pipe(
+            departmentId
+        }).pipe(
             catchError(error => this.notificationService.showError(error))
         ).subscribe((user) => {
             if (user) {
@@ -109,7 +131,7 @@ export class RegisterComponent {
                 if (this.patientOnly) {
                     this.router.navigate([ROUTE_SIGN_IN]);
                 } else {
-                    this.router.navigate([ROUTE_USERS]);
+                    this.router.navigate([ROUTE_USERS], { queryParams: { hospitalId } });
                 }
             }
         });

@@ -1,0 +1,28 @@
+<h2 mat-dialog-title class="flex items-center gap-2">
+    <mat-icon color="warn">cancel</mat-icon>
+    {{ 'COMMON.CANCEL_APPOINTMENT_TITLE' | translate }}
+</h2>
+
+<mat-dialog-content class="flex flex-col gap-3">
+    <p>{{ 'COMMON.CANCEL_APPOINTMENT_CONFIRM' | translate }}</p>
+    <div class="appointment-summary flex flex-col gap-1 text-sm">
+        <div><strong>{{ 'COMMON.DATE' | translate }}:</strong> {{ data.appointment.dateAndTime | date: 'medium' }}</div>
+        <div><strong>{{ 'COMMON.DURATION' | translate }}:</strong> {{ data.appointment.duration }} min</div>
+        @if (data.appointment.doctor) {
+            <div><strong>{{ 'COMMON.DOCTOR_NAME' | translate }}:</strong>
+                {{ data.appointment.doctor.firstName }} {{ data.appointment.doctor.lastName }}
+            </div>
+        }
+    </div>
+    <p class="warn-text">{{ 'COMMON.CANCEL_APPOINTMENT_WARNING' | translate }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="dismiss()">
+        {{ 'COMMON.BACK' | translate }}
+    </button>
+    <button mat-flat-button color="warn" (click)="confirm()">
+        <mat-icon>cancel</mat-icon>
+        {{ 'COMMON.CANCEL_APPOINTMENT' | translate }}
+    </button>
+</mat-dialog-actions>

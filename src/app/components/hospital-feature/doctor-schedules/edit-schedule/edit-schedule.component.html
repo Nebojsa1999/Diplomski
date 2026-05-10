@@ -28,7 +28,7 @@
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>{{ 'COMMON.START_DATE' | translate }}</mat-label>
-                        <input matInput [matDatepicker]="startDatePicker" formControlName="startDate">
+                        <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" [min]="minDate">
                         <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
                         <mat-datepicker #startDatePicker></mat-datepicker>
                         @if (form.get('startDate')?.hasError('required')) {
@@ -37,7 +37,7 @@
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>{{ 'COMMON.END_DATE' | translate }}</mat-label>
-                        <input matInput [matDatepicker]="endDatePicker" formControlName="endDate">
+                        <input matInput [matDatepicker]="endDatePicker" formControlName="endDate" [min]="minDate">
                         <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
                         <mat-datepicker #endDatePicker></mat-datepicker>
                         @if (form.get('endDate')?.hasError('required')) {

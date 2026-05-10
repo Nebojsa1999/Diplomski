@@ -1,8 +1,8 @@
 import { Api } from "../api";
 import { ApiClient } from "../api-client";
-import { ApiResponse, RequestConfig } from "../rest.model";
+import { ApiResponse, Page, RequestConfig } from "../rest.model";
 import { Observable } from "rxjs";
-import { Appointment, AppointmentDto, AppointmentReport, AppointmentStaus, CreateOperationRoomBookingDto, DenyUserDto, DoctorType, FeedbackDto, Medication, OperationRoomBooking } from "./hospital.model";
+import { Appointment, AppointmentDto, AppointmentReport, AppointmentStaus, BookAppointmentDto, CreateOperationRoomBookingDto, DenyUserDto, FeedbackDto, LabDocument, Medication, OpenSlotDTO, OperationRoomBooking, TimeSlotDTO } from "./hospital.model";
 
 export class AppointmentApi extends Api {
     constructor(client: ApiClient) {
@@ -20,12 +20,49 @@ export class AppointmentApi extends Api {
         return this.apiClient.get('/api/hospitals/appointments', config);
     }
 
-    listByHospital(id: number, status: AppointmentStaus, from: number | null, to: number | null, doctorType?: DoctorType): Observable<ApiResponse<Appointment[]>> {
+    bookAppointment(data: BookAppointmentDto): Observable<ApiResponse<Appointment>> {
+        const config: RequestConfig = {
+            headers: { accept: 'application/json', contentType: 'application/json' },
+            authenticated: true
+        };
+        return this.apiClient.post('/api/appointments/book', data, config);
+    }
+
+    listAvailableByDoctor(doctorId: number, date: string): Observable<ApiResponse<TimeSlotDTO[]>> {
+        const config: RequestConfig = {
+            headers: { accept: 'application/json' },
+            params: { date },
+            authenticated: true
+        };
+        return this.apiClient.get(`/api/doctors/${doctorId}/available`, config);
+    }
+
+    listOpenByDepartment(departmentId: number, from: number, to: number): Observable<ApiResponse<OpenSlotDTO[]>> {
+        const config: RequestConfig = {
+            headers: { accept: 'application/json' },
+            params: { departmentId, from, to },
+            authenticated: true
+        };
+        return this.apiClient.get('/api/appointments/open', config);
+    }
+
+    listForCurrentUser(status: AppointmentStaus, from: number | null, to: number | null): Observable<ApiResponse<Page<Appointment>>> {
         const config: RequestConfig = {
             headers: {
                 accept: 'application/json'
             },
-            params: {appointmentStatus: status, from: from as number, to: to as number, doctorType: doctorType as DoctorType},
+            params: {status: status, from: from as number, to: to as number},
+            authenticated: true
+        };
+        return this.apiClient.get('/api/appointments', config);
+    }
+
+    listByHospital(id: number, status: AppointmentStaus, from: number | null, to: number | null): Observable<ApiResponse<Appointment[]>> {
+        const config: RequestConfig = {
+            headers: {
+                accept: 'application/json'
+            },
+            params: {appointmentStatus: status, from: from as number, to: to as number},
             authenticated: true
         };
         return this.apiClient.get(`/api/hospitals/${id}/appointments`, config);
@@ -172,7 +209,7 @@ export class AppointmentApi extends Api {
             authenticated: true
         };
 
-        return this.apiClient.post(`/api/hospitals/appointments/${appointmentId}/feedback`,body, config)
+        return this.apiClient.post(`/api/appointments/${appointmentId}/feedback`,body, config)
     }
 
     getFeedback(appointmentId: number) : Observable<ApiResponse<FeedbackDto>> {
@@ -192,6 +229,27 @@ export class AppointmentApi extends Api {
             authenticated: true
         };
         return this.apiClient.delete(`/api/hospitals/appointments/${id}`, config);
+    }
+
+    uploadLabDocument(appointmentId: number, file: File): Observable<ApiResponse<any>> {
+        const config: RequestConfig = { authenticated: true };
+        return this.apiClient.postMultipart(`/api/appointments/${appointmentId}/lab-documents`, [{ name: 'file', content: file }], config);
+    }
+
+    getLabDocument(appointmentId: number): Observable<ApiResponse<LabDocument>> {
+        const config: RequestConfig = {
+            headers: { accept: 'application/json' },
+            authenticated: true
+        };
+        return this.apiClient.get(`/api/appointments/${appointmentId}/lab-documents`, config);
+    }
+
+    downloadLabDocument(id: number): Observable<ApiResponse<Blob>> {
+        const config: RequestConfig = {
+            headers: { accept: 'application/octet-stream' },
+            authenticated: true
+        };
+        return this.apiClient.getFile(`{{host}}/api/appointments/lab-documents/${id}/download`, config);
     }
 
     downloadReport(id: number): Observable<ApiResponse<Blob>> {

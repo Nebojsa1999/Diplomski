@@ -10,6 +10,9 @@ import { catchError } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ROUTE_CREATE_SCHEDULE } from "../create-schedule/create-schedule.component";
 import { ROUTE_USERS } from "../../users/list-users/list-users.component";
+import { ROUTE_DOCTOR_LIST } from "../../../../components/appointment-feature/doctor-list/doctor-list.component";
+import { ROUTE_APPOINTMENTS } from "../../../../components/appointment-feature/appointments/list-appointments/list-appointments.component";
+import { Role } from "../../../../rest/user/user.model";
 
 export const ROUTE_SCHEDULES = 'doctor-schedules';
 
@@ -33,7 +36,14 @@ function getMonday(date: Date): Date {
     styleUrl: './list-schedules.component.scss',
 })
 export class ListSchedulesComponent {
-    displayedColumns: string[] = ['Doctor', 'StartTime', 'EndTime', 'Duration', 'BreakStart', 'BreakEnd', 'Update'];
+    Role = Role;
+
+    get displayedColumns(): string[] {
+        if (this.authService.hasRole(Role.PATIENT)) {
+            return ['Doctor', 'StartTime', 'EndTime', 'Duration', 'BreakStart', 'BreakEnd'];
+        }
+        return ['Doctor', 'StartTime', 'EndTime', 'Duration', 'BreakStart', 'BreakEnd', 'Update'];
+    }
     daysOrder = DAYS_ORDER;
     currentUser = toSignal(this.authService.activeUser);
     schedules = signal<DoctorSchedule[] | null>(null);
@@ -58,7 +68,7 @@ export class ListSchedulesComponent {
 
     weekSchedules = computed(() => this.schedules() ?? []);
 
-    constructor(private authService: AuthenticationService, private router: Router, private route: ActivatedRoute, private api: ApiService, private notificationService: NotificationService) {
+    constructor(public authService: AuthenticationService, private router: Router, private route: ActivatedRoute, private api: ApiService, private notificationService: NotificationService) {
         this.doctorId = this.route.snapshot.params['id'] ? +this.route.snapshot.params['id'] : null;
 
         const weekParam = this.route.snapshot.queryParams['weekStart'];
@@ -83,13 +93,18 @@ export class ListSchedulesComponent {
         return this.weekSchedules().filter(s => s.dayOfWeek === day);
     }
 
+    isSchedulePast(schedule: DoctorSchedule): boolean {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return new Date(schedule.endDate) < today;
+    }
+
     isDayInPast(day: DayOfWeek): boolean {
         const index = DAYS_ORDER.indexOf(day);
         const date = new Date(this.weekStart());
         date.setDate(date.getDate() + index);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return date < today;
+        date.setHours(23, 59, 59, 999);
+        return date < new Date();
     }
 
     prevWeek(): void {
@@ -105,7 +120,19 @@ export class ListSchedulesComponent {
     }
 
     goBack() {
-        this.router.navigate([ROUTE_USERS]);
+        if (this.authService.hasRole(Role.PATIENT)) {
+            const hospitalId = this.route.snapshot.queryParams['hospitalId'];
+            this.router.navigate([ROUTE_DOCTOR_LIST], {
+                queryParams: hospitalId ? { hospitalId } : {}
+            });
+        } else if (this.authService.hasRole(Role.DOCTOR)) {
+            this.router.navigate([ROUTE_APPOINTMENTS]);
+        } else {
+            const hospitalId = this.route.snapshot.queryParams['hospitalId'];
+            this.router.navigate([ROUTE_USERS], {
+                queryParams: hospitalId ? { hospitalId } : {}
+            });
+        }
     }
 
     addSchedule() {

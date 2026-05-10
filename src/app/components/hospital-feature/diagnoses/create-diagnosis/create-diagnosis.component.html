@@ -25,19 +25,6 @@
                         <mat-label>{{ 'COMMON.DESCRIPTION' | translate }}</mat-label>
                         <textarea matInput formControlName="description" rows="3"></textarea>
                     </mat-form-field>
-                    @if (departments$ | async; as departments) {
-                        <mat-form-field>
-                            <mat-label>{{ 'COMMON.DEPARTMENT' | translate }}</mat-label>
-                            <mat-select formControlName="department">
-                                @for (department of departments; track department.id) {
-                                    <mat-option [value]="department">{{ department.name }}</mat-option>
-                                }
-                            </mat-select>
-                            @if (this.form.get('department')?.hasError('required')) {
-                                <mat-error>{{ 'COMMON.ERROR_DEPARTMENT_REQUIRED' | translate }}</mat-error>
-                            }
-                        </mat-form-field>
-                    }
                     <button [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.SUBMIT' | translate }}</button>
                 </form>
             </mat-card-content>

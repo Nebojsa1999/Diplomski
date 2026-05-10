@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Equipment, Hospital } from "../../../../rest/hospital/hospital.model";
+import { Equipment, Room } from "../../../../rest/hospital/hospital.model";
 import { map } from "rxjs/operators";
 import { catchError, of } from "rxjs";
 import { ApiService } from "../../../../common/service/api.service";
@@ -24,14 +24,14 @@ export class EditEquipmentComponent {
     form = new FormGroup({
         name: new FormControl<string | null>('', [Validators.required]),
         amount: new FormControl<number | null>(null, [Validators.required]),
-        hospital: new FormControl<Hospital | null>(null, [Validators.required])
+        room: new FormControl<Room | null>(null, [Validators.required])
     });
-    hospital$ = this.apiService.hospitalApi.list().pipe(
+    rooms$ = this.apiService.hospitalApi.listRooms().pipe(
         map(response => response.data),
         catchError(error => of([]))
     )
 
-    compareHospitalById = (a: Hospital | null, b: Hospital | null): boolean => {
+    compareRoomById = (a: Room | null, b: Room | null): boolean => {
         if (!a || !b) {
             return a === b;
         }
@@ -39,17 +39,15 @@ export class EditEquipmentComponent {
     };
 
     constructor(private apiService: ApiService, private route: ActivatedRoute, private notificationService: NotificationService, private router: Router, private location: Location) {
-        this.form.get('hospital')?.disable()
         const id = this.route.snapshot.params['id']
         this.apiService.hospitalApi.getEquipment(id).pipe(
             map(response => response.data),
             catchError(error => this.notificationService.showError(error))
         ).subscribe((equipment) => {
-
             this.form.patchValue({
                 name: equipment?.name,
                 amount: equipment?.amount,
-                hospital: equipment?.hospital
+                room: equipment?.room
             })
         })
     }
@@ -59,12 +57,12 @@ export class EditEquipmentComponent {
     onSubmit() {
         const name = this.form.get('name')?.value;
         const amount = this.form.get('amount')?.value;
-        const hospital = this.form.get('hospital')?.value;
+        const room = this.form.get('room')?.value;
 
         const equipment: Equipment = {
             name: name as string,
             amount: amount as number,
-            hospital: hospital as Hospital
+            room: room as Room
         }
 
         this.apiService.hospitalApi.editEquipment(this.route.snapshot.params['id'], equipment).pipe(

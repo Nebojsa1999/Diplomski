@@ -1,9 +1,46 @@
 @if (appointments(); as appointments) {
     <div class="flex flex-col justify-center h-full bg-no-repeat bg-cover bg-center">
-        <div class="w-full flex items-center justify-center flex-grow">
-            <mat-calendar class="mycalendar"
-                          [dateClass]="getDateClass"
-                          [(selected)]="selected" (selectedChange)="onDateSelection($event, appointments)"></mat-calendar>
+        <div class="w-full flex flex-col items-center justify-center flex-grow gap-4">
+
+            <div class="calendar-header flex flex-row justify-between items-center w-full max-w-2xl px-4">
+                <h2 style="font-weight: bold">{{ 'COMMON.WORK_CALENDAR' | translate }}</h2>
+                <div class="stats-chips flex flex-row gap-2">
+                    <span class="legend-chip booked">
+                        <span class="legend-dot"></span>
+                        {{ 'COMMON.BOOKED_SLOTS' | translate }}: {{ appointments.length }}
+                    </span>
+                </div>
+            </div>
+
+            <mat-card class="calendar-card">
+                <mat-card-content>
+                    <mat-calendar
+                        class="mycalendar"
+                        [dateClass]="getDateClass"
+                        [(selected)]="selected"
+                        (selectedChange)="onDateSelection($event, appointments)">
+                    </mat-calendar>
+
+                    <mat-divider class="my-4"></mat-divider>
+                    <div class="legend flex flex-row gap-4 flex-wrap justify-center">
+                        <div class="legend-item">
+                            <span class="legend-dot booked-dot"></span>
+                            <span class="text-sm">{{ 'COMMON.HAS_APPOINTMENTS' | translate }}</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="text-sm text-gray-400">{{ 'COMMON.CLICK_TO_VIEW' | translate }}</span>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
+            @if (appointments.length === 0) {
+                <div class="empty-calendar flex flex-col items-center gap-2 text-gray-400">
+                    <mat-icon style="font-size: 40px; width: 40px; height: 40px">event_available</mat-icon>
+                    <p>{{ 'COMMON.NO_SCHEDULED_APPOINTMENTS' | translate }}</p>
+                </div>
+            }
+
         </div>
     </div>
 }

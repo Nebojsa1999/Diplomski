@@ -6,100 +6,107 @@
                     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col space-y-4">
                         <div class="flex flex-row justify-between items-center">
                             <h2>{{ 'COMMON.EDIT_USER' | translate }}</h2>
-                            <button mat-icon-button type="button" (click)="goBack()"><mat-icon>arrow_back</mat-icon></button>
+                            <button mat-icon-button type="button" (click)="goBack()">
+                                <mat-icon>arrow_back</mat-icon>
+                            </button>
                         </div>
-                        <mat-form-field class="full-width-input">
-                            <mat-label>{{ 'COMMON.FIRST_NAME' | translate }}</mat-label>
-                            <input matInput placeholder="First name" formControlName="firstName" required>
-                            <mat-error>
-                                {{ 'COMMON.ERROR_FIRST_NAME_REQUIRED' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="full-width-input">
-                            <mat-label>{{ 'COMMON.LAST_NAME' | translate }}</mat-label>
-                            <input matInput placeholder="Last name" formControlName="lastName" required>
-                            <mat-error>
-                                {{ 'COMMON.ERROR_LAST_NAME_REQUIRED' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="full-width-input">
-                            <mat-label>{{ 'COMMON.ADDRESS' | translate }}</mat-label>
-                            <input matInput type="text" placeholder="Address" formControlName="address" required>
-                            <mat-error>
-                                {{ 'COMMON.ERROR_ADDRESS_INVALID' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="full-width-input">
-                            <mat-label>{{ 'COMMON.CITY' | translate }}</mat-label>
-                            <input matInput type="text" placeholder="City" formControlName="city" required>
-                            <mat-error>
-                                {{ 'COMMON.ERROR_CITY_INVALID' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="full-width-input">
-                            <mat-label>{{ 'COMMON.COUNTRY' | translate }}</mat-label>
-                            <input matInput type="text" placeholder="Country" formControlName="country" required>
-                            <mat-error>
-                                {{ 'COMMON.ERROR_COUNTRY_INVALID' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="full-width-input">
-                            <mat-label>{{ 'COMMON.PHONE' | translate }}</mat-label>
-                            <input matInput type="text" placeholder="Phone" formControlName="phone" required>
-                            <mat-error>
-                                {{ 'COMMON.ERROR_PHONE_INVALID' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="full-width-input">
-                            <mat-label>{{ 'COMMON.PERSONAL_ID' | translate }}</mat-label>
-                            <input matInput type="text" placeholder="Personal ID" formControlName="personalId" required>
-                            <mat-error>
-                                {{ 'COMMON.ERROR_PERSONAL_ID_REQUIRED' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                        <mat-form-field class="full-width-input">
-                            <mat-label>{{ 'COMMON.OCCUPATION' | translate }}</mat-label>
-                            <input matInput type="text" placeholder="Personal ID" formControlName="occupation">
+                        <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+                            <div class="flex flex-col space-y-4 flex-1">
+                                <mat-form-field class="full-width-input">
+                                    <mat-label>{{ 'COMMON.FIRST_NAME' | translate }}</mat-label>
+                                    <input matInput placeholder="First name" formControlName="firstName" required>
+                                    <mat-error>
+                                        {{ 'COMMON.ERROR_FIRST_NAME_REQUIRED' | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="full-width-input">
+                                    <mat-label>{{ 'COMMON.LAST_NAME' | translate }}</mat-label>
+                                    <input matInput placeholder="Last name" formControlName="lastName" required>
+                                    <mat-error>
+                                        {{ 'COMMON.ERROR_LAST_NAME_REQUIRED' | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="full-width-input">
+                                    <mat-label>{{ 'COMMON.ADDRESS' | translate }}</mat-label>
+                                    <input matInput type="text" placeholder="Address" formControlName="address" required>
+                                    <mat-error>
+                                        {{ 'COMMON.ERROR_ADDRESS_INVALID' | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="full-width-input">
+                                    <mat-label>{{ 'COMMON.CITY' | translate }}</mat-label>
+                                    <input matInput type="text" placeholder="City" formControlName="city" required>
+                                    <mat-error>
+                                        {{ 'COMMON.ERROR_CITY_INVALID' | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="full-width-input">
+                                    <mat-label>{{ 'COMMON.COUNTRY' | translate }}</mat-label>
+                                    <input matInput type="text" placeholder="Country" formControlName="country" required>
+                                    <mat-error>
+                                        {{ 'COMMON.ERROR_COUNTRY_INVALID' | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="full-width-input">
+                                    <mat-label>{{ 'COMMON.PHONE' | translate }}</mat-label>
+                                    <input matInput type="text" placeholder="Phone" formControlName="phone" required>
+                                    <mat-error>
+                                        {{ 'COMMON.ERROR_PHONE_INVALID' | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="flex flex-col space-y-4 flex-1">
+                                <mat-form-field class="full-width-input">
+                                    <mat-label>{{ 'COMMON.PERSONAL_ID' | translate }}</mat-label>
+                                    <input matInput type="text" placeholder="Personal ID" formControlName="personalId" required>
+                                    <mat-error>
+                                        {{ 'COMMON.ERROR_PERSONAL_ID_REQUIRED' | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                                <mat-form-field class="full-width-input">
+                                    <mat-label>{{ 'COMMON.OCCUPATION' | translate }}</mat-label>
+                                    <input matInput type="text" placeholder="Personal ID" formControlName="occupation">
 
-                        </mat-form-field>
-                        <mat-form-field class="full-width-input">
-                            <mat-label>{{ 'COMMON.OCCUPATION_INFO' | translate }}</mat-label>
-                            <input matInput type="text" placeholder="Personal ID" formControlName="occupationInfo">
+                                </mat-form-field>
+                                <mat-form-field class="full-width-input">
+                                    <mat-label>{{ 'COMMON.OCCUPATION_INFO' | translate }}</mat-label>
+                                    <input matInput type="text" placeholder="Personal ID" formControlName="occupationInfo">
 
-                        </mat-form-field>
-                        <mat-radio-group formControlName="gender">
-                            <mat-label>{{ 'COMMON.GENDER' | translate }}</mat-label>
-                            @for (gender of genders; track $index) {
-                                <mat-radio-button [value]="gender" [checked]="user.gender === gender">
-                                    {{ gender }}
-                                </mat-radio-button>
-                            }
-                        </mat-radio-group>
-                        <mat-form-field>
-                            <mat-label>{{ 'COMMON.ROLE' | translate }}</mat-label>
-                            <mat-select formControlName="role">
-                                @for (role of roles; track role) {
-                                    <mat-option [value]="role">
-                                        {{ ('COMMON.' + role) | translate }}
-                                    </mat-option>
-                                }
-                            </mat-select>
-                            @if (this.form.get('role')?.hasError('required')) {
-                                <mat-error>
-                                    {{ 'COMMON.ERROR_ROLE_REQUIRED' | translate }}
-                                </mat-error>
-                            }
-                        </mat-form-field>
-                        <mat-form-field appearance="outline">
-                            <mat-label>{{ 'COMMON.HOSPITAL' | translate }}</mat-label>
-                            <mat-select formControlName="hospital" [compareWith]="compareHospitalById">
-                                @for (hospital of hospitals$ | async; track hospital.id) {
-                                    <mat-option [value]="hospital"> {{ hospital.name }}
-                                    </mat-option>
-                                }
-
-                            </mat-select>
-                        </mat-form-field>
+                                </mat-form-field>
+                                <mat-radio-group formControlName="gender">
+                                    <mat-label>{{ 'COMMON.GENDER' | translate }}</mat-label>
+                                    @for (gender of genders; track $index) {
+                                        <mat-radio-button [value]="gender" [checked]="user.gender === gender">
+                                            {{ gender }}
+                                        </mat-radio-button>
+                                    }
+                                </mat-radio-group>
+                                <mat-form-field>
+                                    <mat-label>{{ 'COMMON.ROLE' | translate }}</mat-label>
+                                    <mat-select formControlName="role">
+                                        @for (role of roles; track role) {
+                                            <mat-option [value]="role">
+                                                {{ ('COMMON.' + role) | translate }}
+                                            </mat-option>
+                                        }
+                                    </mat-select>
+                                    @if (this.form.get('role')?.hasError('required')) {
+                                        <mat-error>
+                                            {{ 'COMMON.ERROR_ROLE_REQUIRED' | translate }}
+                                        </mat-error>
+                                    }
+                                </mat-form-field>
+                                <mat-form-field appearance="outline">
+                                    <mat-label>{{ 'COMMON.HOSPITAL' | translate }}</mat-label>
+                                    <mat-select formControlName="hospital" [compareWith]="compareById">
+                                        @for (hospital of (hospitals$ | async) ?? []; track hospital.id) {
+                                            <mat-option [value]="hospital"> {{ hospital.name }}
+                                            </mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
                         <button [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.SUBMIT' | translate }}</button>
                     </form>
                 </mat-card-content>

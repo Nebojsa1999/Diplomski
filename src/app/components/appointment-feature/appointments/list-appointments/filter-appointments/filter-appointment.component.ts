@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { shared } from "../../../../../app.config";
-import { AppointmentStaus } from "../../../../../rest/hospital/hospital.model";
 
 @Component({
     selector: 'app-filter-appointment',
@@ -11,13 +10,10 @@ import { AppointmentStaus } from "../../../../../rest/hospital/hospital.model";
 })
 export class FilterAppointmentComponent {
     form: FormGroup;
-    @Output() searchClicked = new EventEmitter<AppointmentStaus | null>();
     @Output() dateRange = new EventEmitter<{ from: Date | null, to: Date | null }>();
-    appointmentStatus = Object.values(AppointmentStaus)
 
     constructor(fb: FormBuilder) {
         this.form = fb.group({
-            appointmentStatus: new FormControl<AppointmentStaus | string>(''),
             from: new FormControl<Date | null>(null),
             to: new FormControl<Date | null>(null)
         });
@@ -29,10 +25,6 @@ export class FilterAppointmentComponent {
                 this.dateRange.emit({from: start, to: end});
             }
         });
-    }
-
-    applyFilter() {
-        this.searchClicked.emit(this.form.get('appointmentStatus')?.value)
     }
 
     resetDateRange() {

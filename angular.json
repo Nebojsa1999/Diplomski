@@ -40,7 +40,8 @@
             "allowedCommonJsDependencies": [
               "ts-luxon",
               "qrcode",
-              "autoprefixer"
+              "autoprefixer",
+              "file-saver"
             ]
           },
           "configurations": {

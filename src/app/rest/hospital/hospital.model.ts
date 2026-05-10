@@ -28,18 +28,24 @@ export interface DepartmentProcedureDto {
     price: number;
 }
 
+export interface DepartmentName {
+    id: number;
+    name: string;
+}
+
 export interface Diagnosis {
     id: number;
     code: string;
     name: string;
     description: string;
-    department: Department;
+    departmentName: DepartmentName;
 }
 
 export interface DiagnosisDto {
     code: string;
     name: string;
     description: string;
+    departmentName?: string;
 }
 
 export interface Medicament {
@@ -47,13 +53,14 @@ export interface Medicament {
     name: string;
     instructions: string;
     dosage: string;
-    department: Department;
+    departmentName: DepartmentName;
 }
 
 export interface MedicamentDto {
     name: string;
     instructions: string;
     dosage: string;
+    departmentName?: string;
 }
 
 export enum RhFactor {
@@ -194,6 +201,11 @@ export enum BloodType {
     ZERO = 'ZERO', AB = 'AB', B = 'B', A = 'A'
 }
 
+export interface LabDocument {
+    originalFilename: string;
+    contentType: string;
+}
+
 export interface Appointment {
     id: number;
     dateAndTime: Date;
@@ -201,6 +213,30 @@ export interface Appointment {
     doctor: User;
     patient: User;
     appointmentStatus: AppointmentStaus;
+    hasAppointmentReport?: boolean;
+    hasMedication?: boolean;
+    hasLabDocument?: boolean;
+    hasFeedback?: boolean;
+}
+
+export interface TimeSlotDTO {
+    startTime: string;
+    endTime: string;
+}
+
+export interface OpenSlotDTO {
+    doctorId: number;
+    doctorName: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+}
+
+export interface BookAppointmentDto {
+    doctorId: number;
+    date: string;
+    startTime: string;
+    procedureId?: number;
 }
 
 export interface AppointmentDto {
@@ -215,19 +251,27 @@ export interface DenyUserDto {
 
 export interface AppointmentReport {
     bloodType: BloodType;
-    pastMedicalHistory: string;
+    rhFactor: string;
+    heightCm: number;
+    weightKg: number;
+    chronicDiseases: string;
+    previousHospitalization: string;
+    previousSurgeries: string;
     allergies: string;
     familyHistory: string;
+    longThermTherapy: string;
+    specificContradictions: string;
     bloodPressure: string;
     hearthRate: string;
     diagnosis: string;
+    doctorsComment: string;
 }
 
 export interface Equipment {
     id?: number;
     amount: number;
     name: string;
-    hospital: Hospital;
+    room: Room;
 }
 
 export enum RoomType {
@@ -270,49 +314,12 @@ export interface Medication {
     dosage: string;
     frequency: string;
     instructions: string;
-    notes: string
+    notes: string;
+    diagnosisId?: number;
+    labResults?: string;
 }
 
 export interface FeedbackDto {
     grade: number;
     comment: string;
 }
-
-export enum DoctorType {
-    GENERAL_PRACTITIONER = 'GENERAL_PRACTITIONER',
-    CARDIOLOGIST= 'CARDIOLOGIST',
-    DERMATOLOGIST = 'DERMATOLOGIST',
-    NEUROLOGIST = 'NEUROLOGIST',
-    ORTHOPEDIC_SURGEON = 'ORTHOPEDIC_SURGEON',
-    GASTROENTEROLOGIST = 'GASTROENTEROLOGIST',
-    ENDOCRINOLOGIST = 'ENDOCRINOLOGIST',
-    PULMONOLOGIST = 'PULMONOLOGIST',
-    GYNECOLOGIST = 'GYNECOLOGIST',
-    UROLOGIST = 'UROLOGIST',
-    OPHTHALMOLOGIST = 'OPHTHALMOLOGIST',
-    OTOLARYNGOLOGIST = 'OTOLARYNGOLOGIST'
-}
-
-export enum PatientScheduleType {
-    GENERAL_MEDICINE = 'GENERAL_MEDICINE',
-    CARDIOLOGY = 'CARDIOLOGY',
-    OPHTHALMOLOGIST = 'OPHTHALMOLOGIST'
-}
-
-export interface PatientScheduleInfo {
-    icon: string;
-    label: string;
-    color: string;
-}
-
-export const PatientScheduleMap: Record<PatientScheduleType, PatientScheduleInfo> = {
-    [PatientScheduleType.GENERAL_MEDICINE]: { icon: 'general_medicine', label: 'Routine checkups and common illnesses', color: 'blue' },
-    [PatientScheduleType.CARDIOLOGY]: { icon: 'cardiology', label: 'Heart and cardiovascular health', color: 'red' },
-    [PatientScheduleType.OPHTHALMOLOGIST]: { icon: 'eye', label: 'Eye exams and vision care', color: 'purple' },
-};
-
-export const DoctorTypeMap: Record<PatientScheduleType, DoctorType> = {
-    [PatientScheduleType.GENERAL_MEDICINE]: DoctorType.GENERAL_PRACTITIONER,
-    [PatientScheduleType.CARDIOLOGY]: DoctorType.CARDIOLOGIST,
-    [PatientScheduleType.OPHTHALMOLOGIST]: DoctorType.OPHTHALMOLOGIST
-};

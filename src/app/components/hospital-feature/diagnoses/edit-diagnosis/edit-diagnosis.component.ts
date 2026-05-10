@@ -2,9 +2,8 @@ import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { shared } from "../../../../app.config";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Department } from "../../../../rest/hospital/hospital.model";
 import { ApiService } from "../../../../common/service/api.service";
-import { catchError, of } from "rxjs";
+import { catchError } from "rxjs";
 import { map } from "rxjs/operators";
 import { NotificationService } from "../../../../common/service/notification.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -19,21 +18,14 @@ export const ROUTE_EDIT_DIAGNOSIS = 'edit-diagnosis';
     styleUrl: './edit-diagnosis.component.scss',
 })
 export class EditDiagnosisComponent {
+    private departmentNameId: number | null = null;
+
     form = new FormGroup({
         code: new FormControl<string | null>('', [Validators.required]),
         name: new FormControl<string | null>('', [Validators.required]),
         description: new FormControl<string | null>(null),
-        department: new FormControl<Department | null>(null, [Validators.required])
+        department: new FormControl<string | null>(null)
     });
-    departments$ = this.apiService.hospitalApi.listDepartments().pipe(
-        map(response => response.data),
-        catchError(() => of([]))
-    );
-
-    compareDepartmentById = (a: Department | null, b: Department | null): boolean => {
-        if (!a || !b) return a === b;
-        return a.id === b.id;
-    };
 
     constructor(private apiService: ApiService, private route: ActivatedRoute, private notificationService: NotificationService, private router: Router, private location: Location) {
         this.form.get('department')?.disable();
@@ -42,11 +34,12 @@ export class EditDiagnosisComponent {
             map(response => response.data),
             catchError(error => this.notificationService.showError(error))
         ).subscribe((diagnosis) => {
+            this.departmentNameId = diagnosis?.departmentName?.id ?? null;
             this.form.patchValue({
                 code: diagnosis?.code,
                 name: diagnosis?.name,
                 description: diagnosis?.description,
-                department: diagnosis?.department
+                department: diagnosis?.departmentName?.name ?? null
             });
         });
     }
@@ -66,7 +59,11 @@ export class EditDiagnosisComponent {
         ).subscribe((response) => {
             if (response) {
                 this.notificationService.showSuccess('Successfully edited diagnosis.');
-                this.router.navigate([ROUTE_DIAGNOSES]);
+                if (this.departmentNameId != null) {
+                    this.router.navigate(['department-name', this.departmentNameId, ROUTE_DIAGNOSES]);
+                } else {
+                    this.router.navigate([ROUTE_DIAGNOSES]);
+                }
             }
         });
     }

@@ -3,98 +3,158 @@
         <div class="overflow-hidden flex flex-col gap-4 flex-1">
             <div class="flex flex-row m-2 justify-between items-center">
                 <h2 style="font-weight: bold">{{ 'COMMON.APPOINTMENTS' | translate }}</h2>
-                @if (authService.hasRole(Role.ADMIN_SYSTEM)) {
-                    <button mat-raised-button (click)="addFreeAppointments()">
-                        <mat-icon>add</mat-icon>
-                        {{ 'COMMON.ADD_APPOINTMENT' | translate }}
-                    </button>
-                } @else if (authService.hasRole(Role.PATIENT)) {
+                 @if (authService.hasRole(Role.PATIENT)) {
                     <button mat-raised-button (click)="patientScheduleAppointment()">
                         <mat-icon>add</mat-icon>
                         {{ 'COMMON.SCHEDULE_APPOINTMENT' | translate }}
                     </button>
                 }
             </div>
-            <mat-card class="flow-row ">
+
+            <mat-card>
                 <div class="flex-column items-start m-4">
-                    <app-filter-appointment (searchClicked)="searchClicked($event)" (dateRange)="setDateRange($event)"></app-filter-appointment>
+                    <app-filter-appointment
+                        (dateRange)="setDateRange($event)">
+                    </app-filter-appointment>
                 </div>
             </mat-card>
-            @if (appointments.length) {
+
+            <div class="tab-nav flex flex-row gap-2">
+                <button mat-stroked-button
+                        [class.active-tab]="activeTab() === 'all'"
+                        (click)="setTab('all')">
+                    {{ 'COMMON.ALL' | translate }}
+                    <span class="tab-count">{{ appointments.length }}</span>
+                </button>
+                <button mat-stroked-button
+                        [class.active-tab]="activeTab() === 'upcoming'"
+                        (click)="setTab('upcoming')">
+                    <mat-icon>schedule</mat-icon>
+                    {{ 'COMMON.UPCOMING' | translate }}
+                    <span class="tab-count">{{ upcomingAppointments().length }}</span>
+                </button>
+                <button mat-stroked-button
+                        [class.active-tab]="activeTab() === 'completed'"
+                        (click)="setTab('completed')">
+                    <mat-icon>check_circle</mat-icon>
+                    {{ 'COMMON.COMPLETED' | translate }}
+                    <span class="tab-count">{{ completedAppointments().length }}</span>
+                </button>
+            </div>
+
+            @if (visibleAppointments().length) {
                 <div class="mobile-table-scroll">
-                <table mat-table [dataSource]="appointments.length ? appointments : placeHodler" class="mat-elevation-z8">
-                    <ng-container matColumnDef="date">
-                        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DATE' | translate }}</th>
-                        <td mat-cell *matCellDef="let appointment"> {{ appointment.dateAndTime | date: 'medium' }}</td>
-                    </ng-container>
+                    <table mat-table [dataSource]="visibleAppointments()" class="mat-elevation-z8">
 
-                    <ng-container matColumnDef="status">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.APPOINTMENT_STATUS' | translate }}</th>
-                        <td mat-cell *matCellDef="let appointment"> {{ appointment.appointementStatus !== null ? ('COMMON.APPOINTMENT_STATUS_' + appointment.appointmentStatus | translate) : '-' }}</td>
-                    </ng-container>
+                        <ng-container matColumnDef="date">
+                            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DATE' | translate }}</th>
+                            <td mat-cell *matCellDef="let appointment">{{ appointment.dateAndTime | date: 'medium' }}</td>
+                        </ng-container>
 
-                    <ng-container matColumnDef="hospital">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.HOSPITAL' | translate }}</th>
-                        <td mat-cell *matCellDef="let appointment"> {{ appointment.hospital?.name }}</td>
-                    </ng-container>
+                        <ng-container matColumnDef="status">
+                            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.APPOINTMENT_STATUS' | translate }}</th>
+                            <td mat-cell *matCellDef="let appointment">
+                                <span class="status-chip"
+                                      [class.status-open]="appointment.appointmentStatus === AppointmentStaus.OPEN"
+                                      [class.status-scheduled]="appointment.appointmentStatus === AppointmentStaus.SCHEDULED"
+                                      [class.status-finished]="appointment.appointmentStatus === AppointmentStaus.FINISHED"
+                                      [class.status-cancelled]="appointment.appointmentStatus === AppointmentStaus.CANCELLED">
+                                    {{ appointment.appointmentStatus !== null ? ('COMMON.APPOINTMENT_STATUS_' + appointment.appointmentStatus | translate) : '-' }}
+                                </span>
+                            </td>
+                        </ng-container>
 
-                    <ng-container matColumnDef="duration">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.DURATION' | translate }}</th>
-                        <td mat-cell *matCellDef="let appointment"> {{ appointment.duration !== null ? (appointment.duration + ' min') : '-' }}</td>
-                    </ng-container>
+                        <ng-container matColumnDef="hospital">
+                            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.HOSPITAL' | translate }}</th>
+                            <td mat-cell *matCellDef="let appointment">{{ appointment.doctor?.hospital?.name ?? '-' }}</td>
+                        </ng-container>
 
-                    <ng-container matColumnDef="doctor">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.DOCTORS' | translate }}</th>
-                        <td mat-cell *matCellDef="let appointment"> {{ appointment.doctor !== null ? appointment.doctor.firstName : '-' }}</td>
-                    </ng-container>
+                        <ng-container matColumnDef="duration">
+                            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DURATION' | translate }}</th>
+                            <td mat-cell *matCellDef="let appointment">{{ appointment.duration !== null ? (appointment.duration + ' min') : '-' }}</td>
+                        </ng-container>
 
-                    <ng-container matColumnDef="patient">
-                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.PATIENT' | translate }}</th>
-                        <td mat-cell *matCellDef="let appointment"> {{ appointment.patient != null ? appointment.patient.firstName : '-' }}</td>
-                    </ng-container>
-                    <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef></th>
-                        <td mat-cell *matCellDef="let appointment">
-                            @if (authService.hasRole(Role.DOCTOR) && appointment.appointmentStatus === AppointmentStaus.SCHEDULED) {
-                                <button mat-icon-button (click)="approve(appointment.id)">
-                                    <mat-icon svgIcon="check_circle">
-                                    </mat-icon>
-                                </button>
-                                <button mat-icon-button (click)="deny(appointment.id)">
-                                    <mat-icon svgIcon="cancel">
-                                    </mat-icon>
-                                </button>
-                            } @else if (authService.hasRole(Role.PATIENT) && appointment.appointmentStatus === AppointmentStaus.OPEN) {
-                                <button mat-icon-button (click)="schedule(appointment.id)">
-                                    <mat-icon svgIcon="schedule">
-                                    </mat-icon>
-                                </button>
-                            } @else if (appointment.appointmentStatus === AppointmentStaus.FINISHED) {
-                                <button mat-icon-button (click)="downloadReport(appointment.id)" [matTooltip]="'COMMON.DOWNLOAD_APPOINTMENT_REPORT' | translate">
-                                    <mat-icon svgIcon="file_save">
-                                    </mat-icon>
-                                </button>
-                                <button mat-icon-button (click)="downloadPrescription(appointment.id)" [matTooltip]="'COMMON.DOWNLOAD_APPOINTMENT_PRESCRIPTION' | translate">
-                                    <mat-icon svgIcon="file_save">
-                                    </mat-icon>
-                                </button>
-                                @if (authService.hasRole(Role.PATIENT)) {
-                                    <button mat-icon-button (click)="comment(appointment.id)">
-                                        <mat-icon svgIcon="comment">
-                                        </mat-icon>
+                        <ng-container matColumnDef="doctor">
+                            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DOCTOR' | translate }}</th>
+                            <td mat-cell *matCellDef="let appointment">{{ appointment.doctor !== null ? (appointment.doctor.firstName + ' ' + appointment.doctor.lastName) : '-' }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="patient">
+                            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.PATIENT' | translate }}</th>
+                            <td mat-cell *matCellDef="let appointment">{{ appointment.patient != null ? (appointment.patient.firstName + ' ' + appointment.patient.lastName) : '-' }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let appointment">
+                                @if (authService.hasRole(Role.DOCTOR) && appointment.appointmentStatus === AppointmentStaus.SCHEDULED) {
+                                    <button mat-icon-button (click)="approve(appointment.id)"
+                                            [matTooltip]="'COMMON.APPROVE' | translate">
+                                        <mat-icon svgIcon="check_circle"></mat-icon>
+                                    </button>
+                                    <button mat-icon-button (click)="deny(appointment.id)"
+                                            [matTooltip]="'COMMON.DENY' | translate">
+                                        <mat-icon svgIcon="cancel"></mat-icon>
+                                    </button>
+                                    <input #labFileInput type="file" hidden (change)="uploadLabDocument(appointment.id, $event)" accept=".pdf,.jpg,.jpeg,.png">
+                                    <button mat-icon-button [matTooltip]="'COMMON.UPLOAD_LAB_DOCUMENT' | translate" (click)="labFileInput.click()">
+                                        <mat-icon>upload_file</mat-icon>
                                     </button>
                                 }
-                            }
-                            @if (authService.hasRole(Role.ADMIN_SYSTEM)) {
-                                <button mat-icon-button class="btn-error" (click)="deleteAppointment(appointment.id)">
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                            }
-                        </td>
-                    </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                </table>
+                                @if (authService.hasRole(Role.PATIENT) && appointment.appointmentStatus === AppointmentStaus.OPEN) {
+                                    <button mat-icon-button (click)="schedule(appointment.id)"
+                                            [matTooltip]="'COMMON.SCHEDULE_APPOINTMENT' | translate">
+                                        <mat-icon svgIcon="schedule"></mat-icon>
+                                    </button>
+                                }
+                                @if (authService.hasRole(Role.PATIENT) && appointment.appointmentStatus === AppointmentStaus.SCHEDULED) {
+                                    <button mat-icon-button class="btn-error"
+                                            (click)="cancelAppointment(appointment)"
+                                            [matTooltip]="'COMMON.CANCEL_APPOINTMENT' | translate">
+                                        <mat-icon>cancel</mat-icon>
+                                    </button>
+                                }
+                                @if (appointment.appointmentStatus === AppointmentStaus.FINISHED) {
+                                    <button mat-icon-button (click)="downloadReport(appointment.id)"
+                                            [disabled]="!appointment.hasAppointmentReport"
+                                            [matTooltip]="'COMMON.DOWNLOAD_APPOINTMENT_REPORT' | translate">
+                                        <mat-icon svgIcon="file_save"></mat-icon>
+                                    </button>
+                                    <button mat-icon-button (click)="downloadPrescription(appointment.id)"
+                                            [disabled]="!appointment.hasMedication"
+                                            [matTooltip]="'COMMON.DOWNLOAD_APPOINTMENT_PRESCRIPTION' | translate">
+                                        <mat-icon svgIcon="file_save"></mat-icon>
+                                    </button>
+                                    <button mat-icon-button (click)="downloadLabDocument(appointment.id)"
+                                            [disabled]="!appointment.hasLabDocument"
+                                            [matTooltip]="'COMMON.DOWNLOAD_LAB_DOCUMENT' | translate">
+                                        <mat-icon>description</mat-icon>
+                                    </button>
+                                    @if (authService.hasRole(Role.PATIENT)) {
+                                        <button mat-icon-button (click)="comment(appointment.id)"
+                                                [disabled]="appointment.hasFeedback"
+                                                [matTooltip]="'COMMON.CREATE_FEEDBACK' | translate">
+                                            <mat-icon svgIcon="comment"></mat-icon>
+                                        </button>
+                                    }
+                                }
+                                @if (authService.hasRole(Role.ADMIN_SYSTEM)) {
+                                    <button mat-icon-button class="btn-error" (click)="deleteAppointment(appointment.id)"
+                                            [matTooltip]="'COMMON.DELETE' | translate">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                }
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </div>
+            } @else {
+                <div class="empty-state">
+                    <mat-icon>event_note</mat-icon>
+                    <p>{{ 'COMMON.APPOINTMENT_NO_SCHEDULED' | translate }}</p>
                 </div>
             }
         </div>

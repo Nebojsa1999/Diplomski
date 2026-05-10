@@ -33,30 +33,21 @@
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>{{ 'COMMON.CAPACITY' | translate }}</mat-label>
-                        <input matInput type="number" formControlName="capacity">
-                        @if (this.form.get('capacity')?.hasError('required')) {
-                            <mat-error>
-                                {{ 'COMMON.ERROR_CAPACITY_REQUIRED' | translate }}
-                            </mat-error>
+                        <input matInput type="number" formControlName="capacity" [max]="form.get('roomType')?.value === 'RECOVERY' ? 5 : null">
+                        @if (form.get('capacity')?.hasError('required')) {
+                            <mat-error>{{ 'COMMON.ERROR_CAPACITY_REQUIRED' | translate }}</mat-error>
+                        }
+                        @if (form.get('capacity')?.hasError('max')) {
+                            <mat-error>{{ 'COMMON.ERROR_CAPACITY_MAX_RECOVERY' | translate }}</mat-error>
+                        }
+                        @if (form.get('capacity')?.hasError('min')) {
+                            <mat-error>{{ 'COMMON.ERROR_CAPACITY_MIN' | translate }}</mat-error>
                         }
                     </mat-form-field>
-                    @if (hospital$ | async; as hospitals) {
-                        <mat-form-field>
-                            <mat-label>{{ 'COMMON.HOSPITAL' | translate }}</mat-label>
-                            <mat-select formControlName="hospital">
-                                @for (hospital of hospitals; track hospital.id) {
-                                    <mat-option [value]="hospital">
-                                        {{ hospital.name }}
-                                    </mat-option>
-                                }
-                            </mat-select>
-                            @if (this.form.get('hospital')?.hasError('required')) {
-                                <mat-error>
-                                    {{ 'COMMON.ERROR_HOSPITAL_REQUIRED' | translate }}
-                                </mat-error>
-                            }
-                        </mat-form-field>
-                    }
+                    <mat-form-field>
+                        <mat-label>{{ 'COMMON.HOSPITAL' | translate }}</mat-label>
+                        <input matInput [value]="currentUser()?.hospital?.name" readonly>
+                    </mat-form-field>
                     <button [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.SUBMIT' | translate }}</button>
                 </form>
             </mat-card-content>

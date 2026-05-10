@@ -25,8 +25,9 @@ export class CreateFeedbackComponent {
         comment: new FormControl<string | null>(null, [Validators.required]),
     });
 
-    grades: number[] = [1, 2, 3, 4, 5]
+    grades: number[] = [1, 2, 3, 4, 5];
     readOnly: boolean = false;
+    ratingLabels: string[] = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
 
     constructor(private apiService: ApiService,
                 private route: ActivatedRoute,
