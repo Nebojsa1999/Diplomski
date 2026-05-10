@@ -1,16 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Location } from '@angular/common';
 import { shared } from "../../../../app.config";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ApiService } from "../../../../common/service/api.service";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { AuthenticationService } from "../../../../common/service/authentication.service";
-import { catchError } from "rxjs";
+import { catchError, of } from "rxjs";
 import { NotificationService } from "../../../../common/service/notification.service";
 import { map } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ROUTE_APPOINTMENTS } from "../../appointments/list-appointments/list-appointments.component";
 import { ROUTE_CREATE_ROOM_BOOKING } from "../../room-bookings/create-room-booking/create-room-booking.component";
+import { Medicament } from "../../../../rest/hospital/hospital.model";
 
 export const ROUTE_CREATE_MEDICATION = 'create-medication';
 
@@ -29,6 +30,7 @@ export class CreateMedicationComponent {
         instructions: new FormControl<string | null>(null, [Validators.required])
     });
     currentUser = toSignal(this.authService.activeUser);
+    medicaments = signal<Medicament[]>([]);
 
     constructor(private apiService: ApiService,
                 private authService: AuthenticationService,
@@ -36,6 +38,27 @@ export class CreateMedicationComponent {
                 private router: Router,
                 private notificationService: NotificationService,
                 private location: Location) {
+        const appointmentId = this.route.snapshot.params['id'];
+        this.apiService.appointmentApi.getAppointment(appointmentId).pipe(
+            map(r => r.data),
+            catchError(() => of(null))
+        ).subscribe(appointment => {
+            const departmentName = appointment?.doctor?.department?.name;
+            this.apiService.hospitalApi.listMedicaments(undefined, departmentName).pipe(
+                map(r => r.data ?? []),
+                catchError(() => of([]))
+            ).subscribe(m => this.medicaments.set(m));
+        });
+
+        this.form.get('name')!.valueChanges.subscribe(selectedName => {
+            const med = this.medicaments().find(m => m.name === selectedName);
+            if (med) {
+                this.form.patchValue({
+                    dosage: med.dosage,
+                    instructions: med.instructions
+                }, { emitEvent: false });
+            }
+        });
     }
 
     goBack() { this.location.back(); }

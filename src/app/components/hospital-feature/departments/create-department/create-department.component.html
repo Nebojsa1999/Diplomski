@@ -25,19 +25,10 @@
                             <mat-error>{{ 'COMMON.ERROR_PHONE_REQUIRED' | translate }}</mat-error>
                         }
                     </mat-form-field>
-                    @if (hospitals$ | async; as hospitals) {
-                        <mat-form-field>
-                            <mat-label>{{ 'COMMON.HOSPITAL' | translate }}</mat-label>
-                            <mat-select formControlName="hospital">
-                                @for (hospital of hospitals; track hospital.id) {
-                                    <mat-option [value]="hospital">{{ hospital.name }}</mat-option>
-                                }
-                            </mat-select>
-                            @if (this.form.get('hospital')?.hasError('required')) {
-                                <mat-error>{{ 'COMMON.ERROR_HOSPITAL_REQUIRED' | translate }}</mat-error>
-                            }
-                        </mat-form-field>
-                    }
+                    <mat-form-field>
+                        <mat-label>{{ 'COMMON.HOSPITAL' | translate }}</mat-label>
+                        <input matInput [value]="form.get('hospital')?.value?.name ?? ''" readonly>
+                    </mat-form-field>
                     <button [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.SUBMIT' | translate }}</button>
                 </form>
             </mat-card-content>

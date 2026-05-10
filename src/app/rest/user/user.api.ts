@@ -2,7 +2,7 @@ import { Api } from "../api";
 import { ApiClient } from "../api-client";
 import { Observable } from "rxjs";
 import { ApiResponse, RequestConfig } from "../rest.model";
-import { ChangePasswordDto, UpdateUserDto, User, UserDto } from "./user.model";
+import { ChangePasswordDto, FavoriteDoctor, UpdateUserDto, User, UserDto } from "./user.model";
 
 export class UserApi extends Api {
     constructor(client: ApiClient) {
@@ -11,16 +11,21 @@ export class UserApi extends Api {
 
     register(data: UserDto): Observable<ApiResponse<User>> {
         const config: RequestConfig = {
-            headers: { accept: 'application/json', contentType: 'application/json' },
-            authenticated: true
+            headers: {
+                accept: 'application/json',
+                contentType: 'application/json'
+            }
         };
-        return this.apiClient.post("/api/users/add-user", data, config);
+        return this.apiClient.post("/api/register", data, config);
     }
 
-    publicRegister(data: UserDto): Observable<ApiResponse<User>> {
+    addUser(data: UserDto): Observable<ApiResponse<User>> {
         const config: RequestConfig = {
-            headers: { accept: 'application/json', contentType: 'application/json' },
-            authenticated: false
+            headers: {
+                accept: 'application/json',
+                contentType: 'application/json'
+            },
+            authenticated: true
         };
         return this.apiClient.post("/api/register", data, config);
     }
@@ -70,20 +75,44 @@ export class UserApi extends Api {
 
     deleteUser(id: number): Observable<ApiResponse<void>> {
         const config: RequestConfig = {
-            headers: {accept: 'application/json'},
+            headers: { accept: 'application/json' },
             authenticated: true
         };
         return this.apiClient.delete(`/api/users/${id}`, config);
     }
 
-    list(name?: string): Observable<ApiResponse<User[]>> {
+    getFavorites(): Observable<ApiResponse<FavoriteDoctor[]>> {
+        const config: RequestConfig = {
+            headers: { accept: 'application/json' },
+            authenticated: true
+        };
+        return this.apiClient.get('/api/doctors/favorites', config);
+    }
+
+    addFavorite(doctorId: number): Observable<ApiResponse<FavoriteDoctor>> {
+        const config: RequestConfig = {
+            headers: { accept: 'application/json' },
+            authenticated: true
+        };
+        return this.apiClient.post(`/api/doctors/${doctorId}/favorite`, {}, config);
+    }
+
+    removeFavorite(doctorId: number): Observable<ApiResponse<void>> {
+        const config: RequestConfig = {
+            headers: { accept: 'application/json' },
+            authenticated: true
+        };
+        return this.apiClient.delete(`/api/doctors/${doctorId}/favorite`, config);
+    }
+
+    list(id: number, name?: string, role?: string): Observable<ApiResponse<User[]>> {
         const config: RequestConfig = {
             headers: {
                 accept: 'application/json'
             },
-            params: {name: name as string},
+            params: { name: name as string, role: role as string },
             authenticated: true
         };
-        return this.apiClient.get("/api/users", config)
+        return this.apiClient.get<User[]>("/api/users/hospitals/" + id, config);
     }
 }

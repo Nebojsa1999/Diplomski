@@ -70,7 +70,10 @@ export class UpsertMedicalRecordComponent {
     }
 
     goBack() {
-        this.router.navigate([ROUTE_USERS]);
+        const hospitalId = this.route.snapshot.queryParams['hospitalId'];
+        this.router.navigate([ROUTE_USERS], {
+            queryParams: hospitalId ? { hospitalId } : {}
+        });
     }
 
     onSubmit() {

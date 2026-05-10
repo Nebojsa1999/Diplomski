@@ -1,8 +1,70 @@
 button.example-custom-date-class {
-    background: orange;
+    background: #ef6c00 !important;
     border-radius: 100%;
-  }
+    color: white !important;
+}
 
 .mycalendar {
-    width: 520px;
+    width: 360px;
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}
+
+.calendar-card {
+    width: 400px;
+    max-width: 100%;
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}
+
+.calendar-header {
+    max-width: 400px;
+}
+
+.stats-chips .legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+
+    &.booked {
+        background: #fff3e0;
+        color: #e65100;
+    }
+
+    .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #ef6c00;
+    }
+}
+
+.legend {
+    padding: 0 0.5rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-dot.booked-dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ef6c00;
+}
+
+.empty-calendar {
+    padding: 2rem;
 }

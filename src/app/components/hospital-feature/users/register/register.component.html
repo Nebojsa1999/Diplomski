@@ -5,11 +5,13 @@
                 <form [formGroup]="form" class="flex flex-col space-y-4">
                     <div class="flex flex-row justify-between items-center">
                         <h2>{{ 'COMMON.REGISTER' | translate }}</h2>
-                        <button mat-icon-button type="button" (click)="goBack()"><mat-icon>arrow_back</mat-icon></button>
+                        <button mat-icon-button type="button" (click)="goBack()">
+                            <mat-icon>arrow_back</mat-icon>
+                        </button>
                     </div>
                     <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
                         <div class="flex flex-col space-y-4 flex-1">
-                            <mat-form-field class="field-full">
+                            <mat-form-field>
                                 <mat-label>{{ 'COMMON.EMAIL' | translate }}</mat-label>
                                 <input matInput formControlName="email">
                                 @if (this.form.get('email')?.hasError('required')) {
@@ -19,42 +21,42 @@
                                     <mat-error>{{ 'COMMON.ERROR_EMAIL_FORMAT' | translate }}</mat-error>
                                 }
                             </mat-form-field>
-                            <mat-form-field class="field-full">
+                            <mat-form-field>
                                 <mat-label>{{ 'COMMON.FIRST_NAME' | translate }}</mat-label>
                                 <input matInput formControlName="firstName">
                                 @if (this.form.get('firstName')?.hasError('required')) {
                                     <mat-error>{{ 'COMMON.ERROR_FIRST_NAME_REQUIRED' | translate }}</mat-error>
                                 }
                             </mat-form-field>
-                            <mat-form-field class="field-full">
+                            <mat-form-field>
                                 <mat-label>{{ 'COMMON.LAST_NAME' | translate }}</mat-label>
                                 <input matInput formControlName="lastName">
                                 @if (this.form.get('lastName')?.hasError('required')) {
                                     <mat-error>{{ 'COMMON.ERROR_LAST_NAME_REQUIRED' | translate }}</mat-error>
                                 }
                             </mat-form-field>
-                            <mat-form-field class="field-full">
+                            <mat-form-field>
                                 <mat-label>{{ 'COMMON.COUNTRY' | translate }}</mat-label>
                                 <input matInput formControlName="country">
                                 @if (this.form.get('country')?.hasError('required')) {
                                     <mat-error>{{ 'COMMON.ERROR_COUNTRY_REQUIRED' | translate }}</mat-error>
                                 }
                             </mat-form-field>
-                            <mat-form-field class="field-full">
+                            <mat-form-field>
                                 <mat-label>{{ 'COMMON.CITY' | translate }}</mat-label>
                                 <input matInput formControlName="city">
                                 @if (this.form.get('city')?.hasError('required')) {
                                     <mat-error>{{ 'COMMON.ERROR_CITY_REQUIRED' | translate }}</mat-error>
                                 }
                             </mat-form-field>
-                            <mat-form-field class="field-full">
+                            <mat-form-field>
                                 <mat-label>{{ 'COMMON.ADDRESS' | translate }}</mat-label>
                                 <input matInput formControlName="address">
                                 @if (this.form.get('address')?.hasError('required')) {
                                     <mat-error>{{ 'COMMON.ERROR_ADDRESS_REQUIRED' | translate }}</mat-error>
                                 }
                             </mat-form-field>
-                            <mat-form-field class="field-full">
+                            <mat-form-field>
                                 <mat-label>{{ 'COMMON.PHONE' | translate }}</mat-label>
                                 <input matInput formControlName="phone">
                                 @if (this.form.get('phone')?.hasError('required')) {
@@ -63,18 +65,10 @@
                             </mat-form-field>
                         </div>
                         <div class="flex flex-col space-y-4 flex-1">
-                            <mat-form-field class="field-full">
+                            <mat-form-field>
                                 <mat-label>{{ 'COMMON.PERSONAL_ID' | translate }}</mat-label>
                                 <input matInput formControlName="personalId">
                                 <mat-error>{{ 'COMMON.ERROR_PERSONAL_ID_REQUIRED' | translate }}</mat-error>
-                            </mat-form-field>
-                            <mat-form-field class="field-full">
-                                <mat-label>{{ 'COMMON.OCCUPATION' | translate }}</mat-label>
-                                <input matInput formControlName="occupation">
-                            </mat-form-field>
-                            <mat-form-field class="field-full">
-                                <mat-label>{{ 'COMMON.OCCUPATION_INFO' | translate }}</mat-label>
-                                <input matInput formControlName="occupationInfo">
                             </mat-form-field>
                             <mat-label>{{ 'COMMON.GENDER' | translate }}</mat-label>
                             <mat-radio-group formControlName="gender">
@@ -83,7 +77,7 @@
                                 }
                             </mat-radio-group>
                             @if (!patientOnly) {
-                                <mat-form-field class="field-full">
+                                <mat-form-field>
                                     <mat-label>{{ 'COMMON.ROLE' | translate }}</mat-label>
                                     <mat-select formControlName="role">
                                         @for (role of roles; track role) {
@@ -95,11 +89,19 @@
                                     }
                                 </mat-form-field>
                                 @if (this.form.get('role')?.value === Role.DOCTOR) {
-                                    <mat-form-field class="field-full">
+                                    <mat-form-field>
+                                        <mat-label>{{ 'COMMON.HOSPITAL' | translate }}</mat-label>
+                                        <mat-select formControlName="hospital">
+                                            @for (hospital of (hospitals$ | async) ?? []; track hospital.id) {
+                                                <mat-option [value]="hospital.id">{{ hospital.name }}</mat-option>
+                                            }
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field>
                                         <mat-label>{{ 'COMMON.DOCTOR_TYPE' | translate }}</mat-label>
                                         <mat-select formControlName="doctorType" panelClass="specialty-panel">
-                                            @for (doctorType of doctorTypes; track doctorType) {
-                                                <mat-option [value]="doctorType">{{ ('COMMON.' + doctorType) | translate }}</mat-option>
+                                            @for (doctorType of (doctorTypes$ | async) ?? []; track doctorType) {
+                                                <mat-option [value]="doctorType">{{ doctorType.name }}</mat-option>
                                             }
                                         </mat-select>
                                         @if (this.form.get('doctorType')?.hasError('required')) {
@@ -107,18 +109,10 @@
                                         }
                                     </mat-form-field>
                                 }
-                                <mat-form-field class="field-full">
-                                    <mat-label>{{ 'COMMON.HOSPITAL' | translate }}</mat-label>
-                                    <mat-select formControlName="hospital">
-                                        @for (hospital of hospitals$ | async; track hospital.id) {
-                                            <mat-option [value]="hospital.id">{{ hospital.name }}</mat-option>
-                                        }
-                                    </mat-select>
-                                </mat-form-field>
                             }
                         </div>
                     </div>
-                    <button (click)="onSubmit()" [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.SUBMIT' | translate }}</button>
+                    <button type="button" (click)="onSubmit()" [disabled]="form.invalid || form.pristine" mat-flat-button color="primary">{{ 'COMMON.SUBMIT' | translate }}</button>
                 </form>
             </mat-card-content>
         </mat-card>

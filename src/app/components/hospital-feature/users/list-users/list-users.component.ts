@@ -6,11 +6,11 @@ import { AuthenticationService } from "../../../../common/service/authentication
 import { map } from "rxjs/operators";
 import { NotificationService } from "../../../../common/service/notification.service";
 import { catchError } from "rxjs";
-import { User } from "../../../../rest/user/user.model";
+import {Role, User} from "../../../../rest/user/user.model";
 import { FilterUserComponent, FilterUserParam } from "./filter-user/filter-user.component";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Location } from "@angular/common";
-import { ROUTE_ADD_USER } from "../register/register.component";
+import { ROUTE_CREATE_USER } from "../register/register.component";
 import { ROUTE_HOSPITALS } from "../../hospitals/list-hospitals/list-hospitals.component";
 
 export const ROUTE_USERS = 'users';
@@ -22,10 +22,11 @@ export const ROUTE_USERS = 'users';
     styleUrls: ['./list-users.component.scss']
 })
 export class ListUsersComponent {
-    displayedColumns: string[] = ['Name', 'Surname', 'Role', 'MedicalRecord', 'Schedule', 'Update', 'Delete'];
+    displayedColumns: string[] = ['Name', 'Surname', 'Role', 'Department', 'Verified', 'MedicalRecord', 'Schedule', 'Update', 'Delete'];
     currentUser = toSignal(this.authService.activeUser);
     users = signal<User[] | null>(null);
-    searchFilter = signal<FilterUserParam | null>(null)
+    searchFilter = signal<FilterUserParam | null>(null);
+    hospitalId: string | null = null;
 
     constructor(private authService: AuthenticationService,
                 private api: ApiService,
@@ -33,28 +34,19 @@ export class ListUsersComponent {
                 private route: ActivatedRoute,
                 private notificationService: NotificationService,
                 private location: Location) {
-        const hospitalId = this.route.snapshot.queryParams['hospitalId'];
-        if (hospitalId) {
-            this.searchFilter.set({ name: '', hospital: +hospitalId });
-        }
+        this.hospitalId = this.route.snapshot.queryParams['hospitalId'] ?? null;
+        this.searchFilter.set({ name: '', role: null });
 
         effect(() => {
             const search = this.searchFilter();
 
-            if (search?.hospital) {
-                this.api.hospitalApi.getUsersFromHospital(search.hospital as number, null, search.name ?? '').pipe(
+            if (this.hospitalId) {
+                this.api.userApi.list(+this.hospitalId, search?.name, search?.role ?? undefined).pipe(
                     map(response => response.data),
                     catchError(error => this.notificationService.showError(error.message))
                 ).subscribe((response => {
-                    this.users.set(response);
-                }))
-            } else {
-                this.api.userApi.list(search?.name).pipe(
-                    map(response => response.data),
-                    catchError(error => this.notificationService.showError(error.message))
-                ).subscribe((response => {
-                    this.users.set(response);
-                }))
+                    this.users.set((response ?? []).filter(user => user.role !== Role.ADMIN_SYSTEM));
+                }));
             }
         });
     }
@@ -66,13 +58,14 @@ export class ListUsersComponent {
     goBack() { this.router.navigate([ROUTE_HOSPITALS]); }
 
     addUser() {
-        this.router.navigate([ROUTE_ADD_USER])
+        this.router.navigate([ROUTE_CREATE_USER], { queryParams: { hospitalId: this.hospitalId } });
     }
 
     deleteUser(id: number) {
         this.api.userApi.deleteUser(id).pipe(
             catchError(error => this.notificationService.showError(error.message))
         ).subscribe(() => {
+            this.notificationService.showSuccess('User deleted successfully.');
             this.users.update(items => items?.filter(u => u.id !== id) ?? []);
         });
     }

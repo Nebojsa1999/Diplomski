@@ -1,0 +1,143 @@
+<div class="cp-content flex flex-col flex-1 gap-6 mt-8">
+
+    <div class="flex flex-row justify-between items-center mx-2">
+        <div>
+            <h2 style="font-weight: bold">{{ 'COMMON.DOCTOR_DASHBOARD' | translate }}</h2>
+            <p class="text-sm text-gray-500">{{ today | date: 'fullDate' }}</p>
+        </div>
+    </div>
+
+    @if (isLoading()) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
+
+    <div class="stats-row">
+        <mat-card class="stat-card">
+            <mat-card-content class="flex flex-col items-center">
+                <span class="stat-number">{{ upcoming().length }}</span>
+                <span class="stat-label">{{ 'COMMON.UPCOMING_TODAY' | translate }}</span>
+            </mat-card-content>
+        </mat-card>
+        <mat-card class="stat-card stat-success">
+            <mat-card-content class="flex flex-col items-center">
+                <span class="stat-number">{{ completed().length }}</span>
+                <span class="stat-label">{{ 'COMMON.COMPLETED_TODAY' | translate }}</span>
+            </mat-card-content>
+        </mat-card>
+        <mat-card class="stat-card stat-total">
+            <mat-card-content class="flex flex-col items-center">
+                <span class="stat-number">{{ allAppointments().length }}</span>
+                <span class="stat-label">{{ 'COMMON.TOTAL_TODAY' | translate }}</span>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon class="tab-icon">schedule</mat-icon>
+                {{ 'COMMON.UPCOMING' | translate }}
+                @if (upcoming().length) {
+                    <span class="tab-badge">{{ upcoming().length }}</span>
+                }
+            </ng-template>
+
+            <div class="tab-content flex flex-col gap-3 mt-4">
+                @for (appointment of upcoming(); track appointment.id) {
+                    <mat-card class="appointment-card"
+                              [class.starting-soon]="isStartingSoon(appointment.dateAndTime)">
+                        <mat-card-content class="flex flex-row justify-between items-center flex-wrap gap-3">
+                            <div class="flex flex-col gap-1">
+                                <div class="appointment-time">
+                                    {{ appointment.dateAndTime | date: 'HH:mm' }}
+                                    @if (isStartingSoon(appointment.dateAndTime)) {
+                                        <span class="soon-badge">
+                                            {{ 'COMMON.STARTING_SOON' | translate }}
+                                        </span>
+                                    }
+                                </div>
+                                <div class="flex flex-row items-center gap-2 text-sm">
+                                    <mat-icon class="text-base text-gray-500">person</mat-icon>
+                                    <span>{{ appointment.patient.firstName }} {{ appointment.patient.lastName }}</span>
+                                </div>
+                                <div class="flex flex-row items-center gap-2 text-sm text-gray-500">
+                                    <mat-icon class="text-base">timer</mat-icon>
+                                    <span>{{ appointment.duration }} min</span>
+                                    <mat-icon class="text-base">schedule</mat-icon>
+                                    <span>
+                                        @if (minutesUntil(appointment.dateAndTime) > 0) {
+                                            {{ 'COMMON.IN_MINUTES' | translate: { minutes: minutesUntil(appointment.dateAndTime) } }}
+                                        } @else {
+                                            {{ 'COMMON.NOW' | translate }}
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex flex-row gap-2">
+                                <button mat-flat-button color="primary" (click)="startAppointment(appointment.id)">
+                                    <mat-icon>play_arrow</mat-icon>
+                                    {{ 'COMMON.START' | translate }}
+                                </button>
+                                <button mat-stroked-button color="warn" (click)="denyAppointment(appointment.id)">
+                                    <mat-icon>cancel</mat-icon>
+                                    {{ 'COMMON.DENY' | translate }}
+                                </button>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                } @empty {
+                    <div class="empty-state">
+                        <mat-icon>event_available</mat-icon>
+                        <p>{{ 'COMMON.NO_UPCOMING_APPOINTMENTS' | translate }}</p>
+                    </div>
+                }
+            </div>
+        </mat-tab>
+
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon class="tab-icon">check_circle</mat-icon>
+                {{ 'COMMON.COMPLETED' | translate }}
+            </ng-template>
+
+            <div class="tab-content flex flex-col gap-3 mt-4">
+                @for (appointment of completed(); track appointment.id) {
+                    <mat-card class="appointment-card completed-card">
+                        <mat-card-content class="flex flex-row justify-between items-center flex-wrap gap-3">
+                            <div class="flex flex-col gap-1">
+                                <div class="appointment-time text-gray-400">
+                                    {{ appointment.dateAndTime | date: 'HH:mm' }}
+                                </div>
+                                <div class="flex flex-row items-center gap-2 text-sm">
+                                    <mat-icon class="text-base text-gray-500">person</mat-icon>
+                                    <span>{{ appointment.patient.firstName }} {{ appointment.patient.lastName }}</span>
+                                </div>
+                                <div class="flex flex-row items-center gap-2 text-sm text-gray-500">
+                                    <mat-icon class="text-base">timer</mat-icon>
+                                    <span>{{ appointment.duration }} min</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-row gap-2 items-center">
+                                <mat-chip class="status-chip">
+                                    <mat-icon>check_circle</mat-icon>
+                                    {{ 'COMMON.APPOINTMENT_STATUS_FINISHED' | translate }}
+                                </mat-chip>
+                                <button mat-icon-button
+                                        (click)="downloadReport(appointment.id)"
+                                        [matTooltip]="'COMMON.DOWNLOAD_APPOINTMENT_REPORT' | translate">
+                                    <mat-icon svgIcon="file_save"></mat-icon>
+                                </button>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                } @empty {
+                    <div class="empty-state">
+                        <mat-icon>history</mat-icon>
+                        <p>{{ 'COMMON.NO_COMPLETED_APPOINTMENTS' | translate }}</p>
+                    </div>
+                }
+            </div>
+        </mat-tab>
+
+    </mat-tab-group>
+</div>

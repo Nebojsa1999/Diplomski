@@ -10,7 +10,6 @@ import { catchError } from "rxjs";
 import { map } from "rxjs/operators";
 import { NotificationService } from "../../../../common/service/notification.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ROUTE_SCHEDULES } from "../list-schedules/list-schedules.component";
 import { scheduleTimeValidator } from "../schedule.validators";
 
 export const ROUTE_EDIT_SCHEDULE = 'edit-doctor-schedule';
@@ -22,6 +21,7 @@ export const ROUTE_EDIT_SCHEDULE = 'edit-doctor-schedule';
     styleUrl: './edit-schedule.component.scss',
 })
 export class EditScheduleComponent {
+    minDate = new Date();
     daysOfWeek = Object.values(DayOfWeek).filter(d => d !== DayOfWeek.SUNDAY);
 
     form = new FormGroup({
@@ -83,9 +83,7 @@ export class EditScheduleComponent {
         ).subscribe(response => {
             if (response) {
                 this.notificationService.showSuccess('Successfully updated schedule.');
-                this.router.navigate([ROUTE_SCHEDULES], {
-                    queryParams: this.weekStart ? { weekStart: this.weekStart } : {}
-                });
+                this.location.back();
             }
         });
     }

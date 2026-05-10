@@ -18,7 +18,15 @@
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>{{ 'COMMON.MEDICATION_NAME' | translate }}</mat-label>
-                        <input matInput type="text" formControlName="name">
+                        @if (medicaments().length > 0) {
+                            <mat-select formControlName="name">
+                                @for (med of medicaments(); track med.id) {
+                                    <mat-option [value]="med.name">{{ med.name }}</mat-option>
+                                }
+                            </mat-select>
+                        } @else {
+                            <input matInput type="text" formControlName="name">
+                        }
                         @if (this.form.get('name')?.hasError('required')) {
                             <mat-error>
                                 {{ 'COMMON.ERROR_MEDICATION_NAME_REQUIRED' | translate }}

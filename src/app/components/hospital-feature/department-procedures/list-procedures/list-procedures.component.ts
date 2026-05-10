@@ -9,8 +9,9 @@ import { map } from "rxjs/operators";
 import { catchError } from "rxjs";
 import { FilterProceduresComponent, FilterProcedureParam } from "./filter-procedures/filter-procedures.component";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Location } from "@angular/common";
 import { ROUTE_CREATE_PROCEDURE } from "../create-procedure/create-procedure.component";
+import { ROUTE_DEPARTMENTS } from "../../departments/list-departments/list-departments.component";
+import { ROUTE_HOSPITAL } from "../../hospitals/upsert-hospital/hospital.component";
 
 export const ROUTE_PROCEDURES = 'procedures';
 
@@ -27,7 +28,7 @@ export class ListProceduresComponent {
     searchFilter = signal<FilterProcedureParam | null>(null);
     private departmentId: number | null = null;
 
-    constructor(private authService: AuthenticationService, private router: Router, private route: ActivatedRoute, private api: ApiService, private notificationService: NotificationService, private location: Location) {
+    constructor(private authService: AuthenticationService, private router: Router, private route: ActivatedRoute, private api: ApiService, private notificationService: NotificationService) {
         this.departmentId = this.route.snapshot.params['id'] ? +this.route.snapshot.params['id'] : null;
 
         effect(() => {
@@ -46,7 +47,14 @@ export class ListProceduresComponent {
         this.searchFilter.set(filter);
     }
 
-    goBack() { this.location.back(); }
+    goBack() {
+        if (!this.departmentId) return;
+        this.api.hospitalApi.getDepartment(this.departmentId).pipe(
+            map(r => r.data)
+        ).subscribe(dept => {
+            if (dept) this.router.navigate([ROUTE_HOSPITAL, dept.hospital.id, ROUTE_DEPARTMENTS]);
+        });
+    }
 
     addProcedure() {
         this.router.navigate([ROUTE_CREATE_PROCEDURE], {
@@ -58,6 +66,7 @@ export class ListProceduresComponent {
         this.api.hospitalApi.deleteProcedure(id).pipe(
             catchError(error => this.notificationService.showError(error.message))
         ).subscribe(() => {
+            this.notificationService.showSuccess('Procedure deleted successfully.');
             this.procedures.update(items => items?.filter(p => p.id !== id) ?? []);
         });
     }

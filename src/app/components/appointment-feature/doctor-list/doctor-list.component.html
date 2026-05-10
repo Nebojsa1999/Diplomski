@@ -1,0 +1,114 @@
+<div class="cp-content flex flex-col flex-1 gap-6 mt-8">
+
+    <div class="flex flex-row justify-between items-center mx-2">
+        <h2 style="font-weight: bold">{{ 'COMMON.DOCTORS' | translate }}</h2>
+        <button mat-icon-button [routerLink]="['/hospitals']">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+    </div>
+
+    <mat-card>
+        <mat-card-content>
+            <form [formGroup]="filterForm" class="flex flex-row flex-wrap gap-4 items-end">
+                <mat-form-field style="width: 220px">
+                    <mat-label>{{ 'COMMON.SEARCH_BY_NAME' | translate }}</mat-label>
+                    <input matInput formControlName="name" (input)="applyFilter()" (change)="applyFilter()" />
+                    <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field style="width: 220px">
+                    <mat-label>{{ 'COMMON.DEPARTMENT' | translate }}</mat-label>
+                    <mat-select formControlName="department" (selectionChange)="applyFilter()">
+                        <mat-option value="">{{ 'COMMON.SEARCH_ALL' | translate }}</mat-option>
+                        @for (dept of departments(); track dept.id) {
+                            <mat-option [value]="dept.name">{{ dept.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <button mat-stroked-button type="button" (click)="resetFilter()">
+                    {{ 'COMMON.BTN_CLEAR' | translate }}
+                </button>
+            </form>
+        </mat-card-content>
+    </mat-card>
+
+    @if (isLoading()) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
+
+    <div class="doctor-grid">
+        @for (doctor of filteredDoctors(); track doctor.id) {
+            <mat-card class="doctor-card" (click)="viewProfile(doctor.id)">
+                <mat-card-content class="flex flex-col gap-3">
+
+                    <div class="flex flex-row justify-between items-start">
+                        <div class="doctor-avatar">
+                            <mat-icon class="avatar-icon">person</mat-icon>
+                        </div>
+                        <div class="flex flex-row items-center">
+                            <button
+                                mat-icon-button
+                                [routerLink]="['/doctor', doctor.id, 'doctor-schedules']"
+                                [queryParams]="{hospitalId: doctor.hospital.id}"
+                                (click)="$event.stopPropagation()"
+                                [matTooltip]="'COMMON.DOCTOR_SCHEDULES' | translate">
+                                <mat-icon>calendar_month</mat-icon>
+                            </button>
+                            <button
+                                mat-icon-button
+                                class="favorite-btn"
+                                [class.active]="isFavorite(doctor.id)"
+                                (click)="toggleFavorite($event, doctor.id)"
+                                [matTooltip]="isFavorite(doctor.id) ? ('COMMON.REMOVE_FAVORITE' | translate) : ('COMMON.ADD_FAVORITE' | translate)">
+                                <mat-icon>{{ isFavorite(doctor.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="doctor-name">{{ doctor.firstName }} {{ doctor.lastName }}</h3>
+                    </div>
+
+                    <div class="flex flex-row items-center gap-1 text-sm text-gray-500">
+                        <mat-icon class="text-base">local_hospital</mat-icon>
+                        <span>{{ doctor.hospital.name }}</span>
+                    </div>
+                    @if (doctor.department.name) {
+                        <div class="flex flex-row items-center gap-1 text-sm text-gray-500">
+                            <mat-icon class="text-base">apartment</mat-icon>
+                            <span>{{ doctor.department.name }}</span>
+                        </div>
+                    }
+
+                    @if (doctor.phone) {
+                        <div class="flex flex-row items-center gap-1 text-sm text-gray-500">
+                            <mat-icon class="text-base">phone</mat-icon>
+                            <span>{{ doctor.phone }}</span>
+                        </div>
+                    }
+
+                    @if (isFavorite(doctor.id)) {
+                        <div class="flex flex-row items-center gap-1">
+                            <mat-icon class="text-base text-red-500">favorite</mat-icon>
+                            <span class="text-sm text-red-500">{{ 'COMMON.FAVORITE' | translate }}</span>
+                        </div>
+                    }
+
+                    <button mat-flat-button color="primary" class="mt-2"
+                            (click)="viewProfile(doctor.id); $event.stopPropagation()">
+                        <mat-icon>event_available</mat-icon>
+                        {{ 'COMMON.BOOK_APPOINTMENT' | translate }}
+                    </button>
+                </mat-card-content>
+            </mat-card>
+        } @empty {
+            @if (!isLoading()) {
+                <div class="empty-state">
+                    <mat-icon class="empty-icon">people_outline</mat-icon>
+                    <p>{{ 'COMMON.NO_DOCTORS_FOUND' | translate }}</p>
+                </div>
+            }
+        }
+    </div>
+</div>

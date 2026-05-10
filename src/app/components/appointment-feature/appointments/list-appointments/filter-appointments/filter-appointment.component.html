@@ -1,19 +1,5 @@
 <form [formGroup]="form" class="flex flex-row gap-x-4 mobile-wrap">
     <div class="flex flex-row gap-x-4 mobile-wrap">
-        <mat-form-field appearance="outline">
-            <mat-label>{{ 'COMMON.SEARCH_BY_APPOINTMENT_STATUS' | translate }}</mat-label>
-            <mat-select (selectionChange)="applyFilter()" [placeholder]="'COMMON.SEARCH_BY_APPOINTMENT_STATUS' | translate"
-                        formControlName="appointmentStatus">
-                <mat-option [value]="''">
-                    {{ 'COMMON.SEARCH_ALL' | translate }}
-                </mat-option>
-                @for (status of appointmentStatus; track status) {
-                    <mat-option [value]="status"> {{ status }}
-                    </mat-option>
-                }
-
-            </mat-select>
-        </mat-form-field>
         <mat-form-field appearance="fill">
             <mat-label>{{ 'COMMON.CHOOSE_DATE_RANGE' | translate }}</mat-label>
 

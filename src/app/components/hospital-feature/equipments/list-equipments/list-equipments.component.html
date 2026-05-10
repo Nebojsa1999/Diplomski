@@ -3,10 +3,13 @@
         <div class="overflow-hidden flex flex-col gap-4 flex-1">
             <div class="flex flex-row m-2 justify-between items-center">
                 <h2 style="font-weight: bold">{{ 'COMMON.EQUIPMENTS' | translate }}</h2>
-                <button mat-raised-button (click)="addEquipment()">
-                    <mat-icon>add</mat-icon>
-                    {{'COMMON.ADD_EQUIPMENT' | translate}}
-                </button>
+                <div class="flex flex-row gap-x-2">
+                    <button mat-stroked-button (click)="goBack()">{{ 'COMMON.BACK' | translate }}</button>
+                    <button mat-raised-button (click)="addEquipment()">
+                        <mat-icon>add</mat-icon>
+                        {{'COMMON.ADD_EQUIPMENT' | translate}}
+                    </button>
+                </div>
             </div>
             <mat-card class="flow-row ">
                 <div class="flex-column items-start m-4">
@@ -22,6 +25,10 @@
                     <ng-container matColumnDef="Amount">
                         <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.AMOUNT' | translate }}</th>
                         <td mat-cell *matCellDef="let equipment"> {{ equipment.amount }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="Room">
+                        <th mat-header-cell *matHeaderCellDef> {{ 'COMMON.ROOM_NUMBER' | translate }}</th>
+                        <td mat-cell *matCellDef="let equipment"> {{ equipment.room?.roomNumber }}</td>
                     </ng-container>
                     <ng-container matColumnDef="Update">
                         <th mat-header-cell *matHeaderCellDef></th>

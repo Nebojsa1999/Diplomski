@@ -10,7 +10,6 @@ import { catchError, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { NotificationService } from "../../../../common/service/notification.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ROUTE_SCHEDULES } from "../list-schedules/list-schedules.component";
 import { scheduleTimeValidator } from "../schedule.validators";
 
 export const ROUTE_CREATE_SCHEDULE = 'create-doctor-schedule';
@@ -32,7 +31,8 @@ const DAY_BY_INDEX: DayOfWeek[] = [
     styleUrl: './create-schedule.component.scss',
 })
 export class CreateScheduleComponent {
-    doctors$ = this.apiService.userApi.list().pipe(
+    minDate = new Date();
+    doctors$ = this.apiService.userApi.list(1).pipe(
         map(response => response.data?.filter(u => u.role === Role.DOCTOR)),
         catchError(() => of([]))
     );
@@ -146,7 +146,7 @@ export class CreateScheduleComponent {
         ).subscribe(response => {
             if (response) {
                 this.notificationService.showSuccess('Successfully created schedules.');
-                this.router.navigate([ROUTE_SCHEDULES]);
+                this.location.back();
             }
         });
     }

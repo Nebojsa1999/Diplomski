@@ -10,7 +10,7 @@
                     <mat-form-field appearance="outline" subscriptSizing="fixed">
                         <mat-label>{{ 'COMMON.DOCTOR' | translate }}</mat-label>
                         <mat-select formControlName="doctor" [compareWith]="compareDoctorById">
-                            @for (doctor of doctors$ | async; track doctor.id) {
+                            @for (doctor of (doctors$ | async) ?? []; track doctor.id) {
                                 <mat-option [value]="doctor">{{ doctor.firstName }} {{ doctor.lastName }}</mat-option>
                             }
                         </mat-select>
@@ -21,7 +21,7 @@
                     <div class="flex flex-row gap-x-3">
                         <mat-form-field appearance="outline" subscriptSizing="fixed" class="flex-1">
                             <mat-label>{{ 'COMMON.START_DATE' | translate }}</mat-label>
-                            <input matInput [matDatepicker]="startDatePicker" formControlName="startDate">
+                            <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" [min]="minDate">
                             <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #startDatePicker></mat-datepicker>
                             @if (form.get('startDate')?.hasError('required')) {
@@ -30,7 +30,7 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline" subscriptSizing="fixed" class="flex-1">
                             <mat-label>{{ 'COMMON.END_DATE' | translate }}</mat-label>
-                            <input matInput [matDatepicker]="endDatePicker" formControlName="endDate">
+                            <input matInput [matDatepicker]="endDatePicker" formControlName="endDate" [min]="minDate">
                             <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #endDatePicker></mat-datepicker>
                             @if (form.get('endDate')?.hasError('required')) {

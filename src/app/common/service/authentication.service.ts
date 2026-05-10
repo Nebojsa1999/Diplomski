@@ -114,7 +114,12 @@ export class AuthenticationService {
                         this.logout();
                         return EMPTY;
                     }),
-                    tap((response) => this.loadRolesFromToken(response?.token ?? '')),
+                    tap((response) => {
+                        if (response?.token) {
+                            this.accessToken$.next(response.token);
+                        }
+                        this.loadRolesFromToken(response?.token ?? '');
+                    }),
                     map(response => response?.token ?? '')
                 );
             }),

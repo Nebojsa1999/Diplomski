@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { shared } from "../../../../app.config";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Equipment, Hospital } from "../../../../rest/hospital/hospital.model";
+import { Equipment, Room } from "../../../../rest/hospital/hospital.model";
 import { ApiService } from "../../../../common/service/api.service";
 import { catchError, of } from "rxjs";
 import { map } from "rxjs/operators";
@@ -22,9 +22,9 @@ export class CreateEquipmentComponent {
     form = new FormGroup({
         name: new FormControl<string | null>('', [Validators.required]),
         amount: new FormControl<number | null>(null, [Validators.required]),
-        hospital: new FormControl<Hospital | null>(null, [Validators.required])
+        room: new FormControl<Room | null>(null, [Validators.required])
     });
-    hospital$ = this.apiService.hospitalApi.list().pipe(
+    rooms$ = this.apiService.hospitalApi.listRooms().pipe(
         map(response => response.data),
         catchError(error => of([]))
     )
@@ -37,12 +37,12 @@ export class CreateEquipmentComponent {
     onSubmit() {
         const name = this.form.get('name')?.value;
         const amount = this.form.get('amount')?.value;
-        const hospital = this.form.get('hospital')?.value;
+        const room = this.form.get('room')?.value;
 
         const equipment: Equipment = {
             name: name as string,
             amount: amount as number,
-            hospital: hospital as Hospital
+            room: room as Room
         }
 
         this.apiService.hospitalApi.createEquipment(equipment).pipe(

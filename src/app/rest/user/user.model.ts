@@ -1,4 +1,4 @@
-import { DoctorType, Hospital } from "../hospital/hospital.model";
+import { Department, Hospital } from "../hospital/hospital.model";
 
 export interface User {
     id: number;
@@ -15,7 +15,8 @@ export interface User {
     occupation: string;
     occupationInfo: string;
     hospital: Hospital;
-    doctorType: DoctorType;
+    department: Department;
+    verified: boolean;
 }
 
 export interface UserDto {
@@ -29,11 +30,9 @@ export interface UserDto {
     phone: string;
     gender: Gender;
     personalId: string;
-    occupation: string;
-    occupationInfo: string;
     role: Role;
     hospitalId: number;
-    doctorType: DoctorType;
+    departmentId?: number;
 }
 
 export interface UpdateUserDto {
@@ -47,6 +46,7 @@ export interface UpdateUserDto {
     personalId: string;
     occupation: string;
     occupationInfo: string;
+    departmentId?: number;
 }
 
 export enum Gender {
@@ -59,4 +59,9 @@ export enum Role {
 
 export interface ChangePasswordDto {
     password: string;
+}
+
+export interface FavoriteDoctor {
+    id: number;
+    doctor: User;
 }

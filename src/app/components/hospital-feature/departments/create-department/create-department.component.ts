@@ -1,14 +1,16 @@
-import { Component } from '@angular/core';
-import { Location } from '@angular/common';
-import { shared } from "../../../../app.config";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Hospital } from "../../../../rest/hospital/hospital.model";
-import { ApiService } from "../../../../common/service/api.service";
-import { catchError, of } from "rxjs";
-import { map } from "rxjs/operators";
-import { NotificationService } from "../../../../common/service/notification.service";
-import { Router } from "@angular/router";
-import { ROUTE_DEPARTMENTS } from "../list-departments/list-departments.component";
+import {ChangeDetectorRef, Component} from '@angular/core';
+import {shared} from "../../../../app.config";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {Hospital} from "../../../../rest/hospital/hospital.model";
+import {ApiService} from "../../../../common/service/api.service";
+import {catchError} from "rxjs";
+import {map} from "rxjs/operators";
+import {NotificationService} from "../../../../common/service/notification.service";
+import {toSignal} from "@angular/core/rxjs-interop";
+import {AuthenticationService} from "../../../../common/service/authentication.service";
+import {ActivatedRoute, Router} from "@angular/router";
+import {ROUTE_DEPARTMENTS} from "../list-departments/list-departments.component";
+import {ROUTE_HOSPITAL} from "../../hospitals/upsert-hospital/hospital.component";
 
 export const ROUTE_CREATE_DEPARTMENT = 'create-department';
 
@@ -25,15 +27,29 @@ export class CreateDepartmentComponent {
         phoneNumber: new FormControl<string | null>(null, [Validators.required]),
         hospital: new FormControl<Hospital | null>(null, [Validators.required])
     });
-    hospitals$ = this.apiService.hospitalApi.list().pipe(
-        map(response => response.data),
-        catchError(() => of([]))
-    );
+    currentUser = toSignal(this.authService.activeUser);
 
-    constructor(private apiService: ApiService, private notificationService: NotificationService, private router: Router, private location: Location) {
+    constructor(private apiService: ApiService,
+                private authService: AuthenticationService,
+                private notificationService: NotificationService,
+                private cdr: ChangeDetectorRef,
+                private route: ActivatedRoute,
+                private router: Router) {
+        const hospitalId = this.route.snapshot.params['id'];
+        this.apiService.hospitalApi.getHospital(hospitalId as number).pipe(
+            map(resp => resp.data),
+            catchError(error => this.notificationService.showError(error.message))
+        ).subscribe((hospital) => {
+            if (hospital) {
+                this.form.get('hospital')?.setValue(hospital);
+                this.cdr.detectChanges();
+            }
+        })
     }
 
-    goBack() { this.location.back(); }
+    goBack() {
+        this.router.navigate([ROUTE_HOSPITAL, this.route.snapshot.params['id'], ROUTE_DEPARTMENTS])
+    }
 
     onSubmit() {
         const name = this.form.get('name')?.value;
@@ -52,7 +68,7 @@ export class CreateDepartmentComponent {
         ).subscribe((response) => {
             if (response) {
                 this.notificationService.showSuccess('Successfully created department.');
-                this.router.navigate([ROUTE_DEPARTMENTS]);
+                this.router.navigate([ROUTE_HOSPITAL, this.route.snapshot.params['id'], ROUTE_DEPARTMENTS])
             }
         });
     }

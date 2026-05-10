@@ -1,0 +1,45 @@
+@if (departmentNames(); as departmentNames) {
+    <div class="cp-content flex flex-col flex-1 justify-between gap-6 mt-8">
+        <div class="overflow-hidden flex flex-col gap-4 flex-1">
+            <div class="flex flex-row m-2 justify-between items-center">
+                <h2 style="font-weight: bold">{{ 'COMMON.DEPARTMENT_NAMES' | translate }}</h2>
+            </div>
+            <mat-card class="mobile-table-scroll">
+                <table mat-table [dataSource]="departmentNames">
+                    <ng-container matColumnDef="Name">
+                        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.NAME' | translate }}</th>
+                        <td mat-cell *matCellDef="let dn">{{ dn.name }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="Diagnoses">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let dn">
+                            <button [routerLink]="['/department-name/' + dn.id + '/diagnoses']" mat-icon-button>
+                                <mat-icon>description</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="Medicaments">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let dn">
+                            <button [routerLink]="['/department-name/' + dn.id + '/medicaments']" mat-icon-button>
+                                <mat-icon>medication</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="cursor-pointer"></tr>
+                    <tr class="mat-mdc-row" *matNoDataRow>
+                        <td class="mat-mdc-cell p-4 text-center" [attr.colspan]="displayedColumns.length">
+                            No department names found. Create a department first.
+                        </td>
+                    </tr>
+                </table>
+            </mat-card>
+        </div>
+    </div>
+} @else {
+    <div class="cp-content flex flex-col flex-1 justify-center items-center gap-4 mt-8">
+        <mat-icon class="text-gray-400" style="font-size: 48px; width: 48px; height: 48px;">category</mat-icon>
+        <p class="text-gray-500">No department names available. Department names are created automatically when departments are added.</p>
+    </div>
+}

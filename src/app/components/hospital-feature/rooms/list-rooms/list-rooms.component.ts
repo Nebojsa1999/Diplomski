@@ -13,6 +13,7 @@ import { ROUTE_CREATE_ROOM } from "../create-room/create-room.component";
 import { ROUTE_HOSPITALS } from "../../hospitals/list-hospitals/list-hospitals.component";
 import { Role } from "../../../../rest/user/user.model";
 import { ROUTE_ROOM_BOOKINGS } from "../../../appointment-feature/room-bookings/list-room-bookings/list-room-bookings.component";
+import { ROUTE_EQUIPMENTS } from "../../equipments/list-equipments/list-equipments.component";
 
 export const ROUTE_ROOMS = 'rooms';
 
@@ -26,7 +27,7 @@ export const ROUTE_ROOMS = 'rooms';
     styleUrl: './list-rooms.component.scss',
 })
 export class ListRoomsComponent {
-    displayedColumns: string[] = ['RoomNumber', 'Type', 'Capacity', 'Update', 'Actions', 'Delete'];
+    displayedColumns: string[] = ['RoomNumber', 'Type', 'Capacity', 'Update', 'Actions', 'Equipments', 'Delete'];
     currentUser = toSignal(this.authService.activeUser);
     rooms = signal<Room[] | null>(null);
     searchFilter = signal<FilterRoomParam | null>(null)
@@ -80,10 +81,15 @@ export class ListRoomsComponent {
         this.router.navigate([id, ROUTE_ROOM_BOOKINGS])
     }
 
+    goToEquipments(roomId: number) {
+        this.router.navigate([ROUTE_EQUIPMENTS], { queryParams: { room: roomId } });
+    }
+
     deleteRoom(id: number) {
         this.api.hospitalApi.deleteRoom(id).pipe(
             catchError(error => this.notificationService.showError(error.message))
         ).subscribe(() => {
+            this.notificationService.showSuccess('Room deleted successfully.');
             this.rooms.update(items => items?.filter(r => r.id !== id) ?? []);
         });
     }

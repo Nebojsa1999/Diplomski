@@ -1,0 +1,136 @@
+<div class="flex flex-col justify-center h-full bg-no-repeat bg-cover bg-center">
+    <div class="w-full flex items-start justify-center flex-grow px-4 py-8">
+
+        @if (isLoadingDoctor()) {
+            <mat-progress-bar mode="indeterminate" class="w-full max-w-4xl"></mat-progress-bar>
+        }
+
+        @if (doctor(); as doctor) {
+            <div class="profile-layout">
+
+                <mat-card class="doctor-info-card">
+                    <mat-card-content class="flex flex-col gap-4">
+                        <div class="flex flex-row justify-between items-center">
+                            <button mat-icon-button (click)="goBack()">
+                                <mat-icon>arrow_back</mat-icon>
+                            </button>
+                            <button
+                                mat-icon-button
+                                [class.favorite-active]="isFavorite()"
+                                (click)="toggleFavorite()"
+                                [matTooltip]="isFavorite() ? ('COMMON.REMOVE_FAVORITE' | translate) : ('COMMON.ADD_FAVORITE' | translate)">
+                                <mat-icon>{{ isFavorite() ? 'favorite' : 'favorite_border' }}</mat-icon>
+                            </button>
+                        </div>
+
+                        <div class="doctor-avatar-lg mx-auto">
+                            <mat-icon>person</mat-icon>
+                        </div>
+
+                        <div class="text-center">
+                            <h2 class="m-0">{{ doctor.firstName }} {{ doctor.lastName }}</h2>
+                        </div>
+
+                        <mat-divider></mat-divider>
+
+                        <div class="info-rows flex flex-col gap-2">
+                            @if (doctor.hospital.name) {
+                                <div class="info-row">
+                                    <mat-icon>local_hospital</mat-icon>
+                                    <span>{{ doctor.hospital.name }}</span>
+                                </div>
+                            }
+                            @if (doctor.email) {
+                                <div class="info-row">
+                                    <mat-icon>email</mat-icon>
+                                    <span>{{ doctor.email }}</span>
+                                </div>
+                            }
+                            @if (doctor.phone) {
+                                <div class="info-row">
+                                    <mat-icon>phone</mat-icon>
+                                    <span>{{ doctor.phone }}</span>
+                                </div>
+                            }
+                            @if (doctor.city || doctor.country) {
+                                <div class="info-row">
+                                    <mat-icon>location_on</mat-icon>
+                                    <span>{{ locationLabel(doctor.city, doctor.country) }}</span>
+                                </div>
+                            }
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
+                <mat-card class="booking-card">
+                    <mat-card-content>
+                        <h3>{{ 'COMMON.BOOK_APPOINTMENT' | translate }}</h3>
+                        <p class="text-sm text-gray-500">{{ 'COMMON.SELECT_DATE_TO_SEE_SLOTS' | translate }}</p>
+
+                        <mat-calendar
+                            [selected]="selectedDate"
+                            [minDate]="minDate"
+                            (selectedChange)="selectDate($event)">
+                        </mat-calendar>
+
+                        @if (isLoadingSlots()) {
+                            <mat-progress-bar mode="indeterminate" class="mt-2"></mat-progress-bar>
+                        }
+
+                        @if (selectedDate) {
+                            <div class="slots-section">
+                                <h4>{{ 'COMMON.AVAILABLE_SLOTS' | translate }}</h4>
+
+                                @if (slots().length === 0 && !isLoadingSlots()) {
+                                    <div class="empty-slots">
+                                        <mat-icon>event_busy</mat-icon>
+                                        <p>{{ 'COMMON.APPOINTMENT_EMPTY' | translate }}</p>
+                                    </div>
+                                }
+
+                                <div class="slots-grid">
+                                    @for (slot of slots(); track slot.startTime) {
+                                        <button
+                                            mat-stroked-button
+                                            class="slot-btn"
+                                            [class.selected-slot]="selectedSlot?.startTime === slot.startTime"
+                                            (click)="selectSlot(slot)">
+                                            {{ slot.startTime }}
+                                            <span class="slot-duration">{{ slotDuration(slot) }}min</span>
+                                        </button>
+                                    }
+                                </div>
+
+                                @if (selectedSlot) {
+                                    <div class="confirm-section">
+                                        <mat-divider class="my-4"></mat-divider>
+                                        <div class="confirm-summary flex flex-col gap-1 text-sm mb-4">
+                                            <div><strong>{{ 'COMMON.DATE' | translate }}:</strong> {{ selectedDate.toJSDate() | date: 'mediumDate' }}</div>
+                                            <div><strong>{{ 'COMMON.TIME' | translate }}:</strong> {{ selectedSlot.startTime }} – {{ selectedSlot.endTime }}</div>
+                                            <div><strong>{{ 'COMMON.DURATION' | translate }}:</strong> {{ slotDuration(selectedSlot) }} min</div>
+                                            <div><strong>{{ 'COMMON.DOCTOR_NAME' | translate }}:</strong> {{ doctor.firstName }} {{ doctor.lastName }}</div>
+                                        </div>
+                                        <button
+                                            mat-flat-button
+                                            color="primary"
+                                            class="w-full"
+                                            [disabled]="isBooking()"
+                                            (click)="confirmBooking()">
+                                            @if (isBooking()) {
+                                                <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+                                            } @else {
+                                                <ng-container>
+                                                    {{ 'COMMON.CONFIRM' | translate }}
+                                                </ng-container>
+                                            }
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        }
+    </div>
+</div>

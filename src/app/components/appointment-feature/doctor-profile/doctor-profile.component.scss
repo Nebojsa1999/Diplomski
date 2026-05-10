@@ -1,0 +1,112 @@
+.profile-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 900px;
+    align-items: start;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.doctor-info-card {
+    position: sticky;
+    top: 1rem;
+}
+
+.booking-card {
+    min-height: 400px;
+}
+
+.doctor-avatar-lg {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--mat-sys-secondary-container, #e3f2fd);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    mat-icon {
+        font-size: 44px;
+        width: 44px;
+        height: 44px;
+        color: var(--mat-sys-on-secondary-container, #1565c0);
+    }
+}
+
+.specialty-text {
+    color: var(--mat-sys-primary, #1976d2);
+    font-weight: 500;
+    margin: 0.25rem 0;
+}
+
+.info-rows .info-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+
+    mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: #9e9e9e;
+    }
+}
+
+.favorite-active {
+    color: #e53935;
+}
+
+.slots-section {
+    margin-top: 1rem;
+}
+
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.slot-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.2;
+
+    .slot-duration {
+        font-size: 0.7rem;
+        color: #9e9e9e;
+    }
+
+    &.selected-slot {
+        background-color: var(--mat-sys-primary-container, #e3f2fd);
+        border-color: var(--mat-sys-primary, #1976d2);
+        color: var(--mat-sys-primary, #1976d2);
+    }
+}
+
+.empty-slots {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 2rem;
+    color: #9e9e9e;
+
+    mat-icon {
+        font-size: 40px;
+        width: 40px;
+        height: 40px;
+    }
+}
+
+.confirm-section {
+    margin-top: 0.5rem;
+}

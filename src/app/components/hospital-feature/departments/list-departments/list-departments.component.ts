@@ -1,16 +1,16 @@
-import { Component, effect, signal } from '@angular/core';
-import { shared } from "../../../../app.config";
-import { toSignal } from "@angular/core/rxjs-interop";
-import { Department } from "../../../../rest/hospital/hospital.model";
-import { AuthenticationService } from "../../../../common/service/authentication.service";
-import { ApiService } from "../../../../common/service/api.service";
-import { NotificationService } from "../../../../common/service/notification.service";
-import { map } from "rxjs/operators";
-import { catchError } from "rxjs";
-import { FilterDepartmentParam, FilterDepartmentsComponent } from "./filter-departments/filter-departments.component";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ROUTE_CREATE_DEPARTMENT } from "../create-department/create-department.component";
-import { ROUTE_HOSPITALS } from "../../hospitals/list-hospitals/list-hospitals.component";
+import {Component, effect, signal} from '@angular/core';
+import {shared} from "../../../../app.config";
+import {toSignal} from "@angular/core/rxjs-interop";
+import {Department} from "../../../../rest/hospital/hospital.model";
+import {AuthenticationService} from "../../../../common/service/authentication.service";
+import {ApiService} from "../../../../common/service/api.service";
+import {NotificationService} from "../../../../common/service/notification.service";
+import {map} from "rxjs/operators";
+import {catchError} from "rxjs";
+import {FilterDepartmentParam, FilterDepartmentsComponent} from "./filter-departments/filter-departments.component";
+import {ActivatedRoute, Router} from "@angular/router";
+import {ROUTE_CREATE_DEPARTMENT} from "../create-department/create-department.component";
+import {ROUTE_HOSPITALS} from "../../hospitals/list-hospitals/list-hospitals.component";
 
 export const ROUTE_DEPARTMENTS = 'departments';
 
@@ -21,7 +21,7 @@ export const ROUTE_DEPARTMENTS = 'departments';
     styleUrl: './list-departments.component.scss',
 })
 export class ListDepartmentsComponent {
-    displayedColumns: string[] = ['Name', 'Description', 'PhoneNumber', 'Hospital', 'Procedures', 'Diagnoses', 'Medicaments', 'Update', 'Delete'];
+    displayedColumns: string[] = ['Name', 'Description', 'PhoneNumber', 'Hospital', 'Procedures', 'Update', 'Delete'];
     currentUser = toSignal(this.authService.activeUser);
     departments = signal<Department[] | null>(null);
     searchFilter = signal<FilterDepartmentParam | null>(null);
@@ -51,13 +51,14 @@ export class ListDepartmentsComponent {
     }
 
     addDepartment() {
-        this.router.navigate([ROUTE_CREATE_DEPARTMENT]);
+        this.router.navigate([this.route.snapshot.params['id'], ROUTE_CREATE_DEPARTMENT]);
     }
 
     deleteDepartment(id: number) {
         this.api.hospitalApi.deleteDepartment(id).pipe(
             catchError(error => this.notificationService.showError(error.message))
         ).subscribe(() => {
+            this.notificationService.showSuccess('Department deleted successfully.');
             this.departments.update(items => items?.filter(d => d.id !== id) ?? []);
         });
     }

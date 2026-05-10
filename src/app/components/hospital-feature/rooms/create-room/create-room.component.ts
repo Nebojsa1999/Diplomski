@@ -4,12 +4,13 @@ import { shared } from "../../../../app.config";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Hospital, Room, RoomType } from "../../../../rest/hospital/hospital.model";
 import { ApiService } from "../../../../common/service/api.service";
-import { catchError, of } from "rxjs";
+import { catchError } from "rxjs";
 import { map } from "rxjs/operators";
 import { NotificationService } from "../../../../common/service/notification.service";
 import { Router } from "@angular/router";
 import { ROUTE_ROOMS } from "../list-rooms/list-rooms.component";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
+import { AuthenticationService } from "../../../../common/service/authentication.service";
 
 export const ROUTE_CREATE_ROOM = 'create-room';
 
@@ -26,15 +27,22 @@ export class CreateRoomComponent {
         capacity: new FormControl<number | null>(null, [Validators.required]),
         hospital: new FormControl<Hospital | null>(null, [Validators.required])
     });
-    hospital$ = this.apiService.hospitalApi.list().pipe(
-        map(response => response.data),
-        catchError(error => of([]))
-    )
+    types = Object.values(RoomType);
+    currentUser = toSignal(this.authService.activeUser);
 
-    types = Object.values(RoomType)
+    constructor(
+        private apiService: ApiService,
+        private authService: AuthenticationService,
+        private notificationService: NotificationService,
+        private router: Router,
+        private location: Location
+    ) {
+        this.onTypeChange();
 
-    constructor(private apiService: ApiService, private notificationService: NotificationService, private router: Router, private location: Location) {
-        this.onTypeChange()
+        const hospital = this.currentUser()?.hospital;
+        if (hospital) {
+            this.form.get('hospital')?.setValue(hospital);
+        }
     }
 
     goBack() { this.location.back(); }
@@ -43,13 +51,20 @@ export class CreateRoomComponent {
         this.form.get('roomType')?.valueChanges.pipe(
             takeUntilDestroyed()
         ).subscribe((type) => {
+            const capacity = this.form.get('capacity')!;
             if (type === RoomType.OPERATION) {
-                this.form.get('capacity')?.setValue(1);
-                this.form.get('capacity')?.disable();
+                capacity.setValue(1);
+                capacity.disable();
+                capacity.setValidators([Validators.required]);
+            } else if (type === RoomType.RECOVERY) {
+                capacity.enable();
+                capacity.setValidators([Validators.required, Validators.max(5), Validators.min(1)]);
             } else {
-                this.form.get('capacity')?.enable();
+                capacity.enable();
+                capacity.setValidators([Validators.required]);
             }
-        })
+            capacity.updateValueAndValidity();
+        });
     }
 
     onSubmit() {

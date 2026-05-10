@@ -40,7 +40,7 @@ export class CreateAppointmentComponent {
         effect(() => {
             const currentUser = this.currentUser();
             if (currentUser) {
-                this.api.hospitalApi.getUsersFromHospital(currentUser.hospital.id, Role.DOCTOR).pipe(
+                this.api.userApi.list(currentUser.hospital.id, Role.DOCTOR).pipe(
                     map(response => response.data),
                     catchError(error => this.notificationService.showError(error.message))
                 ).subscribe((response) => {

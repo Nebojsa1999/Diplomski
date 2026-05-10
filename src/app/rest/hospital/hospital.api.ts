@@ -4,6 +4,7 @@ import { ApiResponse, RequestConfig } from "../rest.model";
 import {
     Department,
     DepartmentDto,
+    DepartmentName,
     DepartmentProcedure,
     DepartmentProcedureDto,
     Diagnosis,
@@ -20,7 +21,6 @@ import {
     RoomType
 } from "./hospital.model";
 import { Observable } from "rxjs";
-import { Role, User } from "../user/user.model";
 
 export class HospitalApi extends Api {
     constructor(client: ApiClient) {
@@ -71,17 +71,6 @@ export class HospitalApi extends Api {
         return this.apiClient.get("/api/hospitals", config);
     }
 
-    getUsersFromHospital(id: number, role?: Role | null, name?: string): Observable<ApiResponse<User[]>> {
-        const config: RequestConfig = {
-            headers: {
-                accept: 'application/json'
-            },
-            params: {role: role as Role, name: name as string},
-            authenticated: true
-        };
-        return this.apiClient.get<User[]>("/api/hospitals/" + id + "/users", config);
-    }
-
     createEquipment(equipment: Equipment): Observable<ApiResponse<Equipment>> {
         const config: RequestConfig = {
             headers: {
@@ -126,7 +115,7 @@ export class HospitalApi extends Api {
         return this.apiClient.get("/api/hospitals/equipments", config);
     }
 
-    getEquipmentsByHospital(id: number, name?: string): Observable<ApiResponse<Equipment[]>> {
+    getEquipmentsByRoom(id: number, name?: string): Observable<ApiResponse<Equipment[]>> {
         const config: RequestConfig = {
             headers: {
                 accept: 'application/json',
@@ -199,6 +188,22 @@ export class HospitalApi extends Api {
         return this.apiClient.get(`/api/hospitals/${id}/free-rooms`, config);
     }
 
+    listDepartmentNames(): Observable<ApiResponse<DepartmentName[]>> {
+        const config: RequestConfig = {
+            headers: {accept: 'application/json'},
+            authenticated: true
+        };
+        return this.apiClient.get('/api/department-names', config);
+    }
+
+    getDepartmentName(id: number): Observable<ApiResponse<DepartmentName>> {
+        const config: RequestConfig = {
+            headers: {accept: 'application/json'},
+            authenticated: true
+        };
+        return this.apiClient.get(`/api/department-names/${id}`, config);
+    }
+
     listDepartments(name?: string, hospitalId?: number): Observable<ApiResponse<Department[]>> {
         const config: RequestConfig = {
             headers: {accept: 'application/json'},
@@ -266,10 +271,10 @@ export class HospitalApi extends Api {
         return this.apiClient.put(`/api/departments/procedures/${id}`, data, config);
     }
 
-    listDiagnoses(name?: string, departmentId?: number): Observable<ApiResponse<Diagnosis[]>> {
+    listDiagnoses(name?: string, departmentName?: string): Observable<ApiResponse<Diagnosis[]>> {
         const config: RequestConfig = {
             headers: {accept: 'application/json'},
-            params: {name: name as string, departmentId: departmentId as unknown as string},
+            params: {name: name as string, departmentName: departmentName as string},
             authenticated: true
         };
         return this.apiClient.get('/api/diagnoses', config);
@@ -283,12 +288,12 @@ export class HospitalApi extends Api {
         return this.apiClient.get(`/api/diagnoses/${id}`, config);
     }
 
-    createDiagnosis(departmentId: number, data: DiagnosisDto): Observable<ApiResponse<Diagnosis>> {
+    createDiagnosis(data: DiagnosisDto): Observable<ApiResponse<Diagnosis>> {
         const config: RequestConfig = {
             headers: {accept: 'application/json', contentType: 'application/json'},
             authenticated: true
         };
-        return this.apiClient.post(`/api/departments/${departmentId}/diagnoses`, data, config);
+        return this.apiClient.post('/api/diagnoses', data, config);
     }
 
     updateDiagnosis(id: number, data: DiagnosisDto): Observable<ApiResponse<Diagnosis>> {
@@ -299,13 +304,13 @@ export class HospitalApi extends Api {
         return this.apiClient.put(`/api/diagnoses/${id}`, data, config);
     }
 
-    listMedicaments(name?: string, departmentId?: number): Observable<ApiResponse<Medicament[]>> {
+    listMedicaments(name?: string, departmentName?: string): Observable<ApiResponse<Medicament[]>> {
         const config: RequestConfig = {
             headers: {accept: 'application/json'},
-            params: {name: name as string, departmentId: departmentId as unknown as string},
+            params: {name: name as string, departmentName: departmentName as string},
             authenticated: true
         };
-        return this.apiClient.get('/api/departments/medicaments', config);
+        return this.apiClient.get('/api/medicaments', config);
     }
 
     getMedicament(id: number): Observable<ApiResponse<Medicament>> {
@@ -313,15 +318,15 @@ export class HospitalApi extends Api {
             headers: {accept: 'application/json'},
             authenticated: true
         };
-        return this.apiClient.get(`/api/departments/medicaments/${id}`, config);
+        return this.apiClient.get(`/api/medicaments/${id}`, config);
     }
 
-    createMedicament(departmentId: number, data: MedicamentDto): Observable<ApiResponse<Medicament>> {
+    createMedicament(data: MedicamentDto): Observable<ApiResponse<Medicament>> {
         const config: RequestConfig = {
             headers: {accept: 'application/json', contentType: 'application/json'},
             authenticated: true
         };
-        return this.apiClient.post(`/api/departments/${departmentId}/medicaments`, data, config);
+        return this.apiClient.post('/api/medicaments', data, config);
     }
 
     updateMedicament(id: number, data: MedicamentDto): Observable<ApiResponse<Medicament>> {
@@ -329,7 +334,7 @@ export class HospitalApi extends Api {
             headers: {accept: 'application/json', contentType: 'application/json'},
             authenticated: true
         };
-        return this.apiClient.put(`/api/departments/medicaments/${id}`, data, config);
+        return this.apiClient.put(`/api/medicaments/${id}`, data, config);
     }
 
     deleteHospital(id: number): Observable<ApiResponse<void>> {
@@ -385,7 +390,7 @@ export class HospitalApi extends Api {
             headers: {accept: 'application/json'},
             authenticated: true
         };
-        return this.apiClient.delete(`/api/departments/medicaments/${id}`, config);
+        return this.apiClient.delete(`/api/medicaments/${id}`, config);
     }
 
     getMedicalRecordByPatient(patientId: number): Observable<ApiResponse<PatientMedicalRecordResponse>> {
@@ -409,6 +414,6 @@ export class HospitalApi extends Api {
             headers: {accept: 'application/json', contentType: 'application/json'},
             authenticated: true
         };
-        return this.apiClient.put(`/api/users/medical-record/${id}`, data, config);
+        return this.apiClient.put(`/api/users/medical-records/${id}`, data, config);
     }
 }

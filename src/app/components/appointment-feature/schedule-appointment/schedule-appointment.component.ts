@@ -1,15 +1,13 @@
 import { Component, signal } from '@angular/core';
 import { shared } from "../../../app.config";
-import { Appointment, AppointmentStaus, DoctorType, DoctorTypeMap, PatientScheduleMap, PatientScheduleType } from "../../../rest/hospital/hospital.model";
+import { Department, DepartmentProcedure, Hospital, OpenSlotDTO } from "../../../rest/hospital/hospital.model";
 import { MatStep, MatStepLabel, MatStepper, MatStepperPrevious } from "@angular/material/stepper";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ApiService } from "../../../common/service/api.service";
 import { map } from "rxjs/operators";
+import { catchError, of } from "rxjs";
 import { NotificationService } from "../../../common/service/notification.service";
 import { ROUTE_APPOINTMENTS } from "../appointments/list-appointments/list-appointments.component";
 import { Router } from "@angular/router";
-import { AuthenticationService } from "../../../common/service/authentication.service";
-import { toSignal } from "@angular/core/rxjs-interop";
 
 export const ROUTE_SCHEDULE_APPOINTMENT = 'schedule-appointment';
 
@@ -21,75 +19,138 @@ export const ROUTE_SCHEDULE_APPOINTMENT = 'schedule-appointment';
 })
 export class ScheduleAppointmentComponent {
 
-    scheduleTypes = Object.values(PatientScheduleType).map(type => ({
-        type,
-        icon: PatientScheduleMap[type],
-        label: PatientScheduleMap[type],
-        color: PatientScheduleMap[type]
-    }));
+    hospitals = signal<Hospital[]>([]);
+    departments = signal<Department[]>([]);
+    procedures = signal<DepartmentProcedure[]>([]);
+    slots = signal<OpenSlotDTO[]>([]);
 
-    doctorForm: FormGroup;
+    selectedHospital = signal<Hospital | null>(null);
+    selectedDepartment = signal<Department | null>(null);
+    selectedProcedure = signal<DepartmentProcedure | null>(null);
     selectedDate: Date | null = null;
-    appointments = signal<Appointment[] | null>(null);
-    selectedAppointment: Appointment | null = null;
-    currentUser = toSignal(this.authService.activeUser);
+    selectedSlot: OpenSlotDTO | null = null;
 
-    constructor(private fb: FormBuilder,
-                private notificationService: NotificationService,
-                private router: Router,
-                private authService: AuthenticationService,
-                private apiService: ApiService) {
-        this.doctorForm = this.fb.group({
-            doctorType: new FormControl<DoctorType | null>(null, [Validators.required])
+    isLoadingHospitals = signal(true);
+    isLoadingDepartments = signal(false);
+    isLoadingProcedures = signal(false);
+    isLoadingSlots = signal(false);
+
+    minDate = new Date();
+
+    constructor(
+        private apiService: ApiService,
+        private notificationService: NotificationService,
+        private router: Router
+    ) {
+        this.apiService.hospitalApi.list().pipe(
+            map(r => r.data ?? []),
+            catchError(() => of([]))
+        ).subscribe(hospitals => {
+            this.hospitals.set(hospitals);
+            this.isLoadingHospitals.set(false);
         });
+    }
+
+    selectHospital(hospital: Hospital, stepper: MatStepper) {
+        if (this.selectedHospital()?.id !== hospital.id) {
+            this.selectedDepartment.set(null);
+            this.selectedProcedure.set(null);
+            this.selectedDate = null;
+            this.slots.set([]);
+            this.selectedSlot = null;
+
+            this.isLoadingDepartments.set(true);
+            this.apiService.hospitalApi.listDepartments('', hospital.id).pipe(
+                map(r => r.data ?? []),
+                catchError(() => of([]))
+            ).subscribe(deps => {
+                this.departments.set(deps);
+                this.isLoadingDepartments.set(false);
+            });
+        }
+        this.selectedHospital.set(hospital);
+        stepper.next();
+    }
+
+    selectDepartment(department: Department, stepper: MatStepper) {
+        if (this.selectedDepartment()?.id !== department.id) {
+            this.selectedProcedure.set(null);
+            this.selectedDate = null;
+            this.slots.set([]);
+            this.selectedSlot = null;
+
+            this.isLoadingProcedures.set(true);
+            this.apiService.hospitalApi.listProcedures('', department.id).pipe(
+                map(r => r.data ?? []),
+                catchError(() => of([]))
+            ).subscribe(procs => {
+                this.procedures.set(procs);
+                this.isLoadingProcedures.set(false);
+            });
+        }
+        this.selectedDepartment.set(department);
+        stepper.next();
+    }
+
+    selectProcedure(procedure: DepartmentProcedure, stepper: MatStepper) {
+        if (this.selectedProcedure()?.id !== procedure.id) {
+            this.selectedDate = null;
+            this.slots.set([]);
+            this.selectedSlot = null;
+        }
+        this.selectedProcedure.set(procedure);
+        stepper.next();
     }
 
     selectDate(date: Date) {
         this.selectedDate = date;
-        const startOfDay = new Date(date);
-        startOfDay.setHours(0, 0, 0, 0);
+        this.selectedSlot = null;
 
-        const endOfDay = new Date(date);
-        endOfDay.setHours(23, 59, 59, 999);
+        const from = new Date(date);
+        from.setHours(0, 0, 0, 0);
+        const to = new Date(date);
+        to.setHours(23, 59, 59, 999);
 
-        const doctorType = this.doctorForm.get('doctorType')?.value
+        const departmentId = this.selectedDepartment()?.id;
+        if (!departmentId) return;
 
-        this.apiService.appointmentApi.listByHospital(this.currentUser()?.hospital.id as number, AppointmentStaus.OPEN, startOfDay.getTime(), endOfDay.getTime(), this.getDoctorType(doctorType)).pipe(
-            map(response => response.data)
-        ).subscribe((response) => {
-            if (response)
-                this.appointments.set(response)
-        })
+        this.isLoadingSlots.set(true);
+        this.apiService.appointmentApi.listOpenByDepartment(departmentId, from.getTime(), to.getTime()).pipe(
+            map(r => r.data ?? []),
+            catchError(() => of([]))
+        ).subscribe(slots => {
+            this.slots.set(slots);
+            this.isLoadingSlots.set(false);
+        });
     }
 
-    selectScheduleType(scheduleType: string, stepper: MatStepper) {
-        if (scheduleType !== this.doctorForm.get('doctorType')?.value) {
-            this.selectedDate = null;
-            this.appointments.set([])
-        }
-        this.doctorForm.patchValue({doctorType: scheduleType});
+    selectSlot(slot: OpenSlotDTO, stepper: MatStepper) {
+        this.selectedSlot = slot;
         stepper.next();
     }
 
-    confirm(appointment: Appointment | null) {
-        if (appointment) {
-            this.apiService.appointmentApi.scheduleAppointment(appointment.id).pipe(
-                map(response => response.data)
-            ).subscribe((response) => {
-                if (response) {
-                    this.notificationService.showSuccess("Successfully scheduled your appointment.");
-                    this.router.navigate([ROUTE_APPOINTMENTS])
-                }
-            })
-        }
+    confirm() {
+        const slot = this.selectedSlot;
+        const procedure = this.selectedProcedure();
+        if (!slot || !procedure) return;
+
+        this.apiService.appointmentApi.bookAppointment({
+            doctorId: slot.doctorId,
+            date: slot.date,
+            startTime: slot.startTime,
+            procedureId: procedure.id
+        }).pipe(
+            map(r => r.data),
+            catchError(() => of(null))
+        ).subscribe(response => {
+            if (response) {
+                this.notificationService.showSuccess('Appointment scheduled! A confirmation will be sent to your email.');
+                this.router.navigate([ROUTE_APPOINTMENTS]);
+            }
+        });
     }
 
-    selectAppointment(appointment: Appointment, stepper: MatStepper) {
-        this.selectedAppointment = appointment;
-        stepper.next();
-    }
-
-    private getDoctorType(scheduleType: PatientScheduleType): DoctorType {
-        return DoctorTypeMap[scheduleType];
+    goBack() {
+        this.router.navigate([ROUTE_APPOINTMENTS]);
     }
 }

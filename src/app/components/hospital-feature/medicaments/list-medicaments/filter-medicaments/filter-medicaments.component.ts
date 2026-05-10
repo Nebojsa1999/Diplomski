@@ -4,7 +4,7 @@ import { shared } from "../../../../../app.config";
 
 export interface FilterMedicamentParam {
     name: string;
-    department: number | null;
+    departmentName: string | null;
 }
 
 @Component({
@@ -26,13 +26,13 @@ export class FilterMedicamentsComponent {
     applyFilter() {
         this.searchClicked.emit({
             name: this.form.get('name')?.value,
-            department: null
+            departmentName: null
         });
     }
 
     resetFilter() {
         this.form.get('name')?.reset();
-        this.searchClicked.emit({ name: '', department: null });
+        this.searchClicked.emit({ name: '', departmentName: null });
         this.form.markAsPristine();
     }
 }
