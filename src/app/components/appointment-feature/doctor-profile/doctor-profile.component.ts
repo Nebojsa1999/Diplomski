@@ -6,7 +6,7 @@ import { shared } from '../../../app.config';
 import { ApiService } from '../../../common/service/api.service';
 import { NotificationService } from '../../../common/service/notification.service';
 import { User } from '../../../rest/user/user.model';
-import { TimeSlotDTO } from '../../../rest/hospital/hospital.model';
+import { DepartmentProcedure, TimeSlotDTO } from '../../../rest/hospital/hospital.model';
 import { map } from 'rxjs/operators';
 import { catchError, of } from 'rxjs';
 import { ROUTE_APPOINTMENTS } from '../appointments/list-appointments/list-appointments.component';
@@ -21,10 +21,13 @@ export const ROUTE_DOCTOR_PROFILE = 'doctor-profile';
 })
 export class DoctorProfileComponent {
     doctor = signal<User | null>(null);
+    procedures = signal<DepartmentProcedure[]>([]);
     slots = signal<TimeSlotDTO[]>([]);
+    selectedProcedure = signal<DepartmentProcedure | null>(null);
     selectedDate: DateTime | null = null;
     selectedSlot: TimeSlotDTO | null = null;
     isLoadingDoctor = signal(false);
+    isLoadingProcedures = signal(false);
     isLoadingSlots = signal(false);
     isBooking = signal(false);
     favorites = signal<number[]>([]);
@@ -42,7 +45,17 @@ export class DoctorProfileComponent {
             map(r => r.data),
             catchError(err => this.notificationService.showError(err.message))
         ).subscribe(doctor => {
-            if (doctor) this.doctor.set(doctor as User);
+            if (doctor) {
+                this.doctor.set(doctor as User);
+                this.isLoadingProcedures.set(true);
+                this.api.hospitalApi.listProcedures('', doctor.department.id).pipe(
+                    map(r => r.data ?? []),
+                    catchError(() => of([]))
+                ).subscribe(procs => {
+                    this.procedures.set(procs);
+                    this.isLoadingProcedures.set(false);
+                });
+            }
             this.isLoadingDoctor.set(false);
         });
 
@@ -50,6 +63,13 @@ export class DoctorProfileComponent {
             map(r => (r.data ?? []).map(f => f.doctor.id)),
             catchError(() => of([]))
         ).subscribe(ids => this.favorites.set(ids));
+    }
+
+    selectProcedure(procedure: DepartmentProcedure): void {
+        this.selectedProcedure.set(procedure);
+        this.selectedDate = null;
+        this.selectedSlot = null;
+        this.slots.set([]);
     }
 
     selectDate(date: DateTime): void {
@@ -90,7 +110,8 @@ export class DoctorProfileComponent {
         this.api.appointmentApi.bookAppointment({
             doctorId: doctor.id,
             date: this.selectedDate.toISODate()!,
-            startTime: slot.startTime
+            startTime: slot.startTime,
+            departmentProcedureId: this.selectedProcedure()?.id
         }).pipe(
             map(r => r.data),
             catchError(err => this.notificationService.showError(err.message))

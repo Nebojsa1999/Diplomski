@@ -213,6 +213,7 @@ export interface Appointment {
     doctor: User;
     patient: User;
     appointmentStatus: AppointmentStaus;
+    departmentProcedure?: DepartmentProcedure;
     hasAppointmentReport?: boolean;
     hasMedication?: boolean;
     hasLabDocument?: boolean;
@@ -236,7 +237,7 @@ export interface BookAppointmentDto {
     doctorId: number;
     date: string;
     startTime: string;
-    procedureId?: number;
+    departmentProcedureId?: number;
 }
 
 export interface AppointmentDto {

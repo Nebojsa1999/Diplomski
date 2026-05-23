@@ -47,7 +47,6 @@ import { CreateScheduleComponent, ROUTE_CREATE_SCHEDULE } from "./components/hos
 import { EditScheduleComponent, ROUTE_EDIT_SCHEDULE } from "./components/hospital-feature/doctor-schedules/edit-schedule/edit-schedule.component";
 import { DoctorListComponent, ROUTE_DOCTOR_LIST } from "./components/appointment-feature/doctor-list/doctor-list.component";
 import { DoctorProfileComponent, ROUTE_DOCTOR_PROFILE } from "./components/appointment-feature/doctor-profile/doctor-profile.component";
-import { DoctorDashboardComponent, ROUTE_DOCTOR_DASHBOARD } from "./components/appointment-feature/appointments/doctor-dashboard/doctor-dashboard.component";
 
 export const unauthenticatedOnlyGuard: CanActivateFn = (route, state) => {
     const router = inject(Router);
@@ -272,10 +271,6 @@ export const routes: Routes = [
             {
                 path: `${ROUTE_DOCTOR_PROFILE}/:id`,
                 component: DoctorProfileComponent,
-            },
-            {
-                path: ROUTE_DOCTOR_DASHBOARD,
-                component: DoctorDashboardComponent,
             },
             {
                 path: '**',

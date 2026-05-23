@@ -24,7 +24,7 @@ export class EditMedicamentComponent {
         dosage: new FormControl<string | null>(null, [Validators.required]),
         department: new FormControl<string | null>(null)
     });
-    private departmentId: number | null = null;
+    private departmentNameId: number | null = null;
 
     constructor(private apiService: ApiService, private route: ActivatedRoute, private notificationService: NotificationService, private router: Router, private location: Location) {
         this.form.get('department')?.disable();
@@ -33,7 +33,7 @@ export class EditMedicamentComponent {
             map(response => response.data),
             catchError(error => this.notificationService.showError(error))
         ).subscribe((medicament) => {
-            this.departmentId = medicament?.departmentName?.id ?? null;
+            this.departmentNameId = medicament?.departmentName?.id ?? null;
             this.form.patchValue({
                 name: medicament?.name,
                 instructions: medicament?.instructions,
@@ -58,7 +58,7 @@ export class EditMedicamentComponent {
         ).subscribe((response) => {
             if (response) {
                 this.notificationService.showSuccess('Successfully edited medicament.');
-                this.router.navigate([`/department/${this.departmentId}/${ROUTE_MEDICAMENTS}`]);
+                this.router.navigate([`/department-name/${this.departmentNameId}/${ROUTE_MEDICAMENTS}`]);
             }
         });
     }

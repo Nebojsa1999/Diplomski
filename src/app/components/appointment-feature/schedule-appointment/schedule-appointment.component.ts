@@ -138,7 +138,7 @@ export class ScheduleAppointmentComponent {
             doctorId: slot.doctorId,
             date: slot.date,
             startTime: slot.startTime,
-            procedureId: procedure.id
+            departmentProcedureId: procedure.id
         }).pipe(
             map(r => r.data),
             catchError(() => of(null))

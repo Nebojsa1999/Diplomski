@@ -28,7 +28,7 @@ export const ROUTE_APPOINTMENTS = 'appointments';
     styleUrl: './list-appointments.component.scss',
 })
 export class ListAppointmentsComponent {
-    displayedColumns: string[] = ['date', 'status', 'hospital', 'duration', 'doctor', 'patient', 'actions'];
+    displayedColumns: string[] = ['date', 'status', 'hospital', 'duration', 'doctor', 'patient', 'procedure', 'actions'];
     currentUser = toSignal(this.authService.activeUser);
     appointments = signal<Appointment[] | null>(null);
     Role = Role;

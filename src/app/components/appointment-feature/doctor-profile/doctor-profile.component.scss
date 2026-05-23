@@ -72,6 +72,13 @@
     margin-top: 0.5rem;
 }
 
+.procedures-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
 .slot-btn {
     display: flex;
     flex-direction: column;
@@ -79,6 +86,9 @@
     padding: 0.5rem;
     font-size: 0.875rem;
     line-height: 1.2;
+    white-space: normal;
+    height: auto;
+    min-height: 36px;
 
     .slot-duration {
         font-size: 0.7rem;

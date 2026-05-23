@@ -233,6 +233,8 @@
   "EDIT_DOCTOR_SCHEDULE": "Edit Doctor Schedule",
   "ADD_DEPARTMENT": "Add Department",
   "ADD_PROCEDURE": "Add Procedure",
+  "SELECT_PROCEDURE": "Select a Procedure",
+  "PROCEDURE": "Procedure",
   "ADD_DIAGNOSIS": "Add Diagnosis",
   "ADD_MEDICAMENT": "Add Medicament",
   "ADD_SCHEDULE": "Add Schedule",

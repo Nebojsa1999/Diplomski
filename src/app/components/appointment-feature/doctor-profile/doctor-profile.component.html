@@ -65,13 +65,35 @@
                 <mat-card class="booking-card">
                     <mat-card-content>
                         <h3>{{ 'COMMON.BOOK_APPOINTMENT' | translate }}</h3>
-                        <p class="text-sm text-gray-500">{{ 'COMMON.SELECT_DATE_TO_SEE_SLOTS' | translate }}</p>
 
+                        @if (isLoadingProcedures()) {
+                            <mat-progress-bar mode="indeterminate" class="mb-4"></mat-progress-bar>
+                        }
+
+                        @if (procedures().length > 0) {
+                            <h4>{{ 'COMMON.SELECT_PROCEDURE' | translate }}</h4>
+                            <div class="procedures-grid mb-4">
+                                @for (proc of procedures(); track proc.id) {
+                                    <button
+                                        mat-stroked-button
+                                        class="slot-btn"
+                                        [class.selected-slot]="selectedProcedure()?.id === proc.id"
+                                        (click)="selectProcedure(proc)">
+                                        {{ proc.name }}
+                                        <span class="slot-duration">{{ proc.price | currency:'RSD':'symbol':'1.0-0' }}</span>
+                                    </button>
+                                }
+                            </div>
+                        }
+
+                        @if (selectedProcedure()) {
+                        <p class="text-sm text-gray-500">{{ 'COMMON.SELECT_DATE_TO_SEE_SLOTS' | translate }}</p>
                         <mat-calendar
                             [selected]="selectedDate"
                             [minDate]="minDate"
                             (selectedChange)="selectDate($event)">
                         </mat-calendar>
+                        }
 
                         @if (isLoadingSlots()) {
                             <mat-progress-bar mode="indeterminate" class="mt-2"></mat-progress-bar>
@@ -109,6 +131,9 @@
                                             <div><strong>{{ 'COMMON.TIME' | translate }}:</strong> {{ selectedSlot.startTime }} – {{ selectedSlot.endTime }}</div>
                                             <div><strong>{{ 'COMMON.DURATION' | translate }}:</strong> {{ slotDuration(selectedSlot) }} min</div>
                                             <div><strong>{{ 'COMMON.DOCTOR_NAME' | translate }}:</strong> {{ doctor.firstName }} {{ doctor.lastName }}</div>
+                                            @if (selectedProcedure()) {
+                                                <div><strong>{{ 'COMMON.PROCEDURE' | translate }}:</strong> {{ selectedProcedure()!.name }}</div>
+                                            }
                                         </div>
                                         <button
                                             mat-flat-button

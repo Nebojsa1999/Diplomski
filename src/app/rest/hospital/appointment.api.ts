@@ -2,7 +2,7 @@ import { Api } from "../api";
 import { ApiClient } from "../api-client";
 import { ApiResponse, Page, RequestConfig } from "../rest.model";
 import { Observable } from "rxjs";
-import { Appointment, AppointmentDto, AppointmentReport, AppointmentStaus, BookAppointmentDto, CreateOperationRoomBookingDto, DenyUserDto, FeedbackDto, LabDocument, Medication, OpenSlotDTO, OperationRoomBooking, TimeSlotDTO } from "./hospital.model";
+import { Appointment, AppointmentDto, AppointmentReport, AppointmentStaus, BookAppointmentDto, CreateOperationRoomBookingDto, FeedbackDto, LabDocument, Medication, OpenSlotDTO, OperationRoomBooking, TimeSlotDTO } from "./hospital.model";
 
 export class AppointmentApi extends Api {
     constructor(client: ApiClient) {
@@ -99,17 +99,6 @@ export class AppointmentApi extends Api {
         };
 
         return this.apiClient.put<undefined, Appointment>(`/api/hospitals/appointments/${id}/schedule`, undefined, config);
-    }
-
-    deny(denyUserDto: DenyUserDto): Observable<ApiResponse<void>> {
-        const config: RequestConfig = {
-            headers: {
-                accept: 'application/json',
-                contentType: 'application/json'
-            },
-            authenticated: true
-        };
-        return this.apiClient.put<DenyUserDto, void>("/api/hospitals/deny-user", denyUserDto, config);
     }
 
     createAppointmentReport(appointmentId: number, data: AppointmentReport): Observable<ApiResponse<AppointmentReport>> {
@@ -228,7 +217,7 @@ export class AppointmentApi extends Api {
             headers: {accept: 'application/json'},
             authenticated: true
         };
-        return this.apiClient.delete(`/api/hospitals/appointments/${id}`, config);
+        return this.apiClient.delete(`/api/appointments/${id}`, config);
     }
 
     uploadLabDocument(appointmentId: number, file: File): Observable<ApiResponse<any>> {

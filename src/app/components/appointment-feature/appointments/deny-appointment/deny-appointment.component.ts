@@ -51,9 +51,7 @@ export class DenyAppointmentComponent {
     goBack() { this.location.back(); }
 
     deny() {
-        this.api.appointmentApi.deny({
-            id: this.appointmentId
-        }).pipe(
+        this.api.appointmentApi.deleteAppointment( this.appointmentId).pipe(
             map(response => response.data),
             catchError(error => this.notificationService.showError(error))
         ).subscribe((response => {
