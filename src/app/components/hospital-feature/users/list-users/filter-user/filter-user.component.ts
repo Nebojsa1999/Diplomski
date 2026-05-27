@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { shared } from "../../../../../app.config";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { Role } from "../../../../../rest/user/user.model";
@@ -16,6 +16,7 @@ export interface FilterUserParam {
 })
 export class FilterUserComponent {
     form: FormGroup;
+    @Input() hideRole = false;
     @Output() searchClicked = new EventEmitter<FilterUserParam>();
     roles = Object.values(Role);
 

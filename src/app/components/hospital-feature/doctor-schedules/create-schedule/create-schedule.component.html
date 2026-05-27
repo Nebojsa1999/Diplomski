@@ -101,7 +101,7 @@
                         </div>
                     }
 
-                    <button [disabled]="form.invalid || form.pristine || daysArray.length === 0" mat-flat-button color="primary" class="mt-2">{{ 'COMMON.SUBMIT' | translate }}</button>
+                    <button [disabled]="form.invalid || daysArray.length === 0" mat-flat-button color="primary" class="mt-2">{{ 'COMMON.SUBMIT' | translate }}</button>
                 </form>
             </mat-card-content>
         </mat-card>

@@ -33,7 +33,15 @@ export class ListAppointmentsComponent {
     appointments = signal<Appointment[] | null>(null);
     Role = Role;
     AppointmentStaus = AppointmentStaus;
-    dateRange = signal<{ from: Date | null, to: Date | null } | null>(null);
+    private static initialDateRange() {
+        const today = new Date();
+        const y = today.getFullYear(), mo = today.getMonth(), d = today.getDate();
+        return {
+            from: new Date(Date.UTC(y, mo, d, 0, 0, 0, 0)),
+            to: new Date(Date.UTC(y, mo, d, 23, 59, 59, 999))
+        };
+    }
+    dateRange = signal<{ from: Date | null, to: Date | null } | null>(ListAppointmentsComponent.initialDateRange());
     activeTab = signal<'all' | 'upcoming' | 'completed'>('all');
 
     upcomingAppointments = computed(() =>
@@ -56,6 +64,15 @@ export class ListAppointmentsComponent {
         if (tab === 'upcoming') return this.upcomingAppointments();
         if (tab === 'completed') return this.completedAppointments();
         return all;
+    });
+
+    pageIndex = signal(0);
+    pageSize = signal(10);
+
+    paginatedAppointments = computed(() => {
+        const all = this.visibleAppointments();
+        const start = this.pageIndex() * this.pageSize();
+        return all.slice(start, start + this.pageSize());
     });
 
     placeHodler: any = [{
@@ -190,7 +207,8 @@ export class ListAppointmentsComponent {
     }
 
     setDateRange(dateRange: { from: Date | null; to: Date | null }) {
-        this.dateRange.set({from: dateRange.from, to: dateRange.to})
+        this.pageIndex.set(0);
+        this.dateRange.set({from: dateRange.from, to: dateRange.to});
     }
 
     uploadLabDocument(appointmentId: number, event: Event) {
@@ -213,7 +231,13 @@ export class ListAppointmentsComponent {
     }
 
     setTab(tab: 'all' | 'upcoming' | 'completed'): void {
+        this.pageIndex.set(0);
         this.activeTab.set(tab);
+    }
+
+    onPage(event: import('@angular/material/paginator').PageEvent): void {
+        this.pageIndex.set(event.pageIndex);
+        this.pageSize.set(event.pageSize);
     }
 
     cancelAppointment(appointment: Appointment): void {
@@ -234,11 +258,16 @@ export class ListAppointmentsComponent {
     }
 
     private sortAppointments(appointments: Appointment[]): Appointment[] {
+        const statusOrder: Record<string, number> = {
+            [AppointmentStaus.SCHEDULED]: 0,
+            [AppointmentStaus.OPEN]: 1,
+            [AppointmentStaus.CANCELLED]: 2,
+            [AppointmentStaus.FINISHED]: 3,
+        };
         return appointments?.sort((a, b) => {
-            const aScheduled = a.appointmentStatus === AppointmentStaus.SCHEDULED ? 0 : 1;
-            const bScheduled = b.appointmentStatus === AppointmentStaus.SCHEDULED ? 0 : 1;
-            if (aScheduled !== bScheduled) return aScheduled - bScheduled;
-            return new Date(b.dateAndTime).getTime() - new Date(a.dateAndTime).getTime();
+            const statusDiff = (statusOrder[a.appointmentStatus] ?? 99) - (statusOrder[b.appointmentStatus] ?? 99);
+            if (statusDiff !== 0) return statusDiff;
+            return new Date(a.dateAndTime).getTime() - new Date(b.dateAndTime).getTime();
         }) ?? [];
     }
 }

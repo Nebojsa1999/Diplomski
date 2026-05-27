@@ -13,9 +13,13 @@ export class FilterAppointmentComponent {
     @Output() dateRange = new EventEmitter<{ from: Date | null, to: Date | null }>();
 
     constructor(fb: FormBuilder) {
+        const now = new Date();
+        const y = now.getFullYear(), mo = now.getMonth(), d = now.getDate();
+        const today = new Date(Date.UTC(y, mo, d, 0, 0, 0, 0));
+        const endOfDay = new Date(Date.UTC(y, mo, d, 23, 59, 59, 999));
         this.form = fb.group({
-            from: new FormControl<Date | null>(null),
-            to: new FormControl<Date | null>(null)
+            from: new FormControl<Date | null>(today),
+            to: new FormControl<Date | null>(endOfDay)
         });
 
         this.form.get('to')?.valueChanges.subscribe(end => {

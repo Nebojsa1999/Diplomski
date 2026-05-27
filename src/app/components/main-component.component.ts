@@ -3,6 +3,7 @@ import { shared } from "../app.config";
 import { AuthenticationService } from "../common/service/authentication.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ROUTE_SIGN_IN } from "./profile-feature/login/login.component";
+import { ROUTE_USERS } from "./hospital-feature/users/list-users/list-users.component";
 import { Role } from "../rest/user/user.model";
 import { toSignal } from "@angular/core/rxjs-interop";
 
@@ -25,4 +26,5 @@ export class MainComponentComponent {
     }
 
    Role = Role;
+   ROUTE_USERS = ROUTE_USERS;
 }

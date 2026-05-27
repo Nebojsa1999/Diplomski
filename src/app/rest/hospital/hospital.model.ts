@@ -251,21 +251,23 @@ export interface DenyUserDto {
 }
 
 export interface AppointmentReport {
-    bloodType: BloodType;
-    rhFactor: string;
-    heightCm: number;
-    weightKg: number;
+    bloodType?: BloodType;
+    rhFactor?: string;
+    heightCm?: number;
+    weightKg?: number;
     chronicDiseases: string;
-    previousHospitalization: string;
-    previousSurgeries: string;
+    previousHospitalization?: string;
+    previousSurgeries?: string;
     allergies: string;
-    familyHistory: string;
+    familyHistory?: string;
     longThermTherapy: string;
-    specificContradictions: string;
+    specificContradictions?: string;
     bloodPressure: string;
     hearthRate: string;
     diagnosis: string;
     doctorsComment: string;
+    anamnesis?: string;
+    nextControl?: string;
 }
 
 export interface Equipment {
@@ -318,6 +320,7 @@ export interface Medication {
     notes: string;
     diagnosisId?: number;
     labResults?: string;
+    medicamentId?: number;
 }
 
 export interface FeedbackDto {

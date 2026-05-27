@@ -46,6 +46,15 @@ export class AppointmentApi extends Api {
         return this.apiClient.get('/api/appointments/open', config);
     }
 
+    listOpenByDoctor(doctorId: number, from: number, to: number): Observable<ApiResponse<OpenSlotDTO[]>> {
+        const config: RequestConfig = {
+            headers: { accept: 'application/json' },
+            params: { doctorId, from, to },
+            authenticated: true
+        };
+        return this.apiClient.get('/api/appointments/open', config);
+    }
+
     listForCurrentUser(status: AppointmentStaus, from: number | null, to: number | null): Observable<ApiResponse<Page<Appointment>>> {
         const config: RequestConfig = {
             headers: {

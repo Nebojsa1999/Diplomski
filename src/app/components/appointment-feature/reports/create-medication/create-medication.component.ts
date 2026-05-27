@@ -25,6 +25,7 @@ export class CreateMedicationComponent {
     form = new FormGroup({
         notes: new FormControl<string | null>(null, [Validators.required]),
         name: new FormControl<string | null>(null, [Validators.required]),
+        medicamentId: new FormControl<number | null>(null),
         dosage: new FormControl<string | null>(null, [Validators.required]),
         frequency: new FormControl<string | null>(null, [Validators.required]),
         instructions: new FormControl<string | null>(null, [Validators.required])
@@ -54,6 +55,7 @@ export class CreateMedicationComponent {
             const med = this.medicaments().find(m => m.name === selectedName);
             if (med) {
                 this.form.patchValue({
+                    medicamentId: med.id,
                     dosage: med.dosage,
                     instructions: med.instructions
                 }, { emitEvent: false });
@@ -70,12 +72,15 @@ export class CreateMedicationComponent {
         const frequency = this.form.get('frequency')?.value;
         const instructions = this.form.get('instructions')?.value;
 
+        const medicamentId = this.form.get('medicamentId')?.value;
+
         this.apiService.appointmentApi.createMedication(this.route.snapshot.params['id'], {
             notes: notes as string,
             name: name as string,
             dosage: dosage as string,
             frequency: frequency as string,
-            instructions: instructions as string
+            instructions: instructions as string,
+            medicamentId: medicamentId ?? undefined,
         }).pipe(
             map(response => response.data),
             catchError(error => this.notificationService.showError(error))

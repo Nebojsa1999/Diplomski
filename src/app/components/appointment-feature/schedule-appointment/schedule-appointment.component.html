@@ -101,7 +101,22 @@
                         <h3 class="mt-3">{{ selectedProcedure()?.name }}</h3>
 
                         <div class="flex gap-6 items-start mt-3">
-                            <div class="calendar-container">
+                            <div class="calendar-container flex flex-col gap-3">
+                                <mat-form-field appearance="outline" class="w-full">
+                                    <mat-label>{{ 'COMMON.DOCTOR' | translate }}</mat-label>
+                                    <mat-select [value]="selectedDoctor()" (selectionChange)="selectDoctor($event.value)">
+                                        @for (doctor of doctors(); track doctor.id) {
+                                            <mat-option [value]="doctor">
+                                                <span class="flex items-center gap-1">
+                                                    @if (isFavorite(doctor)) {
+                                                        <mat-icon class="text-yellow-500" style="font-size:16px; width:16px; height:16px;">star</mat-icon>
+                                                    }
+                                                    {{ doctor.firstName }} {{ doctor.lastName }}
+                                                </span>
+                                            </mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
                                 <mat-calendar
                                         [selected]="selectedDate"
                                         [minDate]="minDate"

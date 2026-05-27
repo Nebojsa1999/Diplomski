@@ -44,7 +44,7 @@
 
             @if (visibleAppointments().length) {
                 <div class="mobile-table-scroll">
-                    <table mat-table [dataSource]="visibleAppointments()" class="mat-elevation-z8">
+                    <table mat-table [dataSource]="paginatedAppointments()" class="mat-elevation-z8">
 
                         <ng-container matColumnDef="date">
                             <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DATE' | translate }}</th>
@@ -76,7 +76,14 @@
 
                         <ng-container matColumnDef="doctor">
                             <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.DOCTOR' | translate }}</th>
-                            <td mat-cell *matCellDef="let appointment">{{ appointment.doctor !== null ? (appointment.doctor.firstName + ' ' + appointment.doctor.lastName) : '-' }}</td>
+                            <td mat-cell *matCellDef="let appointment">
+                                @if (appointment.doctor) {
+                                    <span>{{ appointment.doctor.firstName }} {{ appointment.doctor.lastName }}</span>
+                                    @if (appointment.doctor.department?.name) {
+                                        <span class="text-xs text-gray-500 block">({{ appointment.doctor.department.name }})</span>
+                                    }
+                                } @else { - }
+                            </td>
                         </ng-container>
 
                         <ng-container matColumnDef="patient">
@@ -156,6 +163,14 @@
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                     </table>
                 </div>
+                <mat-paginator
+                    [length]="visibleAppointments().length"
+                    [pageSize]="pageSize()"
+                    [pageIndex]="pageIndex()"
+                    [pageSizeOptions]="[5, 10, 25, 50]"
+                    showFirstLastButtons
+                    (page)="onPage($event)">
+                </mat-paginator>
             } @else {
                 <div class="empty-state">
                     <mat-icon>event_note</mat-icon>

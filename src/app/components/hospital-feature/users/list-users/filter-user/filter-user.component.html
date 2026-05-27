@@ -4,15 +4,17 @@
             <mat-label>{{ 'COMMON.SEARCH_BY_NAME' | translate }}</mat-label>
             <input formControlName="name" matInput/>
         </mat-form-field>
-        <mat-form-field appearance="outline" class="w-48">
-            <mat-label>{{ 'COMMON.ROLE' | translate }}</mat-label>
-            <mat-select formControlName="role" (selectionChange)="applyFilter()">
-                <mat-option [value]="''">{{ 'COMMON.SEARCH_ALL' | translate }}</mat-option>
-                @for (role of roles; track role) {
-                    <mat-option [value]="role">{{ ('COMMON.' + role) | translate }}</mat-option>
-                }
-            </mat-select>
-        </mat-form-field>
+        @if (!hideRole) {
+            <mat-form-field appearance="outline" class="w-48">
+                <mat-label>{{ 'COMMON.ROLE' | translate }}</mat-label>
+                <mat-select formControlName="role" (selectionChange)="applyFilter()">
+                    <mat-option [value]="''">{{ 'COMMON.SEARCH_ALL' | translate }}</mat-option>
+                    @for (role of roles; track role) {
+                        <mat-option [value]="role">{{ ('COMMON.' + role) | translate }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        }
     </div>
     <div class="flex flex-row mt-2 gap-x-2">
         <button [disabled]="form.invalid || form.pristine"

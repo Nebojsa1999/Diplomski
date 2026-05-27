@@ -5,39 +5,36 @@
                 <form [formGroup]="form" class="flex flex-col space-y-4">
                     <h2>{{ 'COMMON.APPOINTMENT_REPORT' | translate }}</h2>
 
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-2 rounded border border-gray-200 px-4 py-3">
+                        <div class="flex flex-col">
+                            <span class="text-xs text-gray-500">{{ 'COMMON.APPOINTMENT_DATE' | translate }}</span>
+                            <span class="text-sm font-medium">{{ appointment()?.dateAndTime | date:'medium' }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs text-gray-500">{{ 'COMMON.DOCTOR' | translate }}</span>
+                            <span class="text-sm font-medium">{{ appointment()?.doctor?.firstName }} {{ appointment()?.doctor?.lastName }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs text-gray-500">{{ 'COMMON.DEPARTMENT' | translate }}</span>
+                            <span class="text-sm font-medium">{{ appointment()?.doctor?.department?.name }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs text-gray-500">{{ 'COMMON.PATIENT' | translate }}</span>
+                            <span class="text-sm font-medium">{{ appointment()?.patient?.firstName }} {{ appointment()?.patient?.lastName }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs text-gray-500">{{ 'COMMON.PHONE_NUMBER' | translate }}</span>
+                            <span class="text-sm font-medium">{{ appointment()?.patient?.phone }}</span>
+                        </div>
+                    </div>
+
                     <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
                         <div class="flex flex-col space-y-4 flex-1">
-                            <div class="flex flex-row gap-4">
-                                <mat-form-field class="flex-1">
-                                    <mat-label>{{ 'COMMON.APPOINTMENT_REPORT_BLOOD_TYPE' | translate }}</mat-label>
-                                    <mat-select formControlName="bloodType">
-                                        @for (bt of bloodTypes; track bt) {
-                                            <mat-option [value]="bt">{{ 'COMMON.APPOINTMENT_REPORT_BLOOD_TYPE_' + bt | translate }}</mat-option>
-                                        }
-                                    </mat-select>
-                                    @if (form.get('bloodType')?.hasError('required')) {
-                                        <mat-error>{{ 'COMMON.ERROR_BLOOD_TYPE_REQUIRED' | translate }}</mat-error>
-                                    }
-                                </mat-form-field>
-                                <mat-form-field class="flex-1">
-                                    <mat-label>{{ 'COMMON.RH_FACTOR' | translate }}</mat-label>
-                                    <mat-select formControlName="rhFactor">
-                                        @for (rh of rhFactors; track rh) {
-                                            <mat-option [value]="rh">{{ rh }}</mat-option>
-                                        }
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                            <div class="flex flex-row gap-4">
-                                <mat-form-field class="flex-1">
-                                    <mat-label>{{ 'COMMON.HEIGHT_CM' | translate }}</mat-label>
-                                    <input matInput type="number" formControlName="heightCm" />
-                                </mat-form-field>
-                                <mat-form-field class="flex-1">
-                                    <mat-label>{{ 'COMMON.WEIGHT_KG' | translate }}</mat-label>
-                                    <input matInput type="number" formControlName="weightKg" />
-                                </mat-form-field>
-                            </div>
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.ANAMNESIS' | translate }}</mat-label>
+                                <textarea formControlName="anamnesis" matInput rows="2"></textarea>
+                            </mat-form-field>
+
                             <mat-form-field>
                                 <mat-label>{{ 'COMMON.APPOINTMENT_REPORT_ALLERGIES' | translate }}</mat-label>
                                 <textarea formControlName="allergies" matInput rows="2"></textarea>
@@ -47,30 +44,11 @@
                                 <mat-label>{{ 'COMMON.CHRONIC_DISEASES' | translate }}</mat-label>
                                 <textarea formControlName="chronicDiseases" matInput rows="2"></textarea>
                             </mat-form-field>
-                            <mat-form-field>
-                                <mat-label>{{ 'COMMON.PREVIOUS_HOSPITALIZATION' | translate }}</mat-label>
-                                <textarea formControlName="previousHospitalization" matInput rows="2"></textarea>
-                            </mat-form-field>
-
-                            <mat-form-field>
-                                <mat-label>{{ 'COMMON.PREVIOUS_SURGERIES' | translate }}</mat-label>
-                                <textarea formControlName="previousSurgeries" matInput rows="2"></textarea>
-                            </mat-form-field>
                         </div>
                         <div class="flex flex-col space-y-4 flex-1">
                             <mat-form-field>
-                                <mat-label>{{ 'COMMON.APPOINTMENT_REPORT_FAMILY_HISTORY' | translate }}</mat-label>
-                                <textarea formControlName="familyHistory" matInput rows="2"></textarea>
-                            </mat-form-field>
-
-                            <mat-form-field>
                                 <mat-label>{{ 'COMMON.LONG_TERM_THERAPY' | translate }}</mat-label>
                                 <textarea formControlName="longThermTherapy" matInput rows="2"></textarea>
-                            </mat-form-field>
-
-                            <mat-form-field>
-                                <mat-label>{{ 'COMMON.SPECIFIC_CONTRADICTIONS' | translate }}</mat-label>
-                                <textarea formControlName="specificContradictions" matInput rows="2"></textarea>
                             </mat-form-field>
 
                             <div class="flex flex-row gap-4">
@@ -115,6 +93,11 @@
                             <mat-form-field>
                                 <mat-label>{{ 'COMMON.DOCTORS_COMMENT' | translate }}</mat-label>
                                 <textarea formControlName="doctorsComment" matInput rows="3"></textarea>
+                            </mat-form-field>
+
+                            <mat-form-field>
+                                <mat-label>{{ 'COMMON.NEXT_CONTROL' | translate }}</mat-label>
+                                <input matInput formControlName="nextControl" />
                             </mat-form-field>
                         </div>
                     </div>

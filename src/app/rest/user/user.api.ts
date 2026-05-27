@@ -115,4 +115,15 @@ export class UserApi extends Api {
         };
         return this.apiClient.get<User[]>("/api/users/hospitals/" + id, config);
     }
+
+    listAll(name?: string): Observable<ApiResponse<User[]>> {
+        const config: RequestConfig = {
+            headers: {
+                accept: 'application/json'
+            },
+            params: { name: name as string },
+            authenticated: true
+        };
+        return this.apiClient.get<User[]>("/api/users", config);
+    }
 }

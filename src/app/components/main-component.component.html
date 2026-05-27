@@ -19,6 +19,9 @@
                     {{ 'COMMON.MY_SCHEDULE' | translate }}
                 </button>
             }
+            <button mat-button [routerLink]="['/' + ROUTE_USERS]">
+                {{ 'COMMON.PATIENTS' | translate }}
+            </button>
         }
         <button mat-button [routerLink]="['/appointments']">
             {{ 'COMMON.APPOINTMENTS' | translate }}
@@ -47,6 +50,7 @@
                 @if (currentUser(); as user) {
                     <a mat-menu-item [routerLink]="['/doctor', user.id, 'doctor-schedules']">{{ 'COMMON.MY_SCHEDULE' | translate }}</a>
                 }
+                <a mat-menu-item [routerLink]="['/' + ROUTE_USERS]">{{ 'COMMON.USERS' | translate }}</a>
             }
             <a mat-menu-item [routerLink]="['/appointments']">{{ 'COMMON.APPOINTMENTS' | translate }}</a>
             <mat-divider></mat-divider>

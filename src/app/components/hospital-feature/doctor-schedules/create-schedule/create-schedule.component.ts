@@ -97,7 +97,7 @@ export class CreateScheduleComponent {
                 dayOfWeek: new FormControl<DayOfWeek>(day),
                 startTime: new FormControl<string | null>('08:00', [Validators.required]),
                 endTime: new FormControl<string | null>('16:00', [Validators.required]),
-                durationOfAppointmentMin: new FormControl<number | null>(null, [Validators.required, Validators.min(1)]),
+                durationOfAppointmentMin: new FormControl<number | null>(20, [Validators.required, Validators.min(1)]),
                 breakStartTime: new FormControl<string | null>(null),
                 breakEndTime: new FormControl<string | null>(null),
             }, { validators: scheduleTimeValidator }));
